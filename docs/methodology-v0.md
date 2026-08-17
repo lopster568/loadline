@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Methodology version | 0.1.1 (draft, not yet applied to a published release) |
+| Methodology version | 0.2.0 (draft, not yet applied to a published release) |
 | Date | 2026-08-17 |
 | Status | Draft for review |
 | Scope | Tier 1 static sweep. Tier 2 dynamic runs are specified separately. |
@@ -120,7 +120,7 @@ C_progressive = C_stub + sum(C_tool_i for i in retrieved_k)
 
 **Retrieval simulation.** Which tools land in the k is simulated with BM25 over each tool's `name`, `title`, and `description` concatenated, indexed over the server's own surface, with BM25 parameters pinned and recorded. The composite total is MODELED because `k` is an assumption; the per-tool costs inside it are MEASURED.
 
-**OPEN:** the BM25 retrieval simulation described above is specified but not yet implemented in the Tier 1 harness. `PerToolAvg` is reported as a mean over all measured tool costs rather than over a simulated retrieval set until it lands.
+**OPEN:** the BM25 retrieval simulation described above is still not wired into this mode. The BM25 index itself now exists in the harness and is published for retrievability (section 5), but `PerToolAvg` here remains a mean over all measured tool costs rather than over a simulated retrieval set. Wiring the two together requires deciding which query set drives the simulation, and the derived queries of section 5 are same-source by construction, so they would bias the retrieval set toward the tools that describe themselves best rather than toward the tools a session actually needs.
 
 ### 3.3 Code mode (MODELED)
 
@@ -158,46 +158,94 @@ The per-provider price table is referenced by date, never inlined into cells. A 
 
 ---
 
-## 5. Retrievability metric v0
+## 5. Retrievability metric
 
-Purpose: detect servers that are cheap because their descriptions are gutted, the failure mode a cost-only ranking would pay for.
+Purpose: under a tool-search client, a tool that cannot be found by a task phrase is effectively broken however cheap its schema is. This metric detects servers that are cheap because their descriptions are gutted, the failure mode a cost-only ranking would otherwise pay for.
 
-**Procedure.** For each tool, three task-phrase queries are authored (short, imperative, phrased as a user goal rather than as the tool name) and run against a BM25 index over `name` + `title` + `description` for the whole surface. A query scores 1 if its own tool ranks in the top k.
+Both figures are MEASURED. They are computed from the surface the sweep already enumerated, so they cost no further contact with the server, and no assumed parameter enters them.
 
-**Score.** `retrievability = correct_hits / total_queries`, reported at k=5 on a 0 to 100 scale, always alongside the absolute counts.
+### 5.1 Query derivation
 
-**Known limitations.** Queries authored from a tool's own description reward description-rich servers for partly circular reasons, inflating agreement with the hygiene grade. Real clients search a merged corpus across every attached server where cross-server name collisions dominate; v0 measures the easier single-server problem. BM25 is a proxy: no named client is guaranteed to use it, and regex variants behave differently. Query authorship is itself a bias surface.
+Queries are derived mechanically from each tool's own description. **Rejected alternative: the harness author writes task phrases per tool.** That was the v0.1 plan and it is not defensible for a public ranking, because the queries would be the ranking author's discretion applied privately to each server. A mechanical rule can be reproduced by a critic; a judged one cannot.
 
-**OPEN:** who authors the task-phrase queries and by what documented procedure. The current plan (harness author writes them) is not defensible for a public ranking.
+For each tool, from its `description` (or its `title` when the description is empty):
 
-**OPEN:** retrievability scoring as specified above is not yet implemented in the Tier 1 harness.
+1. **Tokenize.** Lowercase, split at every non-alphanumeric rune and at snake_case and camelCase boundaries, drop single-character tokens. No stemming: a stemmer is another dictionary to pin and version, and the queries come from the same vocabulary as the documents they are scored against.
+2. **Strip stopwords**, from a short generic published list. A longer list tuned against this corpus would be a parameter fitted to the servers being measured.
+3. **Strip the tool's own name tokens**, including their snake and camel fragments. Without this step a description that repeats the tool name retrieves itself on the name field alone, and the metric would measure only whether the author wrote the name twice.
+4. **Form N = 3 queries** from the surviving content words, in order:
+   - `leading_phrase`: the first three content words. MCP descriptions conventionally open with an imperative verb, so this approximates the leading verb phrase without requiring a part-of-speech tagger.
+   - `distinctive_bigram`: the adjacent content-word pair with the highest summed IDF over this server's own surface, ties going to the earliest pair. Adjacency is measured after stopword removal.
+   - `content_words`: the deduplicated content-word set in first-occurrence order, capped at 12 terms so a long description does not turn its query into a copy of the document.
+
+Forms that collapse to the same string on a short description are deduplicated, so a tool can yield fewer than three distinct queries. A tool with no derivable content word yields none, and is scored as not retrievable rather than dropped from the denominator: a gutted description is the failure this metric exists to catch, so excluding it would reward it.
+
+The derivation is deterministic. **The full derived query set is published per server**, at `data/runs/<date>/<server>-queries.json`, with each query's form, terms, and the rank it achieved. Mechanical derivation is only an improvement on hand-written queries if the output is visible.
+
+### 5.2 Scoring
+
+Documents are each tool's `name` + `title` + `description`, indexed over the same server's surface and nothing wider. That join is the canonicalizer's `descriptor` from 1.5, consumed rather than rebuilt, so the document this metric indexes and the token base of dimension 6 in section 6 are the same string by construction and not by two implementations agreeing. Scoring is BM25 with `k1 = 1.2` and `b = 0.75`, pinned and stamped into the query artifact, with IDF in the non-negative form `ln(1 + (N - df + 0.5) / (df + 0.5))`.
+
+A document scoring zero on a query is not ranked at all. Padding the tail with non-matches would let a tool on a small surface count as top-3 purely because there was nothing else in the list. Ties break on tool name, so a ranking is stable across runs.
+
+### 5.3 Published figures
+
+- **`top3_fraction`** is the published score: the fraction of tools that at least one of their own derived queries ranks in the top 3 of their own server's surface.
+- **`mrr`** is secondary: the mean reciprocal rank over every derived query on the surface, counting an unmatched query as zero rather than dropping it. On a surface of three or fewer tools the top-3 fraction is close to vacuous, and MRR is the figure that still separates a tool ranking first from one ranking third.
+- **`queries_per_tool`** records N = 3.
+
+A row that was never enumerated publishes `"retrievability": null`. Consumers must read that as pending measurement, never as a measured zero, on the same terms as the modes-null contract of 3.4.
+
+### 5.4 Known limitations
+
+1. **Same-source derivation.** Deriving queries from a tool's own description biases toward tools that are retrievable by their own words. What this metric genuinely measures is **within-server disambiguation**, whether sibling tools shadow each other, and not whether real user phrasing finds the tool. It is not a model of a real user, and it should not be read as one.
+2. **Circularity with the hygiene grade.** Because both are computed from the same descriptor text, a description-rich server scores well on both for partly shared reasons. The two numbers are not independent evidence.
+3. **Single-server corpus.** Real clients search a merged corpus across every attached server, where cross-server name collisions dominate. This measures the easier single-server problem.
+4. **BM25 is a proxy.** No named client is guaranteed to use it, and regex or embedding variants behave differently.
+5. **Small surfaces.** With three or fewer tools, top-3 is satisfied by any match at all. Read MRR on those rows.
+
+**OPEN (resolved, provisional).** Query authorship is now the mechanical derivation of 5.1 rather than the harness author. **This is a provisional ruling, pending operator ratification before v1**, on the same footing as the digest ruling in the 0.1.1 changelog.
 
 ---
 
-## 6. Schema hygiene grade v0
+## 6. Schema hygiene grade
 
-A weighted rubric over six mechanical dimensions, computed per server from the enumerated surface.
+Six mechanical dimensions, each scored 0 to 100 and each published individually, computed per server from the enumerated surface. The grade is a letter on their **unweighted mean**.
 
-| # | Dimension | Check | Weight |
+| # | Dimension | Field | Check |
 | --- | --- | --- | --- |
-| 1 | Description presence | Fraction of tools with a non-empty `description` | 25 |
-| 2 | Description adequacy | Fraction of descriptions within a length band and containing a when-to-use signal | 20 |
-| 3 | Parameter descriptions | Fraction of `inputSchema` properties with a non-empty `description` | 20 |
-| 4 | Enum documentation | Fraction of enum-typed parameters whose description accounts for the allowed values | 10 |
-| 5 | Naming clarity | Conformance to the specification's tool-name guidance (1 to 128 characters, restricted charset, unique within server) plus internal naming consistency | 10 |
-| 6 | Disambiguation | Absence of tool pairs above a similarity threshold on name plus description without a stated boundary | 15 |
+| 1 | Description presence and adequacy | `description_adequacy` | Per tool, the mean of three checks: a non-empty `description`; length in 20 to 1000 characters; sentence-like, defined as four or more whitespace-separated words opening on a letter |
+| 2 | When-to-use signal | `when_to_use_signal` | Fraction of descriptions containing a phrase from the published keyword list that states when to reach for this tool rather than a sibling |
+| 3 | Parameter descriptions | `parameter_descriptions` | Fraction of `inputSchema` properties, at every depth, carrying a non-empty `description` |
+| 4 | Enum documentation | `enum_documentation` | Fraction of enum-typed properties whose own description **names** at least one allowed value, or whose values are all self-evident (three or more characters, opening on a letter, identifier charset) |
+| 5 | Naming clarity | `naming_clarity` | Mean of three checks over the tool names: conformance to the specification's name rule (1 to 128 characters drawn from `[a-zA-Z0-9_-]`, unique within the server); the share of names in the surface's dominant casing style; the share of names free of single-letter or bare-numeric fragments |
+| 6 | Disambiguation | `disambiguation` | Fraction of tools **not** involved in any sibling pair at or above the similarity threshold, by token Jaccard over name, title, and description with stopwords removed |
 
-The weighted score maps to a letter grade. Letter and all six sub-scores are published, because a single letter hides which dimension is failing.
+**Grade bands:** A at 90 and above, B at 75, C at 60, D at 40, F below 40.
+
+**"Names a value" in dimension 4 is a whole-token match, not a substring one.** The description is tokenized with the same splitter as section 5.1, with short fragments kept, and a value counts as named only when every one of its own tokens appears as a token of the description. A substring test scored the shortest and most cryptic enums as documented by accident: `ro` sits inside "zero", `in` inside "within", `id` inside "valid", so exactly the values this dimension exists to catch were the easiest to pass. Stopwords are not stripped here, unlike in query derivation, because an enum value of `in` or `not` is still a value the description can legitimately name.
+
+**Dimension 3 counts the tuple form of `items`.** The schema walk follows `items` whether it holds a single schema (draft 2020-12) or an array of positional schemas (draft-07). A tuple-form array is full of properties and enums that cost the same context as any other, so skipping it would let a schema hide its parameters behind a draft choice.
+
+**Vacuous dimensions score 100, not 0.** A surface declaring no properties scores 100 on dimension 3, a surface with no enums scores 100 on dimension 4, and a one-tool surface scores 100 on dimension 6. There is nothing undocumented and nothing to confuse; penalising the absence would reward adding parameters, enums, and siblings that the server does not need.
+
+**A surface with no tools at all is graded null, not vacuously.** The vacuous-100 rule above applies within a surface that exists. A surface with zero tools has no dimension to score at all: dimensions 3, 4 and 6 would return their vacuous 100 while dimensions 1, 2 and 5 return 0 over an empty denominator, and the unweighted mean of that mixture is 50, which prints as a measured grade of D. A server that put no tools in front of a model has not earned a D, or any other letter. The harness returns no grade for an empty surface and the row publishes `"hygiene": null`.
+
+**Dimension 6 is scored on tools, not pairs.** Pair counts are quadratic in surface size, so one bad pair on a 24-tool server would cost a fraction of what the same defect costs a 4-tool server. The flagged pairs and the threshold in force are both published on the row as `similar_pairs` and `similarity_threshold`, so the dimension can be recomputed without reading the harness source.
+
+**Similarity threshold: 0.60.** Calibrated against the three measured servers; see the 0.2.0 changelog for the pair distribution and the legitimate pair it was set to clear.
+
+**Why unweighted.** The v0.1 draft carried weights of 25/20/20/10/10/15. They are dropped. Publishing weights asserts a calibration against a usability outcome that this project has not run, and known limitation 8 already says the weights were a first draft fitted to nothing. An unweighted mean makes the same claim honestly: six dimensions we can measure, none of which we have evidence to rank above another. Restoring weights requires an outcome measure to fit them to, and is a MINOR bump with a before/after grade for every server in the changelog.
+
+Every dimension is mechanical and therefore gameable by an author who reads the harness source. That is the trade: a mechanical rule can be reproduced by a critic and a judged one cannot, and a server that games one dimension buys one sixth of the grade and leaves the other five unmoved.
+
+A row that was never enumerated, or that enumerated an empty surface, publishes `"hygiene": null`, on the same terms as 3.4 and 5.3.
 
 **Prior art.** [Glama](https://glama.ai) publishes a schema-quality score composed of Tool Definition Quality (70%) and Server Coherence (30%), verified live 2026-08-16. Ours differs in one respect that matters: Glama's score stands alone, while this grade sits beside the cost figure for the same server and run. A standalone score does not constrain a cost ranking; a grade in the same row as the token count means an author cannot cut their published cost by deleting descriptions without the deletion showing up alongside it.
 
-**OPEN:** dimension 2's when-to-use signal is keyword-detected, which is weak and gameable. A better mechanical proxy, or an explicit decision to accept and document the weakness, is required before v1.
-
-**OPEN:** the dimension 6 similarity threshold is unset and needs calibration against the corpus before the grade is published.
+**Accepted weakness: dimension 2.** The when-to-use signal is keyword-detected, and the v0.1 draft flagged that as weak and gameable. The weakness is accepted and documented rather than fixed, which is the second of the two options the OPEN item allowed. Keyword detection cannot tell a real selection boundary from the phrase "use this for" pasted into every description, and it produces false negatives on real surfaces: playwright scores 0 on this dimension even though `browser_take_screenshot` says "use browser_snapshot for actions" and `browser_network_requests` names its sibling directly, because neither phrasing is on the list. The dimension is kept because its failure direction is safe. A server stating no boundary anywhere reliably scores zero, which is a true finding, and the keyword list is generic and published rather than fitted to the measured corpus. Replacing it with a stronger mechanical proxy, most likely detecting cross-references to sibling tool names on the same surface, is deferred to v1.
 
 **OPEN:** a stable citation anchor for the Glama 70/30 split. The figure comes from a live check on 2026-08-16.
-
-**OPEN:** the schema hygiene grade as specified above is not yet implemented in the Tier 1 harness.
 
 ---
 
@@ -252,6 +300,8 @@ The changelog separates three delta types, because a reader who cannot tell them
 
 Every release classifies each delta into one of the three; a release with unclassified deltas does not ship. Results are never compared across harness versions.
 
+**A new metric does not break comparability.** Adding a column is a MINOR bump precisely because prior cells stay valid: a 0.1.x row and a 0.2.x row still answer the same question about every figure they share, and the token counts, hashes, and mode figures are directly comparable across the boundary. What a 0.1.x row lacks is the `retrievability` and `hygiene` fields entirely. A consumer must treat a missing field on an older row as "this release did not compute it", which is the same reading as a null on a current row and is not the same as a zero.
+
 ---
 
 ## 10. Known limitations
@@ -262,14 +312,38 @@ Every release classifies each delta into one of the three; a release with unclas
 4. **Client serialization is unaudited** (see 3.1). The naive column approximates client behaviour rather than reproducing any specific client.
 5. **Task-mix dependence.** Tier 2 measures what one chosen set of scripted tasks costs; a different mix produces different per-call flows for the same server. Suites are published, but none is neutral.
 6. **Small Tier 2 n.** Tier 2 covers 3 servers: enough to keep Tier 1 honest on a capability axis, not enough to generalize. Findings are absolute counts against named servers, never rates.
-7. **Retrievability circularity** (see section 5).
-8. **Hygiene weights are unvalidated.** The six weights are a first draft, uncalibrated against any outcome measure. A server can score well on all six and still be hard for a model to use.
+7. **Retrievability measures the easier problem** (see 5.4). Queries are derived from each tool's own description, so the metric reports within-server disambiguation, not real-user phrasing, and it is not independent of the hygiene grade.
+8. **Hygiene dimensions are unranked.** The six dimensions are averaged unweighted because no outcome measure exists to weight them against (see section 6). A server can score well on all six and still be hard for a model to use, and the mean asserts only that six measurable things were measured.
 9. **Static enumeration is not usage.** Tier 1 measures what a server puts in front of a model before any work happens, not whether the tools work.
 10. **Selection.** The corpus is about 15 curated servers chosen under a published selection rule. Coverage is not a claim this project makes.
 
 ---
 
 ## Changelog
+
+### 0.2.0, 2026-08-17
+
+**Correction, 2026-08-17.** A code review of the 0.2.0 implementation found six defects in the sections 5 and 6 harness. All six are fixed and this entry is corrected in place at the same version, because **no published figure moves**: the four scanned rows re-scan to identical `canonical_sha256`, identical token counts, identical retrievability (`filesystem` 1.0000 / `playwright` 0.9583 / `context7` 1.0000) and identical hygiene (`filesystem` C 73.41 / `playwright` B 82.18 / `context7` A 97.22), with `fetch` still unreachable and null on all three blocks. Every fix closed a latent defect that the current three-server corpus does not trigger, which is why the numbers hold; each would move a figure on a surface that exercises it, so they are stated here rather than left in the source.
+
+1. **Dimension 4 required only a substring match.** A two-letter enum value passed on any description containing those letters: `ro` inside "zero", `in` inside "within", `id` inside "valid". Matching is now whole-token against the section 5.1 splitter, with short fragments kept and stopwords not stripped. Unmoved on this corpus because every measured enum is self-evident under the second clause of the rule and scores 100 by that path regardless.
+2. **The schema walk dropped the draft-07 tuple form of `items`.** `prefixItems` was followed but an `items` array was not, so properties and enums nested inside a tuple were invisible to dimensions 3 and 4. Both forms are now walked. Unmoved because no measured server uses the tuple form.
+3. **The name rule the code applied was not the rule this document cites.** The check accepted `.` and any Unicode letter; the cited rule is 1 to 128 characters of `[a-zA-Z0-9_-]`. The code is now the cited rule. Unmoved because no measured tool name carries a dot or a non-ASCII character; a dotted surface such as `jira.search` now loses a third of dimension 5, as the cited rule always said it should.
+4. **An empty surface was graded rather than nulled.** Grading zero tools mixed three vacuous 100s with three vacuous 0s into a mean of 50 and published a measured D. Section 6 now states the rule and the harness returns no grade. Unmoved because the sweep already withheld the block for a zero-tool row; the defect was reachable only by a direct caller.
+5. **Three descriptor and tokenizer rules existed in duplicate.** The camel and snake splitter, the four-decimal rounding, and the name-title-description join each had two implementations, and the canonicalizer's `descriptor` field, documented as the authoritative join, was consumed by neither metric. There is now one splitter (parameterized for the digit-run and short-fragment behaviours that genuinely differ between the two callers), one rounding, one join, and both metric packages consume the canonicalizer's descriptor rather than rebuilding it. Unmoved because the duplicates agreed; the risk was that a future edit to one would silently move only one metric.
+6. **Threshold recalibration checked, not needed.** The 0.60 calibration in item 5 below was rechecked against the re-scanned corpus after the fixes: 368 sibling pairs, median 0.1111, mean 0.1186, exactly one pair above 0.5 at 0.8519, highest legitimate pair 0.4211, then 0.4167 and 0.4000. The distribution is unchanged to four decimals and the empty band between 0.4211 and 0.8519 has not shifted, so the threshold stands.
+
+Two metrics that this document specified but the harness did not compute are now implemented and published: retrievability (section 5) and the schema hygiene grade (section 6). New published metrics are a MINOR bump under section 9. No figure that a 0.1.x row already carried changes: token counts, hashes, and mode figures are byte-identical, and the only difference at the row level is two fields that older rows do not have at all.
+
+1. **Section 5 rewritten from specified to implemented, and its query-authorship OPEN resolved.** Queries are now derived mechanically from each tool's own description: tokenize with snake and camel splitting, strip stopwords, strip the tool's own name fragments, then form three queries (leading content-word phrase, highest-IDF adjacent bigram, deduplicated content-word set). The rejected alternative, the harness author hand-writing task phrases, was indefensible for a public ranking: a critic cannot reproduce a query set that came from the ranking author's judgement. The full derived set is published per server at `data/runs/<date>/<server>-queries.json`, including the rank each query achieved. **This is a provisional ruling, pending operator ratification before v1.**
+2. **Section 5 published figures fixed.** `top3_fraction` (the score) and `mrr` (secondary), at k = 3, with BM25 `k1 = 1.2` and `b = 0.75` stamped into the query artifact. The v0.1 draft specified k = 5 and a hit rate over queries; the change to k = 3 and a fraction over tools makes the headline figure answer "what share of this server's tools can be found" rather than "what share of our queries worked", which is the question a reader of a cost table is actually asking. Documents scoring zero are excluded from the ranking rather than padded onto the tail, so a two-tool server cannot claim top-3 by default.
+3. **Section 5.4 states the honest limitation.** Same-source derivation measures within-server disambiguation, whether sibling tools shadow each other, and not real-user phrasing. It is not independent of the hygiene grade, since both read the same descriptor text.
+4. **Section 6 rewritten from specified to implemented, and its weights dropped.** The six dimensions are now scored 0 to 100 each, published individually, and averaged **unweighted** for the letter grade (A at 90, B at 75, C at 60, D at 40, F below). The prior 25/20/20/10/10/15 weighting asserted a calibration against a usability outcome that has not been run, which known limitation 8 admitted in the same document. Restoring weights needs an outcome measure to fit them to and is itself a MINOR bump.
+5. **Section 6 dimension 6 threshold calibrated to 0.60.** Measured empirically over all 368 sibling pairs on the three servers in `data/latest.json` (filesystem 91 pairs, playwright 276, context7 1), scored as token Jaccard over name, title, and description with stopwords removed. The distribution has a median of 0.111 and a mean of 0.119. Exactly one pair sits above 0.5: `list_directory` and `list_directory_with_sizes` on filesystem, at **0.8519**, whose descriptions are near-verbatim copies differing by one clause. The highest-scoring pair judged legitimate is `browser_network_requests` and `browser_network_request` on playwright at **0.4211**, which cross-reference each other explicitly and state their boundary; next are `browser_take_screenshot` and `browser_snapshot` at 0.4167, which also state their boundary, and `browser_close` and `browser_hover` at 0.4000, where the similarity is entirely an artifact of two four-word descriptions sharing the `browser` name prefix and the word "page". **0.60 sits in the empty band between 0.4211 and 0.8519**, clearing every legitimate pair by at least 0.179 and flagging the one near-duplicate by 0.25. The calibration is corpus-derived and will be rechecked when the corpus grows past three servers; the threshold and the flagged pairs are stamped on every row so the check does not require the harness source.
+6. **Section 6 dimension 2 weakness accepted and documented**, which is the second option its OPEN item allowed. Keyword detection produces real false negatives: playwright scores 0 even though two of its descriptions state selection boundaries in phrasing the list does not carry. The list is kept generic and published rather than extended to fit the measured corpus, because a keyword list tuned until playwright passes is a parameter fitted to the servers being ranked. A stronger proxy, most likely sibling-name cross-reference detection, is deferred to v1.
+7. **Section 6 vacuous-dimension rule stated.** No properties scores 100 on dimension 3, no enums scores 100 on dimension 4, one tool scores 100 on dimension 6. Scoring an absent thing as zero would reward servers for adding parameters, enums, and siblings they do not need.
+8. **The null contract extends to both new metrics.** A row whose surface was never enumerated publishes `"retrievability": null` and `"hygiene": null`, never a zero. A zero on either is a damning measurement and an unreached server has not earned it. Both are computed from the already-captured surface, so they survive a token-count failure that withholds the modes block: the fetch row in the current run carries null for all three, while the three enumerated rows carry all three.
+9. **Section 3.2's OPEN narrowed, not closed.** The BM25 index now exists in the harness, but it is not wired into the progressive-disclosure mode: `PerToolAvg` is still a mean over all measured tool costs. The obstacle is stated in 3.2, that the section 5 queries are same-source by construction and would bias the simulated retrieval set.
+10. **Section 9 note on cross-version reading added.** A 0.1.x row lacks these two fields rather than differing from a 0.2.x row on any shared one, and a missing field reads as "not computed by that release", the same as a null.
 
 ### 0.1.1, 2026-08-17
 

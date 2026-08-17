@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { ServerEntry } from '../types'
-import { formatTokens } from '../lib/format'
+import { formatFraction, formatTokens } from '../lib/format'
 import './Leaderboard.css'
 
 interface LeaderboardProps {
@@ -12,9 +12,20 @@ interface Row {
   naiveTokens: number | null
   perToolAvg: number | null
   dataOk: boolean
+  hygieneGrade: string | null
+  hygieneScore: number | null
+  top3Fraction: number | null
 }
 
-type SortKey = 'name' | 'tool_count' | 'naive' | 'per_tool_avg' | 'status' | 'protocol_revision'
+type SortKey =
+  | 'name'
+  | 'tool_count'
+  | 'naive'
+  | 'per_tool_avg'
+  | 'status'
+  | 'protocol_revision'
+  | 'hygiene'
+  | 'retrievability'
 type SortDir = 'asc' | 'desc'
 
 const COLUMNS: { key: SortKey; label: string }[] = [
@@ -24,10 +35,19 @@ const COLUMNS: { key: SortKey; label: string }[] = [
   { key: 'per_tool_avg', label: 'Per-tool avg' },
   { key: 'status', label: 'Status' },
   { key: 'protocol_revision', label: 'Protocol revision' },
+  { key: 'hygiene', label: 'Hygiene' },
+  { key: 'retrievability', label: 'Retrievability' },
 ]
 
-function nullsLast(v: number | null): number {
-  return v === null ? Number.POSITIVE_INFINITY : v
+// Compares two nullable numbers so null always sorts last, in either sort
+// direction. Direction only decides the order between two non-null values;
+// null-ness is decided first and is never negated by desc.
+function compareNullable(a: number | null, b: number | null, dir: SortDir): number {
+  if (a === null && b === null) return 0
+  if (a === null) return 1
+  if (b === null) return -1
+  const cmp = a - b
+  return dir === 'asc' ? cmp : -cmp
 }
 
 export default function Leaderboard({ servers }: LeaderboardProps) {
@@ -44,7 +64,10 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
           naiveTokens !== null && server.tool_count !== null && server.tool_count > 0
             ? Math.round(naiveTokens / server.tool_count)
             : null
-        return { server, naiveTokens, perToolAvg, dataOk }
+        const hygieneGrade = server.hygiene?.grade ?? null
+        const hygieneScore = server.hygiene?.score ?? null
+        const top3Fraction = server.retrievability?.top3_fraction ?? null
+        return { server, naiveTokens, perToolAvg, dataOk, hygieneGrade, hygieneScore, top3Fraction }
       }),
     [servers],
   )
@@ -58,28 +81,32 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
       // null-as-Infinity artifact place them first.
       if (a.dataOk !== b.dataOk) return a.dataOk ? -1 : 1
 
+      // Numeric columns pin null values last regardless of sortDir: null-ness
+      // is compared before direction is applied, so desc never negates the
+      // nulls-last sentinel and flips an ungraded/unmeasured row to the top.
       let cmp = 0
       switch (sortKey) {
         case 'name':
           cmp = a.server.name.localeCompare(b.server.name)
-          break
+          return sortDir === 'asc' ? cmp : -cmp
         case 'tool_count':
-          cmp = nullsLast(a.server.tool_count) - nullsLast(b.server.tool_count)
-          break
+          return compareNullable(a.server.tool_count, b.server.tool_count, sortDir)
         case 'naive':
-          cmp = nullsLast(a.naiveTokens) - nullsLast(b.naiveTokens)
-          break
+          return compareNullable(a.naiveTokens, b.naiveTokens, sortDir)
         case 'per_tool_avg':
-          cmp = nullsLast(a.perToolAvg) - nullsLast(b.perToolAvg)
-          break
+          return compareNullable(a.perToolAvg, b.perToolAvg, sortDir)
         case 'status':
           cmp = a.server.status.localeCompare(b.server.status)
-          break
+          return sortDir === 'asc' ? cmp : -cmp
         case 'protocol_revision':
           cmp = (a.server.protocol_revision ?? '').localeCompare(b.server.protocol_revision ?? '')
-          break
+          return sortDir === 'asc' ? cmp : -cmp
+        case 'hygiene':
+          return compareNullable(a.hygieneScore, b.hygieneScore, sortDir)
+        case 'retrievability':
+          return compareNullable(a.top3Fraction, b.top3Fraction, sortDir)
       }
-      return sortDir === 'asc' ? cmp : -cmp
+      return cmp
     })
     return copy
   }, [rows, sortKey, sortDir])
@@ -113,7 +140,7 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
           </tr>
         </thead>
         <tbody>
-          {sorted.map(({ server, naiveTokens, perToolAvg, dataOk }) => (
+          {sorted.map(({ server, naiveTokens, perToolAvg, dataOk, hygieneGrade, hygieneScore, top3Fraction }) => (
             <tr key={server.id} className={!dataOk ? 'leaderboard__row--unreachable' : ''}>
               <td>{server.name}</td>
               <td>{formatTokens(server.tool_count)}</td>
@@ -121,6 +148,19 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
               <td>{formatTokens(perToolAvg)}</td>
               <td>{server.status}</td>
               <td>{server.protocol_revision ?? 'n/a'}</td>
+              <td>
+                {hygieneGrade !== null ? (
+                  <span
+                    className="hygiene-badge"
+                    title={hygieneScore !== null ? `score ${hygieneScore.toFixed(2)}` : undefined}
+                  >
+                    {hygieneGrade}
+                  </span>
+                ) : (
+                  'n/a'
+                )}
+              </td>
+              <td>{formatFraction(top3Fraction)}</td>
             </tr>
           ))}
         </tbody>

@@ -14,3 +14,8 @@ export function formatUsd(n: number | null | undefined): string {
   if (n < 1) return `$${n.toFixed(3)}`
   return `$${n.toFixed(2)}`
 }
+
+export function formatFraction(n: number | null | undefined, digits = 2): string {
+  if (n === null || n === undefined) return 'n/a'
+  return n.toFixed(digits)
+}

@@ -70,6 +70,29 @@ export interface ServerModes {
   code_mode: CodeMode
 }
 
+export interface RetrievabilityScore {
+  top3_fraction: number
+  mrr: number
+  queries_per_tool: number
+  kind: Kind
+}
+
+export interface HygieneDimensions {
+  description_adequacy: number
+  when_to_use_signal: number
+  parameter_descriptions: number
+  enum_documentation: number
+  naming_clarity: number
+  disambiguation: number
+}
+
+export interface HygieneGrade {
+  grade: string
+  score: number
+  dimensions: HygieneDimensions
+  kind: Kind
+}
+
 export interface ServerEntry {
   id: string
   name: string
@@ -82,6 +105,11 @@ export interface ServerEntry {
   // Null/omitted when openai_o200k is unavailable: naive/tool_search/code_mode
   // estimates all derive from the o200k schema-token count.
   modes?: ServerModes | null
+  // Schema 0.2+. Null when the surface couldn't be enumerated (unreachable,
+  // etc). Absent entirely on pre-0.2 data, which never computed these:
+  // treated the same as null, never as zero.
+  retrievability?: RetrievabilityScore | null
+  hygiene?: HygieneGrade | null
 }
 
 export interface LoadlineData {

@@ -60,3 +60,17 @@
 .leaderboard__row--unreachable {
   color: var(--text-faint);
 }
+
+.hygiene-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6em;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: normal;
+  cursor: default;
+}

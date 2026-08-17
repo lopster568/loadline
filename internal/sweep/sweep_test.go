@@ -170,13 +170,31 @@ func TestSweepEndToEndProducesMeasuredRow(t *testing.T) {
 		t.Error("gemini cell reported available without a credential")
 	}
 
+	if row.Retrievability == nil || row.Retrievability.Kind != "measured" {
+		t.Fatalf("retrievability = %+v", row.Retrievability)
+	}
+	if row.Retrievability.QueriesPerTool != 3 {
+		t.Errorf("queries_per_tool = %d", row.Retrievability.QueriesPerTool)
+	}
+	if row.Hygiene == nil || row.Hygiene.Kind != "measured" || row.Hygiene.Grade == "" {
+		t.Fatalf("hygiene = %+v", row.Hygiene)
+	}
+	if row.Queries == nil || len(row.Queries.Tools) != 2 {
+		t.Fatalf("query set = %+v", row.Queries)
+	}
+
 	out := t.TempDir()
 	written, err := report.Write(out, doc)
 	if err != nil {
 		t.Fatalf("write: %v", err)
 	}
-	if len(written) != 2 {
+	// The row, the derived query set, and the aggregate.
+	if len(written) != 3 {
 		t.Fatalf("artifacts = %v", written)
+	}
+	queries := filepath.Join(out, "runs", doc.Run.Date, "fake-queries.json")
+	if _, err := os.Stat(queries); err != nil {
+		t.Fatalf("derived query artifact: %v", err)
 	}
 	perServer := filepath.Join(out, "runs", doc.Run.Date, "fake.json")
 	if _, err := os.Stat(perServer); err != nil {
@@ -202,7 +220,7 @@ func TestSweepEndToEndProducesMeasuredRow(t *testing.T) {
 		t.Fatal(err)
 	}
 	server := shape["servers"].([]any)[0].(map[string]any)
-	for _, key := range []string{"id", "name", "maintainer", "status", "tool_count", "protocol_revision", "provenance", "counts", "modes"} {
+	for _, key := range []string{"id", "name", "maintainer", "status", "tool_count", "protocol_revision", "provenance", "counts", "modes", "retrievability", "hygiene"} {
 		if _, ok := server[key]; !ok {
 			t.Errorf("published row is missing %q", key)
 		}
@@ -272,12 +290,27 @@ func TestFailedOpenAICountPublishesNoModes(t *testing.T) {
 				t.Errorf("openai cell published figures anyway: %+v", row.Counts.OpenAI)
 			}
 
-			raw, err := json.Marshal(doc)
+			// Retrievability and hygiene are computed from the enumerated
+			// surface and do not depend on any token count, so they stay
+			// measured here. What must not survive a count failure is a
+			// measured cost figure.
+			cost, err := json.Marshal(struct {
+				Counts report.Counts `json:"counts"`
+				Modes  any           `json:"modes"`
+			}{row.Counts, row.Modes})
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.Contains(string(raw), `"measured"`) {
-				t.Errorf("an uncounted row published a measured figure: %s", raw)
+			if strings.Contains(string(cost), `"measured"`) {
+				t.Errorf("an uncounted row published a measured cost figure: %s", cost)
+			}
+			if row.Retrievability == nil || row.Hygiene == nil {
+				t.Error("a count failure withheld the surface-derived metrics, which do not depend on the count")
+			}
+
+			raw, err := json.Marshal(doc)
+			if err != nil {
+				t.Fatal(err)
 			}
 			var shape map[string]any
 			if err := json.Unmarshal(raw, &shape); err != nil {
@@ -292,6 +325,68 @@ func TestFailedOpenAICountPublishesNoModes(t *testing.T) {
 				t.Errorf("modes = %v, want null", m)
 			}
 		})
+	}
+}
+
+// A server that was never enumerated has no surface to score, so both
+// surface-derived metrics publish as null. The invariant the project runs on is
+// that an unmeasured figure is never a zero: a hygiene score of 0 or a
+// retrievability of 0 is a damning measurement, and a server the harness could
+// not reach has not earned it.
+func TestUnreachableRowPublishesNullMetrics(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.StepTimeout = 5 * time.Second
+	cfg.ServerTimeout = 10 * time.Second
+	cfg.ScratchDir = t.TempDir()
+
+	missing := corpus.Server{
+		ID: "fetch-style", Name: "Absent executable", MaintainerType: "official",
+		Transport: []string{"stdio"},
+		Auth:      corpus.Auth{Required: ptrBool(false)},
+		Package:   map[string]corpus.Pkg{"stdio": {Type: "binary", Command: "loadline-no-such-binary-xyz"}},
+	}
+	doc := NewRunner(cfg).Run(context.Background(), []corpus.Server{missing})
+	row := doc.Servers[0]
+	if row.Status != report.StatusUnreachable {
+		t.Fatalf("status = %s", row.Status)
+	}
+	if row.Retrievability != nil || row.Hygiene != nil || row.Queries != nil {
+		t.Fatalf("an unreachable row carries surface metrics: %+v %+v", row.Retrievability, row.Hygiene)
+	}
+
+	raw, err := json.Marshal(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), `"measured"`) {
+		t.Errorf("an unreachable row published a measured figure: %s", raw)
+	}
+	var shape map[string]any
+	if err := json.Unmarshal(raw, &shape); err != nil {
+		t.Fatal(err)
+	}
+	server := shape["servers"].([]any)[0].(map[string]any)
+	for _, key := range []string{"retrievability", "hygiene"} {
+		v, ok := server[key]
+		if !ok {
+			t.Errorf("published row dropped the %q key entirely", key)
+			continue
+		}
+		if v != nil {
+			t.Errorf("%s = %v, want null", key, v)
+		}
+	}
+
+	// The query artifact must not be written for a row with no surface.
+	out := t.TempDir()
+	written, err := report.Write(out, doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range written {
+		if strings.HasSuffix(p, "-queries.json") {
+			t.Errorf("wrote a derived query artifact for an unreachable server: %s", p)
+		}
 	}
 }
 

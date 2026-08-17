@@ -8,14 +8,16 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/lopster568/loadline/internal/hygiene"
 	"github.com/lopster568/loadline/internal/modes"
+	"github.com/lopster568/loadline/internal/retrieval"
 )
 
 // SchemaVersion is the version of the published JSON shape.
-const SchemaVersion = "0.1"
+const SchemaVersion = "0.2"
 
 // MethodologyVersion tracks docs/methodology-v0.md.
-const MethodologyVersion = "0.1.1"
+const MethodologyVersion = "0.2.0"
 
 // HarnessVersion is stamped on every cell. Results are never compared across
 // harness versions (methodology 9).
@@ -70,6 +72,21 @@ type Server struct {
 	// unmeasured value must never publish as a measured zero, so the absence of
 	// a figure is published as an absence rather than as 0.
 	Modes *modes.Set `json:"modes"`
+
+	// Retrievability and Hygiene are computed from the enumerated surface
+	// alone (methodology 5 and 6), so they survive a token-count failure and
+	// are absent only when there was no surface to score. Like Modes they
+	// publish as JSON null rather than as a zero: a zero retrievability or a
+	// zero hygiene score is a damning measurement, and a server that was never
+	// reached has not earned it.
+	Retrievability *retrieval.Score `json:"retrievability"`
+	Hygiene        *hygiene.Grade   `json:"hygiene"`
+
+	// Queries is the derivation record behind Retrievability. It is written to
+	// its own artifact rather than inlined into the row, because it is bulky
+	// and its audience is a critic reproducing the score rather than the
+	// calculator rendering it.
+	Queries *retrieval.QuerySet `json:"-"`
 
 	// Fields below are additive to the site contract and carry the run-record
 	// obligations of methodology 1.1, 1.3, 7 and 8.
@@ -171,6 +188,17 @@ func Write(outDir string, doc *Document) ([]string, error) {
 			return written, err
 		}
 		written = append(written, path)
+
+		// The derived query set is published so the retrievability score can be
+		// inspected rather than taken on trust: mechanical derivation is only
+		// an improvement on hand-written queries if the output is visible.
+		if s.Queries != nil {
+			qpath := filepath.Join(runDir, s.ID+"-queries.json")
+			if err := writeJSON(qpath, s.Queries); err != nil {
+				return written, err
+			}
+			written = append(written, qpath)
+		}
 	}
 	latest := filepath.Join(outDir, "latest.json")
 	if err := writeJSON(latest, doc); err != nil {

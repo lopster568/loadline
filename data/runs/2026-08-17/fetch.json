@@ -1,9 +1,9 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "sample": false,
   "run": {
     "date": "2026-08-17",
-    "methodology_version": "0.1.1",
+    "methodology_version": "0.2.0",
     "harness_version": "0.1.0"
   },
   "servers": [
@@ -39,6 +39,8 @@
         }
       },
       "modes": null,
+      "retrievability": null,
+      "hygiene": null,
       "category": "dev-tools",
       "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
@@ -49,10 +51,10 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-17T12:20:46.585724178Z"
+        "acquired_at": "2026-08-17T14:42:55.62783988Z"
       },
-      "measured_at": "2026-08-17T12:20:46.585707538Z",
-      "methodology_version": "0.1.1",
+      "measured_at": "2026-08-17T14:42:55.627826529Z",
+      "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }
   ]

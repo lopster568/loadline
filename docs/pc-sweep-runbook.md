@@ -1,6 +1,22 @@
 # PC Sweep Runbook: First Full 15-Server Tier 1 Sweep
 
 Status: operator handoff, first full run.
+
+**Dev-machine onboarding pass, 2026-08-17.** The no-external-account subset of
+this list (playwright, context7, postgres, jaeger) was worked on the dev
+laptop, not the PC, ahead of the full 15-server run. This machine has `npx`
+(v11.2.0) and `uvx` (0.9.18) but no `docker`/`podman` on PATH. Result:
+- **playwright**: resolved and scanned live (`ok`, 24 tools). See section 2.
+- **context7**: resolved and scanned live (`ok`, 2 tools, keyless). See
+  section 2; this closes item 12 in section 4.
+- **postgres**, **jaeger**: `servers.yaml` package specs resolved and
+  verified live (PyPI names, versions, exact CLI invocation), but NOT
+  scanned, because this machine has no Docker to stand up the required local
+  container. Scanning them requires the PC run. See their entries in section
+  2 for what was resolved and what still needs the container.
+`data/latest.json` as of this pass is a 4-server coherent run (filesystem,
+fetch, context7, playwright), not the full 15; the remaining 11 (including
+postgres and jaeger) stay on this runbook's list for the PC.
 Governs: `servers.yaml` as amended 2026-08-17 (15 ratified servers, `docs/server-selection.md`).
 Machine: run this on Roshan's PC, not the dev laptop. The dev machine is too
 light for a 15-server run with live containers, npm/uvx cold installs, and
@@ -22,7 +38,8 @@ Install and confirm on the PC before starting:
 2. Node.js with `npx` on PATH (`npx --version`). Validation used v22.14.0.
    Needed for the npm-packaged stdio servers: filesystem, notion, slack, sentry, playwright.
 3. `uv` / `uvx` on PATH (`uvx --version`). Needed for the pypi-packaged stdio
-   servers: fetch, postgres.
+   servers: fetch, postgres, jaeger (`opentelemetry-mcp`, resolved 2026-08-17,
+   see section 2).
 4. Docker, running (`docker ps`). Needed for: kubernetes (via a local `kind`
    cluster, itself backed by Docker) and postgres (local container). Install
    `kind` separately if not already present (`kind version`); it is not a
@@ -186,10 +203,19 @@ docker run --rm -d --name loadline-jaeger \
   -p 16686:16686 -p 4317:4317 -p 4318:4318 \
   jaegertracing/all-in-one:latest
 ```
-Set `BACKEND_URL=http://localhost:16686` and `BACKEND_TYPE=jaeger`
-explicitly (the server also speaks Tempo and Traceloop's own backend by
-default; pin Jaeger). The package block itself is a TODO in `servers.yaml`
-(distribution channel, pinned version); see section 4.
+**Correction, 2026-08-17**: `BACKEND_URL`/`BACKEND_TYPE` are NOT environment
+variables for this server; that was this runbook's original assumption and
+it does not match the live package. Verified via
+https://pypi.org/pypi/opentelemetry-mcp/json (latest 0.2.2) and the
+traceloop/opentelemetry-mcp-server README: the package is `opentelemetry-mcp`
+on PyPI, run via `uvx opentelemetry-mcp --backend jaeger --url
+http://localhost:16686` (backend selection is a CLI flag pair, not env vars).
+`servers.yaml`'s jaeger package block is filled in accordingly (type `pypi`,
+name `opentelemetry-mcp`, version `0.2.2`, `args: ["--backend", "jaeger",
+"--url", "http://localhost:16686"]`); this closes item 14 in section 4 on the
+package-spec side. NOT scanned in this pass: this machine has no
+docker/podman to run the local Jaeger all-in-one container, so no attempt was
+made against this row; it stays on the PC-sweep list.
 
 ### Data
 
@@ -207,17 +233,42 @@ partial-surface finding when it is actually just the wrong launch flag.
 Confirm the harness (or its args) actually passes the unrestricted flag
 before the run.
 
-**context7**: everything is an unresolved TODO in `servers.yaml`: auth,
-transport, package, tool count. Same treatment as figma: research the
-`upstash/context7` repo's docs first (a free API key is the likely shape,
-Context7 has historically offered both an unauthenticated mode and an
-API-key mode for higher rate limits; confirm which the harness needs to
-reach the full tool surface), get a free-tier credential if one is
-required, then run a `tools/list` pass to fill in the tool count.
+**Package spec resolved, 2026-08-17**: verified via
+https://pypi.org/pypi/postgres-mcp/json (latest 0.3.0) and the
+crystaldba/postgres-mcp README: `uvx postgres-mcp --access-mode=unrestricted`
+(access mode is a CLI flag, `DATABASE_URI` stays an env var).
+`servers.yaml`'s postgres package block is filled in accordingly (type
+`pypi`, name `postgres-mcp`, version `0.3.0`, `args:
+["--access-mode=unrestricted"]`); this closes item 13 in section 4. NOT
+scanned in this pass: this machine has no docker/podman to run the local
+postgres container, so no attempt was made against this row; it stays on the
+PC-sweep list.
+
+**context7**: RESOLVED and scanned live, 2026-08-17. Verdict: keyless. The
+README (https://github.com/upstash/context7, checked 2026-08-17) says only
+"API Key Recommended ... for higher rate limits," which is ambiguous about
+whether `tools/list` itself needs a key. Resolved empirically instead of by
+inference: `npx -y @upstash/context7-mcp@4.0.2` with no
+`CONTEXT7_API_KEY` set answered `tools/list` with `status: ok`, 2 tools
+(`resolve-library-id`, `query-docs`), naive 1052 tokens, `o200k_base`. 2 tools
+is the server's full documented surface (no evidence of a larger gated set),
+so the API key gates query rate limits, not tool enumeration. `servers.yaml`
+filled in: `auth.required: false`, `token_env: CONTEXT7_API_KEY` (present but
+optional), package npm `@upstash/context7-mcp` version `4.0.2` (verified via
+https://registry.npmjs.org/@upstash/context7-mcp, latest dist-tag). Scanned
+into `data/latest.json` alongside filesystem, fetch, and playwright as a
+4-server dev-machine run.
 
 ### Browser automation
 
-**playwright**: no auth. Nothing to do here.
+**playwright**: no auth. RESOLVED and scanned live, 2026-08-17. Verified via
+https://registry.npmjs.org/@playwright/mcp (dist-tags.latest = `0.0.79`) and
+https://github.com/microsoft/playwright-mcp README (stdio default, no
+auth/API key). `servers.yaml` package block pinned to version `0.0.79`. Live
+scan (`npx -y @playwright/mcp@0.0.79`, no browsers pre-installed): `status:
+ok`, 24 tools, naive 4024 tokens `o200k_base`, `serverInfo.version`
+`1.63.0-alpha-2026-08-05`. Confirms `tools/list` answers without a browser
+download; Tier 1 needs nothing further here.
 
 ---
 
@@ -302,17 +353,27 @@ tasks; listed again here so this is a complete checklist on its own.
 11. **figma, everything.** Auth, transport, package, tool count all
     unresearched past the adoption-evidence pass. Verification: per section
     2's three-step figma task above.
-12. **context7, everything.** Same as figma. Verification: per section 2's
-    context7 task above.
-13. **postgres, package.** Confirm PyPI package `postgres-mcp` and pin an
-    exact version; confirm pip/uv install path. Verification: record in
-    `servers.yaml`.
-14. **jaeger, package.** Confirm exact distribution channel and pinned
-    version; explicitly select `BACKEND_TYPE=jaeger`. Verification: a live
-    run against the local Jaeger container from section 2 returns Jaeger's
-    5 core tools without unrelated Tempo/Traceloop tools inflating the
-    count (or, if they can't be suppressed, that inflation is called out on
-    the published row, per `docs/server-selection.md` B.2 item 12's own note).
+12. **context7, everything. RESOLVED 2026-08-17.** Keyless, npm
+    `@upstash/context7-mcp` v4.0.2, stdio (also remote HTTP at
+    mcp.context7.com/mcp, not used here), 2 tools live-confirmed. See section
+    2's context7 entry for the empirical verification. Scanned into
+    `data/latest.json`.
+13. **postgres, package. Spec RESOLVED 2026-08-17, not yet scanned.**
+    Confirmed PyPI package `postgres-mcp` v0.3.0
+    (https://pypi.org/pypi/postgres-mcp/json); install/run via `uvx
+    postgres-mcp --access-mode=unrestricted`. Recorded in `servers.yaml`. Not
+    scanned: this machine (dev laptop) has no docker/podman to start the
+    local postgres container this row needs; remains open for the PC run.
+14. **jaeger, package. Spec RESOLVED 2026-08-17, not yet scanned.** Confirmed
+    PyPI package `opentelemetry-mcp` v0.2.2
+    (https://pypi.org/pypi/opentelemetry-mcp/json), install/run via `uvx
+    opentelemetry-mcp --backend jaeger --url http://localhost:16686`
+    (correcting this runbook's original `BACKEND_TYPE`/`BACKEND_URL` env-var
+    assumption, which does not match the live package; backend selection is
+    a CLI flag pair). Recorded in `servers.yaml`. Not scanned: this machine
+    has no docker/podman to start the local Jaeger container; the
+    tool-count-inflation question (5 Jaeger tools vs. Traceloop's extras)
+    remains open for the PC run.
 15. **fetch pin decision.** Section 3, Option A vs. B. Not a fact to verify,
     a decision to make and, if B, to log as a changelog event.
 

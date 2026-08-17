@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+
+	"github.com/lopster568/loadline/internal/retrieval"
 )
 
 // toolFieldAllow is the canonical tool-object field set from methodology 1.5.
@@ -23,10 +25,17 @@ type Tool struct {
 	Flags     []string `json:"flags,omitempty"`
 	Excluded  bool     `json:"excluded,omitempty"`
 	// Descriptor carries name, title, and description concatenated, which is
-	// the text the retrievability index in methodology 5 is built over.
+	// the text the retrievability index in methodology 5 is built over and the
+	// token base of the disambiguation dimension in methodology 6. Both metric
+	// packages consume this field rather than rejoining the parts, so there is
+	// one descriptor per tool and it is this one.
 	Descriptor string `json:"-"`
-	// Description and InputSchemaJSON feed the Anthropic tool-definition shape
-	// of methodology 1.5, after $ref inlining.
+	// Title and Description carry the two prose fields separately, which the
+	// retrievability and hygiene metrics of methodology 5 and 6 need to tell a
+	// missing description from a missing title. Description and
+	// InputSchemaJSON also feed the Anthropic tool-definition shape of
+	// methodology 1.5, after $ref inlining.
+	Title           string `json:"-"`
 	Description     string `json:"-"`
 	InputSchemaJSON string `json:"-"`
 }
@@ -79,6 +88,9 @@ func Canonicalize(rawTools [][]byte, pages [][]byte, policy RefPolicy) (*Surface
 			name = n.Str
 		}
 		tool := Tool{Name: name, Descriptor: descriptorText(parsed)}
+		if ti, ok := parsed.Get("title"); ok && ti.Kind == KindString {
+			tool.Title = ti.Str
+		}
 		if d, ok := parsed.Get("description"); ok && d.Kind == KindString {
 			tool.Description = d.Str
 		}
@@ -145,17 +157,17 @@ func (s *Surface) Counted() []Tool {
 	return out
 }
 
+// descriptorText builds the authoritative descriptor with the shared join in
+// the retrieval package, so the string this field carries is the same string
+// the retrievability index and the hygiene grade are computed over.
 func descriptorText(tool *Value) string {
-	out := ""
-	for _, k := range []string{"name", "title", "description"} {
+	str := func(k string) string {
 		if v, ok := tool.Get(k); ok && v.Kind == KindString {
-			if out != "" {
-				out += " "
-			}
-			out += v.Str
+			return v.Str
 		}
+		return ""
 	}
-	return out
+	return retrieval.Descriptor(str("name"), str("title"), str("description"))
 }
 
 func allowed(key string) bool {

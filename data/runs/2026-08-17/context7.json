@@ -8,40 +8,28 @@
   },
   "servers": [
     {
-      "id": "filesystem",
-      "name": "Filesystem MCP server (reference implementation)",
+      "id": "context7",
+      "name": "Context7 MCP server",
       "maintainer": "official",
       "status": "ok",
-      "tool_count": 14,
+      "tool_count": 2,
       "protocol_revision": "2025-06-18",
       "provenance": {
-        "server_version": "0.2.0",
-        "wire_sha256": "32070959d6d7e8fbc7809599723c24565f4fd72d26641acbcd7236761381f69d",
-        "canonical_sha256": "a9f0f9e451249c9328d40fb9c6b4bd40359b4ed7830e9f182e2116660763b959",
-        "canonical_sorted_sha256": "5f05e580816653cb4c4ea5c64c164828211f49e8645be0065ca229baf0a0e5cb"
+        "server_version": "4.0.2",
+        "wire_sha256": "3d2daa84a1753387686a23a3000fb33e94fee300b3b1b9c1956404f8abff7c5c",
+        "canonical_sha256": "699d8b33d6d2d90ce7deb777994bb408e1e07bb08fa997042b7cce19e6c1ecec",
+        "canonical_sorted_sha256": "db5897e70941bd11b108f75d16a5daaeca47cfd8fca1a5da00500b300de89ad0"
       },
       "counts": {
         "openai_o200k": {
-          "total_schema_tokens": 2697,
+          "total_schema_tokens": 1052,
           "per_tool": {
-            "create_directory": 168,
-            "directory_tree": 193,
-            "edit_file": 236,
-            "get_file_info": 153,
-            "list_allowed_directories": 140,
-            "list_directory": 157,
-            "list_directory_with_sizes": 192,
-            "move_file": 183,
-            "read_file": 170,
-            "read_media_file": 281,
-            "read_multiple_files": 201,
-            "read_text_file": 247,
-            "search_files": 209,
-            "write_file": 165
+            "query-docs": 407,
+            "resolve-library-id": 643
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-17T14:42:55Z"
+          "measured_at": "2026-08-17T14:43:00Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -59,12 +47,12 @@
       },
       "modes": {
         "naive": {
-          "tokens": 2697,
+          "tokens": 1052,
           "kind": "measured"
         },
         "tool_search": {
           "stub_tokens": 500,
-          "per_tool_avg": 192,
+          "per_tool_avg": 525,
           "k_range": [
             3,
             5
@@ -78,48 +66,43 @@
       },
       "retrievability": {
         "top3_fraction": 1,
-        "mrr": 0.9881,
+        "mrr": 1,
         "queries_per_tool": 3,
         "kind": "measured"
       },
       "hygiene": {
-        "grade": "C",
-        "score": 73.41,
+        "grade": "A",
+        "score": 97.22,
         "dimensions": {
-          "description_adequacy": 100,
-          "when_to_use_signal": 21.43,
-          "parameter_descriptions": 33.33,
+          "description_adequacy": 83.33,
+          "when_to_use_signal": 100,
+          "parameter_descriptions": 100,
           "enum_documentation": 100,
           "naming_clarity": 100,
-          "disambiguation": 85.71
+          "disambiguation": 100
         },
         "similarity_threshold": 0.6,
-        "similar_pairs": [
-          {
-            "a": "list_directory",
-            "b": "list_directory_with_sizes",
-            "similarity": 0.8519
-          }
-        ],
         "kind": "measured"
       },
-      "category": "dev-tools",
+      "category": "data",
       "acquisition": {
         "transport": "stdio",
-        "source": "npm:@modelcontextprotocol/server-filesystem",
+        "source": "npm:@upstash/context7-mcp@4.0.2",
         "command": "npx",
         "args": [
           "-y",
-          "@modelcontextprotocol/server-filesystem",
-          "{{SCRATCH}}"
+          "@upstash/context7-mcp@4.0.2"
         ],
-        "pinned": false,
-        "acquired_at": "2026-08-17T14:42:52.443669337Z"
+        "pinned": true,
+        "acquired_at": "2026-08-17T14:42:57.472879152Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-17T14:42:52.443643026Z",
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
+      ],
+      "measured_at": "2026-08-17T14:42:57.472868011Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

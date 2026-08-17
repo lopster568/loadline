@@ -143,8 +143,15 @@ func runScan(argv []string) error {
 		if s.Modes != nil {
 			naive = s.Modes.Naive.Tokens
 		}
-		line := fmt.Sprintf("%-12s %-16s tools=%-4d naive=%-7s rev=%s",
-			s.ID, s.Status, s.ToolCount, naiveField(naive), s.ProtocolRevision)
+		grade, retr := "-", "-"
+		if s.Hygiene != nil {
+			grade = fmt.Sprintf("%s(%.0f)", s.Hygiene.Grade, s.Hygiene.Score)
+		}
+		if s.Retrievability != nil {
+			retr = fmt.Sprintf("%.2f", s.Retrievability.Top3Fraction)
+		}
+		line := fmt.Sprintf("%-12s %-16s tools=%-4d naive=%-7s hygiene=%-7s retr@3=%-5s rev=%s",
+			s.ID, s.Status, s.ToolCount, naiveField(naive), grade, retr, s.ProtocolRevision)
 		if s.Error != "" {
 			line += "  " + firstLine(s.Error)
 		}

@@ -135,7 +135,8 @@ export default function App() {
         <section className="section container" id="leaderboard">
           <h2 className="section-title">Leaderboard</h2>
           <p className="section-note">
-            Rankings pair cost with retrievability and hygiene grades in a later release; cost alone is not quality.
+            Cost columns sit beside hygiene and retrievability grades; a low-cost server with a low hygiene grade is
+            not a recommendation.
           </p>
           <Leaderboard servers={data.servers} />
         </section>

@@ -1,9 +1,9 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "sample": true,
   "run": {
     "date": "2026-08-17",
-    "methodology_version": "0.1.0",
+    "methodology_version": "0.2.0",
     "harness_version": "0.1.0"
   },
   "servers": [
@@ -42,6 +42,20 @@
         "naive": { "tokens": 61024, "kind": "measured" },
         "tool_search": { "stub_tokens": 640, "per_tool_avg": 656, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 1180, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 0.89, "mrr": 0.91, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "C",
+        "score": 65.83,
+        "dimensions": {
+          "description_adequacy": 90,
+          "when_to_use_signal": 15,
+          "parameter_descriptions": 60,
+          "enum_documentation": 80,
+          "naming_clarity": 95,
+          "disambiguation": 55
+        },
+        "kind": "measured"
       }
     },
     {
@@ -79,6 +93,20 @@
         "naive": { "tokens": 6202, "kind": "measured" },
         "tool_search": { "stub_tokens": 520, "per_tool_avg": 443, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 980, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 1, "mrr": 0.9881, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "C",
+        "score": 73.41,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 21.43,
+          "parameter_descriptions": 33.33,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 85.71
+        },
+        "kind": "measured"
       }
     },
     {
@@ -116,6 +144,20 @@
         "naive": { "tokens": 351, "kind": "measured" },
         "tool_search": { "stub_tokens": 480, "per_tool_avg": 351, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 620, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 1, "mrr": 1, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "A",
+        "score": 100,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 100,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 100
+        },
+        "kind": "measured"
       }
     },
     {
@@ -150,7 +192,9 @@
         "naive": { "tokens": null, "kind": "measured" },
         "tool_search": { "stub_tokens": null, "per_tool_avg": null, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": null, "kind": "modeled" }
-      }
+      },
+      "retrievability": null,
+      "hygiene": null
     },
     {
       "id": "linear",
@@ -184,7 +228,9 @@
           "measured_at": "2026-08-17T03:04:09Z"
         }
       },
-      "modes": null
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null
     },
     {
       "id": "notion",
@@ -221,6 +267,20 @@
         "naive": { "tokens": 9804, "kind": "measured" },
         "tool_search": { "stub_tokens": 560, "per_tool_avg": 516, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 1040, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 0.95, "mrr": 0.96, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "B",
+        "score": 77.17,
+        "dimensions": {
+          "description_adequacy": 88,
+          "when_to_use_signal": 40,
+          "parameter_descriptions": 70,
+          "enum_documentation": 90,
+          "naming_clarity": 95,
+          "disambiguation": 80
+        },
+        "kind": "measured"
       }
     },
     {
@@ -258,6 +318,20 @@
         "naive": { "tokens": 14208, "kind": "measured" },
         "tool_search": { "stub_tokens": 580, "per_tool_avg": 592, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 1090, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 0.83, "mrr": 0.87, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "C",
+        "score": 60,
+        "dimensions": {
+          "description_adequacy": 75,
+          "when_to_use_signal": 20,
+          "parameter_descriptions": 55,
+          "enum_documentation": 60,
+          "naming_clarity": 85,
+          "disambiguation": 65
+        },
+        "kind": "measured"
       }
     },
     {
@@ -295,6 +369,20 @@
         "naive": { "tokens": 9108, "kind": "measured" },
         "tool_search": { "stub_tokens": 540, "per_tool_avg": 569, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 1010, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 0.94, "mrr": 0.95, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "C",
+        "score": 74.17,
+        "dimensions": {
+          "description_adequacy": 85,
+          "when_to_use_signal": 35,
+          "parameter_descriptions": 75,
+          "enum_documentation": 85,
+          "naming_clarity": 90,
+          "disambiguation": 75
+        },
+        "kind": "measured"
       }
     },
     {
@@ -332,6 +420,20 @@
         "naive": { "tokens": 11403, "kind": "measured" },
         "tool_search": { "stub_tokens": 550, "per_tool_avg": 543, "k_range": [3, 5], "kind": "modeled" },
         "code_mode": { "tokens_estimate": 1070, "kind": "modeled" }
+      },
+      "retrievability": { "top3_fraction": 0.9524, "mrr": 0.97, "queries_per_tool": 3, "kind": "measured" },
+      "hygiene": {
+        "grade": "B",
+        "score": 80.5,
+        "dimensions": {
+          "description_adequacy": 88,
+          "when_to_use_signal": 5,
+          "parameter_descriptions": 95,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 95
+        },
+        "kind": "measured"
       }
     }
   ]

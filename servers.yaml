@@ -223,11 +223,21 @@ servers:
       # Traceloop's own backend option, which this project does not use.
     package:
       stdio:
-        type: binary
-        # TODO verify at onboarding: exact distribution channel and pinned
-        # version; select BACKEND_TYPE=jaeger explicitly.
+        type: pypi
+        name: opentelemetry-mcp
+        # Verified 2026-08-17 via https://pypi.org/pypi/opentelemetry-mcp/json
+        # (latest 0.2.2, matches docs/server-selection.md's tagged-release
+        # figure) and the traceloop/opentelemetry-mcp-server README: installed
+        # and run via uvx, backend selection is passed as CLI flags
+        # (--backend jaeger --url <BACKEND_URL>), NOT the BACKEND_TYPE/
+        # BACKEND_URL env vars this corpus's runbook originally assumed
+        # (docs/pc-sweep-runbook.md section 2's env-var convention is
+        # superseded by this finding; args below are the corrected launch).
+        version: "0.2.2"
+        args: ["--backend", "jaeger", "--url", "http://localhost:16686"]
     flags:
       - note: unified server across Jaeger, Tempo, and Traceloop's own backend; non-Jaeger tools inflate the apparent tool count and should be called out on the published row
+      - note: not scanned in this pass; this machine has no docker/podman so the required local Jaeger all-in-one container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md).
 
   # --- Data (2) ---
 
@@ -242,24 +252,49 @@ servers:
       token_env: DATABASE_URI
     package:
       stdio:
-        type: binary
-        # TODO verify at onboarding: PyPI package postgres-mcp; pin exact
-        # version and confirm pip/uv install path.
+        type: pypi
+        name: postgres-mcp
+        # Verified 2026-08-17 via https://pypi.org/pypi/postgres-mcp/json
+        # (latest 0.3.0) and https://github.com/crystaldba/postgres-mcp README:
+        # installed/run via uvx, access mode is a CLI flag
+        # (--access-mode=unrestricted), not an env var; DATABASE_URI stays an
+        # env var per the maintainer's example config.
+        version: "0.3.0"
+        args: ["--access-mode=unrestricted"]
     flags:
       - note: launch in Unrestricted Mode for measurement; Restricted Mode truncates the tool surface by operator-set flag, not by credential
+      - note: not scanned in this pass; this machine has no docker/podman so the required local postgres container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md).
 
   - id: context7
     name: Context7 MCP server
     category: data
     maintainer_type: official
     repo: https://github.com/upstash/context7
-    transport: null # TODO verify at onboarding
+    transport: [stdio, remote]
     auth:
-      required: null # TODO verify at onboarding
-      token_env: null # TODO verify at onboarding
-    package: {} # TODO verify at onboarding
+      # Verified 2026-08-17 via https://github.com/upstash/context7 README
+      # ("API Key Recommended: ... for higher rate limits") plus a live
+      # empirical probe: `npx -y @upstash/context7-mcp@4.0.2` with no
+      # CONTEXT7_API_KEY set answered tools/list with status ok, 2 tools
+      # (resolve-library-id, query-docs), which is the server's full documented
+      # tool surface. The API key gates query rate limits, not tool
+      # enumeration, so no credential is required for Tier 1 measurement.
+      required: false
+      token_env: CONTEXT7_API_KEY
+    package:
+      stdio:
+        type: npm
+        name: "@upstash/context7-mcp"
+        # Verified 2026-08-17 via https://registry.npmjs.org/@upstash/context7-mcp
+        version: "4.0.2"
     flags:
-      - note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). auth, transport, package, and tool count not researched past B.5's adoption-evidence pass. TODO verify at onboarding
+      - note: >-
+          promoted from reserve bench 2026-08-17; classified under data
+          (documentation/knowledge retrieval) as a judgment call, not a
+          strong categorical fit (docs/server-selection.md B.2 item 14).
+          Auth/transport/package resolved 2026-08-17, keyless, npm
+          @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no
+          auth).
 
   # --- Browser automation (1) ---
 
@@ -276,6 +311,11 @@ servers:
       stdio:
         type: npm
         name: "@playwright/mcp"
+        # Verified 2026-08-17 via https://registry.npmjs.org/@playwright/mcp
+        # (dist-tags.latest) and https://github.com/microsoft/playwright-mcp
+        # README: package @playwright/mcp, stdio is the default transport, no
+        # auth/API key required to start or answer tools/list.
+        version: "0.0.79"
     flags: []
 
 excluded:

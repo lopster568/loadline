@@ -14,9 +14,11 @@ import (
 
 	"github.com/lopster568/loadline/internal/canon"
 	"github.com/lopster568/loadline/internal/corpus"
+	"github.com/lopster568/loadline/internal/hygiene"
 	"github.com/lopster568/loadline/internal/mcpwire"
 	"github.com/lopster568/loadline/internal/modes"
 	"github.com/lopster568/loadline/internal/report"
+	"github.com/lopster568/loadline/internal/retrieval"
 	"github.com/lopster568/loadline/internal/tokens"
 )
 
@@ -214,6 +216,21 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 	counted := surface.Counted()
 	row.ToolCount = len(counted)
 
+	// Retrievability and hygiene are derived from the surface already in hand,
+	// so they cost no further contact with the server and do not depend on any
+	// token count succeeding. A surface with no counted tools is scored as
+	// neither: there is nothing to retrieve and nothing to grade, and a zero in
+	// either field would read as a measured failure of a server that published
+	// no tools rather than as the absence it is. hygiene.Compute enforces the
+	// same rule on its own side by returning nil; the guard here stays as belt
+	// and braces and because retrievability has no equivalent.
+	if len(counted) > 0 {
+		res := retrieval.Evaluate(s.ID, retrievalTools(counted))
+		row.Retrievability = &res.Score
+		row.Queries = &res.Set
+		row.Hygiene = hygiene.Compute(hygieneTools(counted))
+	}
+
 	// Enumeration can succeed while counting fails. That is still status ok,
 	// because nothing about the server failed, but the row then carries no mode
 	// figures: modes are computed on the o200k_base count (methodology 3.1), and
@@ -349,6 +366,40 @@ func inheritedEnv() []string {
 		}
 	}
 	return env
+}
+
+// retrievalTools and hygieneTools project the canonical surface onto the two
+// metric packages' inputs. Both packages take their own input type rather than
+// canon.Tool so a change to the canonicalizer cannot silently change what a
+// published metric is computed over. The descriptor is carried across rather
+// than rebuilt on either side: methodology 5 names the canonicalizer's join as
+// the indexed document, and dimension 6 of methodology 6 tokenizes the same
+// string, so both metrics read one descriptor per tool.
+func retrievalTools(counted []canon.Tool) []retrieval.Tool {
+	out := make([]retrieval.Tool, 0, len(counted))
+	for _, t := range counted {
+		out = append(out, retrieval.Tool{
+			Name:        t.Name,
+			Title:       t.Title,
+			Description: t.Description,
+			Descriptor:  t.Descriptor,
+		})
+	}
+	return out
+}
+
+func hygieneTools(counted []canon.Tool) []hygiene.Tool {
+	out := make([]hygiene.Tool, 0, len(counted))
+	for _, t := range counted {
+		out = append(out, hygiene.Tool{
+			Name:            t.Name,
+			Title:           t.Title,
+			Description:     t.Description,
+			Descriptor:      t.Descriptor,
+			InputSchemaJSON: t.InputSchemaJSON,
+		})
+	}
+	return out
 }
 
 func anthropicTools(counted []canon.Tool) []tokens.AnthropicTool {
