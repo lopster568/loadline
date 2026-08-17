@@ -1,0 +1,12 @@
+.banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--banner-bg);
+  color: var(--banner-text);
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}

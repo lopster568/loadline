@@ -1,0 +1,166 @@
+{
+  "schema_version": "0.1",
+  "sample": false,
+  "run": {
+    "date": "2026-08-17",
+    "methodology_version": "0.1.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "filesystem",
+      "name": "Filesystem MCP server (reference implementation)",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 14,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "0.2.0",
+        "wire_sha256": "32070959d6d7e8fbc7809599723c24565f4fd72d26641acbcd7236761381f69d",
+        "canonical_sha256": "a9f0f9e451249c9328d40fb9c6b4bd40359b4ed7830e9f182e2116660763b959",
+        "canonical_sorted_sha256": "5f05e580816653cb4c4ea5c64c164828211f49e8645be0065ca229baf0a0e5cb"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 2697,
+          "per_tool": {
+            "create_directory": 168,
+            "directory_tree": 193,
+            "edit_file": 236,
+            "get_file_info": 153,
+            "list_allowed_directories": 140,
+            "list_directory": 157,
+            "list_directory_with_sizes": 192,
+            "move_file": 183,
+            "read_file": 170,
+            "read_media_file": 281,
+            "read_multiple_files": 201,
+            "read_text_file": 247,
+            "search_files": 209,
+            "write_file": 165
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-17T11:49:52Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 2697,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 192,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@modelcontextprotocol/server-filesystem",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "{{SCRATCH}}"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-17T11:49:49.866751237Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-17T11:49:49.86672239Z",
+      "methodology_version": "0.1.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "fetch",
+      "name": "Fetch MCP server (reference implementation)",
+      "maintainer": "official",
+      "status": "unreachable",
+      "tool_count": 0,
+      "protocol_revision": "",
+      "provenance": {
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 0,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 0,
+          "per_tool_avg": 0,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 0,
+          "kind": "modeled"
+        }
+      },
+      "category": "dev-tools",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:mcp-server-fetch (unpinned)",
+        "command": "uvx",
+        "args": [
+          "mcp-server-fetch"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-17T11:49:52.548159532Z"
+      },
+      "measured_at": "2026-08-17T11:49:52.548146115Z",
+      "methodology_version": "0.1.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

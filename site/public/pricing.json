@@ -1,0 +1,28 @@
+{
+  "as_of": "2026-08-17",
+  "label": "verify before publish",
+  "cache_read_multiplier": 0.1,
+  "cache_write_multiplier": 1.25,
+  "models": {
+    "claude": {
+      "label": "Claude Opus 5",
+      "input_price_per_mtok": 15.0,
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live. Verify against the published Anthropic price page before any public number ships."
+    },
+    "claude_sonnet": {
+      "label": "Claude Sonnet 5",
+      "input_price_per_mtok": 3.0,
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+    },
+    "openai_o200k": {
+      "label": "GPT (o200k tokenizer family)",
+      "input_price_per_mtok": 2.5,
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+    },
+    "gemini": {
+      "label": "Gemini 2.5 Pro",
+      "input_price_per_mtok": 1.25,
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+    }
+  }
+}
