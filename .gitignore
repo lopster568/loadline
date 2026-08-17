@@ -1,0 +1,32 @@
+# Go
+/bin/
+/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+cmd/loadline/loadline
+
+# Node (site/)
+node_modules/
+site/node_modules/
+site/dist/
+site/build/
+site/.next/
+site/out/
+.pnpm-store/
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# OS and editor cruft
+.DS_Store
+*.swp
+
+# Note: data/ holds JSON measurement results and is intentionally NOT
+# ignored. Do not add data/ or data/** here.

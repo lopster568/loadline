@@ -1,0 +1,292 @@
+# loadline server corpus v0
+#
+# The 15 servers ratified in docs/server-selection.md Part B, as amended
+# 2026-08-17 (Grafana and Atlassian/Jira excluded under the partial-surface
+# rule, B.2.1; Figma and Context7 promoted from the reserve bench, B.5).
+#
+# Fields left unresolved by docs/server-selection.md are marked with a
+# "TODO verify at onboarding" comment rather than guessed.
+
+servers:
+  # --- Dev tools (5) ---
+
+  - id: github
+    name: GitHub MCP server
+    category: dev-tools
+    maintainer_type: official
+    repo: https://github.com/github/github-mcp-server
+    endpoint: https://api.githubcopilot.com/mcp/
+    transport: [stdio, remote]
+    auth:
+      required: true
+      # TODO verify at onboarding: classic PAT hides scoped-out tools per
+      # maintainer docs; OAuth flow may return the full list. Confirm
+      # against a live server before onboarding (docs/server-selection.md B.3).
+      token_env: GITHUB_TOKEN
+    package:
+      stdio:
+        type: binary
+        # TODO verify at onboarding: also distributed as a Docker image;
+        # pin exact release (v1.9.0 at time of research) before first sweep.
+    flags:
+      - auth-verification: classic-PAT-scope-filtering
+        resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification
+
+  - id: filesystem
+    name: Filesystem MCP server (reference implementation)
+    category: dev-tools
+    maintainer_type: official
+    repo: https://github.com/modelcontextprotocol/servers
+    transport: [stdio]
+    auth:
+      required: false
+      token_env: null
+    package:
+      stdio:
+        type: npm
+        name: "@modelcontextprotocol/server-filesystem"
+    flags: []
+
+  - id: fetch
+    name: Fetch MCP server (reference implementation)
+    category: dev-tools
+    maintainer_type: official
+    repo: https://github.com/modelcontextprotocol/servers
+    transport: [stdio]
+    auth:
+      required: false
+      token_env: null
+    package:
+      stdio:
+        type: binary
+        # TODO verify at onboarding: pip/uv package name and pinned version
+        # (mcp-server-fetch on PyPI, per docs/server-selection.md B.2 item 3).
+    flags: []
+
+  - id: kubernetes
+    name: Kubernetes MCP server (containers/kubernetes-mcp-server)
+    category: dev-tools
+    maintainer_type: community
+    repo: https://github.com/containers/kubernetes-mcp-server
+    transport: [stdio, remote]
+    auth:
+      required: true
+      token_env: null
+      # TODO verify at onboarding: kubeconfig path or in-cluster service
+      # account, not a single env var; document the harness's credential
+      # convention before onboarding.
+    package:
+      stdio:
+        type: docker
+        # TODO verify at onboarding: pin exact release (v0.0.66 at time of
+        # research) and image reference.
+    flags: []
+
+  - id: cloudflare
+    name: Cloudflare MCP server (cloudflare/mcp-server-cloudflare)
+    category: dev-tools
+    maintainer_type: official
+    repo: https://github.com/cloudflare/mcp-server-cloudflare
+    # TODO verify at onboarding: 16 separate product-scoped remote servers,
+    # each at its own *.mcp.cloudflare.com subdomain; no single endpoint.
+    endpoint: null
+    transport: [remote]
+    auth:
+      required: true
+      token_env: CLOUDFLARE_API_TOKEN
+    package: {}
+    flags:
+      - note: tool count not aggregated across the 16 product-scoped servers; needs a live tools/list pass at onboarding (docs/server-selection.md B.2 item 5)
+
+  # --- Productivity / SaaS (5) ---
+
+  - id: notion
+    name: Notion MCP server
+    category: productivity-saas
+    maintainer_type: official
+    repo: https://github.com/makenotion/notion-mcp-server
+    transport: [stdio, remote]
+    auth:
+      required: true
+      token_env: NOTION_TOKEN
+    package:
+      stdio:
+        type: npm
+        name: "@notionhq/notion-mcp-server"
+    flags: []
+
+  - id: slack
+    name: Slack MCP server (korotovsky/slack-mcp-server, community)
+    category: productivity-saas
+    maintainer_type: community
+    repo: https://github.com/korotovsky/slack-mcp-server
+    transport: [stdio, sse, remote]
+    auth:
+      required: true
+      # TODO verify at onboarding: two incompatible auth modes exist
+      # (scope-limited OAuth vs. cookie-based "stealth mode"); Roshan's
+      # decision is required before onboarding (docs/server-selection.md B.3).
+      token_env: SLACK_MCP_XOXC_TOKEN
+    package:
+      stdio:
+        type: npm
+        name: slack-mcp-server
+    flags:
+      - auth-verification: stealth-mode-vs-oauth-scope-decision
+        resolvable: "no: a compliance decision, not an enumeration fix; Roshan's call"
+
+  - id: linear
+    name: Linear MCP server
+    category: productivity-saas
+    maintainer_type: official
+    repo: null
+    endpoint: https://mcp.linear.app/mcp
+    transport: [remote]
+    auth:
+      required: true
+      # TODO verify at onboarding: OAuth 2.1, API key, or enterprise
+      # SAML/Okta; pick one and record the chosen env var name.
+      token_env: LINEAR_API_KEY
+    package: {}
+    flags:
+      - auth-verification: readonly-endpoint-truncates-surface
+        resolvable: "yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly"
+
+  - id: stripe
+    name: Stripe MCP server
+    category: productivity-saas
+    maintainer_type: official
+    repo: https://github.com/stripe/ai
+    endpoint: https://mcp.stripe.com
+    transport: [remote]
+    auth:
+      required: true
+      token_env: STRIPE_API_KEY
+    package: {}
+    flags: []
+
+  - id: figma
+    name: Figma MCP server
+    category: productivity-saas
+    maintainer_type: official
+    # TODO verify at onboarding: two candidate repos exist, primary not yet
+    # resolved (docs/server-selection.md B.2 item 10). Official:
+    # figma/mcp-server-guide. Community: GLips/Figma-Context-MCP.
+    repo: https://github.com/figma/mcp-server-guide
+    transport: null # TODO verify at onboarding
+    auth:
+      required: true
+      token_env: null # TODO verify at onboarding
+    package: {} # TODO verify at onboarding
+    flags:
+      - note: promoted from reserve bench 2026-08-17; auth, transport, package, and tool count not researched past B.5's adoption-evidence pass. TODO verify at onboarding
+
+  # --- Observability (2) ---
+
+  - id: sentry
+    name: Sentry MCP server
+    category: observability
+    maintainer_type: official
+    repo: https://github.com/getsentry/sentry-mcp
+    endpoint: https://mcp.sentry.dev
+    transport: [stdio, remote]
+    auth:
+      required: true
+      token_env: SENTRY_ACCESS_TOKEN
+    package:
+      stdio:
+        type: npm
+        name: "@sentry/mcp-server"
+    flags:
+      - auth-verification: oauth-scope-gating
+        resolvable: likely, via a broad-scope OAuth grant; needs live verification
+      - note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed
+
+  - id: jaeger
+    name: Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)
+    category: observability
+    maintainer_type: community
+    repo: https://github.com/traceloop/opentelemetry-mcp-server
+    transport: [stdio, sse]
+    auth:
+      required: false
+      token_env: null
+      # Note: no credential required for the Jaeger backend specifically
+      # (BACKEND_URL=http://localhost:16686). A token is only needed for
+      # Traceloop's own backend option, which this project does not use.
+    package:
+      stdio:
+        type: binary
+        # TODO verify at onboarding: exact distribution channel and pinned
+        # version; select BACKEND_TYPE=jaeger explicitly.
+    flags:
+      - note: unified server across Jaeger, Tempo, and Traceloop's own backend; non-Jaeger tools inflate the apparent tool count and should be called out on the published row
+
+  # --- Data (2) ---
+
+  - id: postgres
+    name: Postgres MCP server, via crystaldba/postgres-mcp ("Postgres MCP Pro")
+    category: data
+    maintainer_type: community
+    repo: https://github.com/crystaldba/postgres-mcp
+    transport: [stdio, sse]
+    auth:
+      required: true
+      token_env: DATABASE_URI
+    package:
+      stdio:
+        type: binary
+        # TODO verify at onboarding: PyPI package postgres-mcp; pin exact
+        # version and confirm pip/uv install path.
+    flags:
+      - note: launch in Unrestricted Mode for measurement; Restricted Mode truncates the tool surface by operator-set flag, not by credential
+
+  - id: context7
+    name: Context7 MCP server
+    category: data
+    maintainer_type: official
+    repo: https://github.com/upstash/context7
+    transport: null # TODO verify at onboarding
+    auth:
+      required: null # TODO verify at onboarding
+      token_env: null # TODO verify at onboarding
+    package: {} # TODO verify at onboarding
+    flags:
+      - note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). auth, transport, package, and tool count not researched past B.5's adoption-evidence pass. TODO verify at onboarding
+
+  # --- Browser automation (1) ---
+
+  - id: playwright
+    name: Playwright MCP server
+    category: browser-automation
+    maintainer_type: official
+    repo: https://github.com/microsoft/playwright-mcp
+    transport: [stdio, sse, remote]
+    auth:
+      required: false
+      token_env: null
+    package:
+      stdio:
+        type: npm
+        name: "@playwright/mcp"
+    flags: []
+
+excluded:
+  # Excluded under the partial-surface rule, ratified 2026-08-17.
+  # See docs/server-selection.md B.2.1 for full rationale and evidence.
+  - id: grafana
+    name: Grafana MCP server
+    reason: partial-surface-rule
+    rationale: >-
+      Agent Observability, Assistant, and Snowflake-datasource toolsets are
+      gated behind Grafana Cloud and paid Enterprise/Assistant plugins; a
+      free-tier, self-hosted OSS credential cannot reach the full tool
+      surface.
+  - id: atlassian
+    name: Atlassian MCP server (Jira/Confluence)
+    reason: partial-surface-rule
+    rationale: >-
+      Jira Service Management and Bitbucket Cloud tools require
+      org-admin-provisioned licensed access, and Teamwork Graph is a paid
+      Rovo-credits feature; a non-admin, unlicensed free-tier credential
+      cannot reach the full tool surface.
