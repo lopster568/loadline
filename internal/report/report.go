@@ -15,7 +15,7 @@ import (
 const SchemaVersion = "0.1"
 
 // MethodologyVersion tracks docs/methodology-v0.md.
-const MethodologyVersion = "0.1.0"
+const MethodologyVersion = "0.1.1"
 
 // HarnessVersion is stamped on every cell. Results are never compared across
 // harness versions (methodology 9).
@@ -46,6 +46,11 @@ type Run struct {
 	Date               string `json:"date"`
 	MethodologyVersion string `json:"methodology_version"`
 	HarnessVersion     string `json:"harness_version"`
+	// Aborted marks a sweep the operator cut short. Methodology 7 enumerates
+	// server-attributable failure classes only, so an abort is a property of
+	// the run rather than of any server, and the servers it never reached
+	// carry no row at all.
+	Aborted bool `json:"aborted,omitempty"`
 }
 
 // Server is one published row. A failure row carries the same stamp fields as
@@ -59,7 +64,12 @@ type Server struct {
 	ProtocolRevision string     `json:"protocol_revision"`
 	Provenance       Provenance `json:"provenance"`
 	Counts           Counts     `json:"counts"`
-	Modes            modes.Set  `json:"modes"`
+
+	// Modes is nil, and publishes as JSON null, whenever the o200k_base count
+	// the mode formulas of methodology 3 are computed on is unavailable. An
+	// unmeasured value must never publish as a measured zero, so the absence of
+	// a figure is published as an absence rather than as 0.
+	Modes *modes.Set `json:"modes"`
 
 	// Fields below are additive to the site contract and carry the run-record
 	// obligations of methodology 1.1, 1.3, 7 and 8.

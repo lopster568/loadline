@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Methodology version | 0.1.0 (draft, not yet applied to a published release) |
+| Methodology version | 0.1.1 (draft, not yet applied to a published release) |
 | Date | 2026-08-17 |
 | Status | Draft for review |
 | Scope | Tier 1 static sweep. Tier 2 dynamic runs are specified separately. |
@@ -47,7 +47,7 @@ The harness issues `tools/list` and follows `nextCursor` to exhaustion. A partia
 
 ### 1.5 Serialization of the tool surface
 
-Token counts depend on how the surface becomes text, so serialization is fixed and versioned rather than left to each adapter. The **canonical serialization** is the JSON array of tool objects as received, normalized as follows: fields restricted to `name`, `title`, `description`, `inputSchema`, `outputSchema`, `annotations`; key order as the server sent it; `icons`, `_meta`, and `x-mcp-header` annotations retained; single-line, no insignificant whitespace. All three tokenizers count this same string, which is what makes the three columns comparable.
+Token counts depend on how the surface becomes text, so serialization is fixed and versioned rather than left to each adapter. The **canonical serialization** is the JSON array of tool objects as received, normalized as follows: at tool level, the object is restricted to exactly eight fields, `name`, `title`, `description`, `inputSchema`, `outputSchema`, `annotations`, `icons`, `_meta`, and nothing is stripped from inside a retained field; key order as the server sent it; single-line, no insignificant whitespace. All three tokenizers count this same string, which is what makes the three columns comparable.
 
 A second, Claude-only figure is recorded alongside: the count returned when the surface is mapped into Anthropic tool-definition shape and passed in the `tools` parameter of `count_tokens`, capturing provider-side serialization overhead the canonical string omits. It is a separate labelled column, never blended into the cross-provider number.
 
@@ -100,6 +100,8 @@ A single cost number is a wrong number, because cost depends on what the client 
 
 All tool definitions serialized into context at session start. Cost equals the canonical-serialization count from 1.5. Reference client: Gemini CLI.
 
+**Tokenizer basis.** The mode numbers throughout this section, naive, progressive, and code, are all computed on the `o200k_base` count of the canonical serialization from 1.6, the only tokenizer the harness can run offline and therefore the only one guaranteed present on every row. The Claude and Gemini columns are per-provider counts of that same canonical string, published alongside for comparison, but they do not feed the mode formulas below.
+
 **Serialization assumption:** each client emits the full tool list in its provider's native tool-definition format, approximated by the canonical serialization. This is an assumption, not an audit: clients differ in whether they include `title`, `annotations`, and `outputSchema`, and that moves the number.
 
 **OPEN:** a per-client serialization audit is not done for v0. Until it is, the column is labelled "naive client, canonical serialization" rather than named after any specific client.
@@ -118,9 +120,19 @@ C_progressive = C_stub + sum(C_tool_i for i in retrieved_k)
 
 **Retrieval simulation.** Which tools land in the k is simulated with BM25 over each tool's `name`, `title`, and `description` concatenated, indexed over the server's own surface, with BM25 parameters pinned and recorded. The composite total is MODELED because `k` is an assumption; the per-tool costs inside it are MEASURED.
 
+**OPEN:** the BM25 retrieval simulation described above is specified but not yet implemented in the Tier 1 harness. `PerToolAvg` is reported as a mean over all measured tool costs rather than over a simulated retrieval set until it lands.
+
 ### 3.3 Code mode (MODELED)
 
 The client expresses the whole API as a compact programmatic interface rather than as tool schemas, at roughly 1k tokens for a full surface. **Every code-mode figure carries a "modeled, not measured" label until Tier 2 validates it against real call traffic**, removed per server and only once a Tier 2 run for that server exists.
+
+**Clamp.** The flat published-behaviour estimate (~1k tokens) is capped at the server's own naive count from 3.1: a surface whose full schema set already serializes to fewer tokens than the flat estimate is reported at its own naive count instead. This is the one harness addition to the published behaviour, and it only binds on surfaces already smaller than the flat estimate. Its purpose is narrow: code mode must never be reported as costing more than the schemas it replaces. The label stays "modeled" whether or not the clamp binds.
+
+### 3.4 The modes-null contract
+
+Every mode figure in this section is computed on the o200k_base count of the canonical serialization (1.6, 3.1). That count is itself a measurement that can fail: the total count over the canonical string can fail, or the per-tool count needed for the progressive-disclosure mean (3.2) can fail on any single tool in the surface. Either failure withholds the whole modes block rather than publishing a partial one. A per-tool mean taken over whatever subset of tools happened to count successfully is not a measurement of the surface; it is a measurement of which requests happened to succeed, and publishing it would misrepresent an arbitrary prefix as the whole. When the total or any per-tool count is unavailable, the row publishes `"modes": null`.
+
+**Consumers must treat a null modes block as "pending measurement," never as a measured zero.** A cost ranking, chart, or aggregate that coerces a null into 0 rewards a server for failing to enumerate over succeeding at a high count, which is the same Goodhart failure section 2 rejects for `$ref` counting.
 
 ---
 
@@ -142,6 +154,8 @@ Stated cache assumptions:
 
 The per-provider price table is referenced by date, never inlined into cells. A price change is a changelog event, never a silent restatement of a prior release's dollars.
 
+**OPEN:** dollar-pair computation as specified above is not yet implemented in the Tier 1 harness. The published site computes and displays the cold-write/cache-read dollar pairs from its own `pricing.json` in the interim, independent of this harness.
+
 ---
 
 ## 5. Retrievability metric v0
@@ -155,6 +169,8 @@ Purpose: detect servers that are cheap because their descriptions are gutted, th
 **Known limitations.** Queries authored from a tool's own description reward description-rich servers for partly circular reasons, inflating agreement with the hygiene grade. Real clients search a merged corpus across every attached server where cross-server name collisions dominate; v0 measures the easier single-server problem. BM25 is a proxy: no named client is guaranteed to use it, and regex variants behave differently. Query authorship is itself a bias surface.
 
 **OPEN:** who authors the task-phrase queries and by what documented procedure. The current plan (harness author writes them) is not defensible for a public ranking.
+
+**OPEN:** retrievability scoring as specified above is not yet implemented in the Tier 1 harness.
 
 ---
 
@@ -181,6 +197,8 @@ The weighted score maps to a letter grade. Letter and all six sub-scores are pub
 
 **OPEN:** a stable citation anchor for the Glama 70/30 split. The figure comes from a live check on 2026-08-16.
 
+**OPEN:** the schema hygiene grade as specified above is not yet implemented in the Tier 1 harness.
+
 ---
 
 ## 7. Failure policy
@@ -198,16 +216,19 @@ Failed servers publish as data points, and a failure never blocks a release.
 
 Each failure row carries the same stamp fields as a successful row, minus token counts, plus the failure class and raw error. Server rot is part of the subject matter, so it is part of the dataset.
 
+**Operator aborts.** An abort is a property of the run, not a failure class of any server: the classes above are all server-attributable, and a server the sweep never reached, or was cut short before finishing, earned no classification. An aborted run publishes rows only for the servers that completed before the interrupt; the servers left unswept carry no row at all, because publishing a failure row for a server the operator merely didn't reach would assert something the run never measured. The run document carries `"aborted": true`. If the interrupt lands before any server completes, there is nothing honest to publish: no artifacts are written, and the prior release is left in place.
+
 ---
 
 ## 8. Provenance and anti-gaming
 
-Every run records two hashes:
+Every run records three hashes:
 
 - `tools_list_sha256`: SHA-256 over the raw `tools/list` response bytes as received, concatenated across pages. Detects any change including tool ordering, which matters because ordering changes break prompt caching.
-- `tools_canonical_sha256`: SHA-256 over the canonical serialization. Detects semantic change while tolerating cosmetic reordering.
+- `canonical_sha256`: SHA-256 over the canonical serialization of 1.5, key order and tool order exactly as the server sent them. This is the token-counting basis; every published count in sections 1.6 and 3 traces back to this digest, so it must not tolerate reordering.
+- `canonical_sorted_sha256`: SHA-256 over the same canonical serialization with object keys sorted and the tools array reordered by `name`. Detects semantic change while tolerating cosmetic reordering, the property section 8 originally asked of a single hash.
 
-Both hashes and the pinned server version are published per row. A number whose hash does not match the published artifact is a defect.
+Section 1.5 needs an order-preserving digest because token counts depend on key order; this section needs an order-tolerant one to separate a real surface change from a server that merely re-emitted its fields in a different sequence. One hash cannot serve both, so both are published side by side rather than picking a winner. All three hashes and the pinned server version are published per row. A number whose hash does not match the published artifact is a defect.
 
 **Benchmark-detecting builds.** The harness sends an honest `io.modelcontextprotocol/clientInfo`, which makes it identifiable. The specification says the tool set must not vary per connection, and that `clientInfo` is self-reported, unverified, and should not change server behaviour. A server varying its surface by client identity is therefore violating guidance rather than exploiting a loophole, and it is detectable: for a sampled subset, the harness runs a second pass under a generic identity and compares both hashes, publishing any divergence. It does not spoof identity by default, which would trade a governance commitment for a marginal detection gain.
 
@@ -225,7 +246,7 @@ The methodology carries a semantic version, stamped on every cell.
 
 The changelog separates three delta types, because a reader who cannot tell them apart cannot trust a trend line:
 
-1. **Server changed.** New `tools_canonical_sha256` at the same methodology and harness version.
+1. **Server changed.** New `canonical_sha256` at the same methodology and harness version.
 2. **Tokenizer or model changed.** Same hash, different count. Nothing about the server moved.
 3. **Harness or methodology changed.** Same hash, same model, different count. We moved.
 
@@ -245,3 +266,20 @@ Every release classifies each delta into one of the three; a release with unclas
 8. **Hygiene weights are unvalidated.** The six weights are a first draft, uncalibrated against any outcome measure. A server can score well on all six and still be hard for a model to use.
 9. **Static enumeration is not usage.** Tier 1 measures what a server puts in front of a model before any work happens, not whether the tools work.
 10. **Selection.** The corpus is about 15 curated servers chosen under a published selection rule. Coverage is not a claim this project makes.
+
+---
+
+## Changelog
+
+### 0.1.1, 2026-08-17
+
+The Tier 1 harness is now built. Bringing this document into agreement with what it actually implements surfaced the following, all PATCH-level: no published number changes as a result of these corrections, only the text describing it.
+
+1. **Section 1.5 / section 8 key-order conflict resolved.** Section 1.5 fixes canonical key order as-sent because token counts depend on it; section 8 wanted a digest that tolerates cosmetic reordering. The harness ships two digests rather than choosing one: `canonical_sha256` (order-preserving, the token-counting basis) and `canonical_sorted_sha256` (key-sorted, tools array sorted by name, delivers section 8's reorder-tolerant detection). Section 8 and section 9's delta classification were amended to name both and state their separate roles. **This is a provisional ruling, pending operator ratification before v1.**
+2. **Section 1.5 allowlist self-contradiction fixed.** The prior text restricted the tool object to six fields, then separately said `icons`, `_meta`, and a nonexistent `x-mcp-header` annotation were retained. The canonicalizer implements a single eight-field allow list (`name`, `title`, `description`, `inputSchema`, `outputSchema`, `annotations`, `icons`, `_meta`) with nothing stripped inside a retained field; the section now states that directly and drops the `x-mcp-header` reference, which does not exist in the implementation.
+3. **`partial_surface` consistency confirmed.** Section 7 is the only status enumeration in this document; no other status list exists to fall out of step with it. No text changed.
+4. **Section 3.1 tokenizer basis stated explicitly.** Added a paragraph naming `o200k_base` as the tokenizer the mode formulas in section 3 are computed on, since it is the only tokenizer the harness runs offline; the Claude and Gemini columns are per-provider counts of the same canonical string and do not feed the mode formulas.
+5. **Section 3.3 clamp documented.** The flat ~1k-token code-mode estimate is capped at the server's own naive count, so code mode is never reported as costing more than the schemas it replaces. Label remains "modeled" whether or not the clamp binds.
+6. **Implementation-gap OPEN items added.** BM25 retrieval simulation (3.2), retrievability scoring (5), schema hygiene grade (6), and dollar-pair computation (4) are specified in this document but not yet implemented in the Tier 1 harness. The published site computes and displays dollar pairs from its own `pricing.json` independently of the harness in the interim.
+7. **Section 7 operator-abort behaviour documented.** The harness treats an abort as a property of the run rather than a failure class of any server: an aborted run publishes rows only for the servers that completed, the unswept servers carry no row, and the run document carries `"aborted": true`. If the interrupt lands before any server completes, no artifacts are written and the prior release is left in place. This was already the implemented behaviour; the section now states it.
+8. **Section 3.4 modes-null contract added.** When the o200k_base count that the mode formulas run on is unavailable, whether the total count failed or any single per-tool count failed, the row publishes `"modes": null` rather than a mean over a partial, arbitrary subset of the surface. Consumers must read a null modes block as "pending measurement," never as a measured zero. This was already the implemented behaviour; the section now states it.

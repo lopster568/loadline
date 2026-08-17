@@ -4,6 +4,7 @@ package corpus
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"gopkg.in/yaml.v3"
 )
@@ -78,12 +79,20 @@ func (s Server) HasTransport(name string) bool {
 	return false
 }
 
-// Notes flattens the freeform flags block into readable strings.
+// Notes flattens the freeform flags block into readable strings. Keys within
+// one flag entry are sorted, because a flag with several keys would otherwise
+// emit corpus_notes in Go's randomized map order and make two runs of an
+// unchanged corpus produce different published rows.
 func (s Server) Notes() []string {
 	var out []string
 	for _, f := range s.Flags {
-		for k, v := range f {
-			out = append(out, fmt.Sprintf("%s: %v", k, v))
+		keys := make([]string, 0, len(f))
+		for k := range f {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, k := range keys {
+			out = append(out, fmt.Sprintf("%s: %v", k, f[k]))
 		}
 	}
 	return out

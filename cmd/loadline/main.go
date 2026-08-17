@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -118,14 +119,32 @@ func runScan(argv []string) error {
 	runner := sweep.NewRunner(cfg)
 	doc := runner.Run(ctx, selected)
 
+	// An aborted sweep publishes the rows that completed plus a run-level
+	// marker, and nothing for the servers it never reached. Methodology 7 only
+	// classifies server-attributable failures, so writing a "timeout" row for a
+	// server the operator interrupted would publish a claim about that server
+	// the run never earned. A completed row is still a real measurement, so it
+	// is kept; if nothing completed there is nothing honest to write, and the
+	// previous artifacts are left untouched.
+	if doc.Run.Aborted {
+		fmt.Fprintln(os.Stderr, "loadline: sweep aborted; publishing only the servers that completed")
+		if len(doc.Servers) == 0 {
+			return fmt.Errorf("sweep aborted before any server completed; no report written")
+		}
+	}
+
 	written, err := report.Write(*outDir, doc)
 	if err != nil {
 		return err
 	}
 
 	for _, s := range doc.Servers {
-		line := fmt.Sprintf("%-12s %-16s tools=%-4d naive=%-7d rev=%s",
-			s.ID, s.Status, s.ToolCount, s.Modes.Naive.Tokens, s.ProtocolRevision)
+		naive := -1
+		if s.Modes != nil {
+			naive = s.Modes.Naive.Tokens
+		}
+		line := fmt.Sprintf("%-12s %-16s tools=%-4d naive=%-7s rev=%s",
+			s.ID, s.Status, s.ToolCount, naiveField(naive), s.ProtocolRevision)
 		if s.Error != "" {
 			line += "  " + firstLine(s.Error)
 		}
@@ -158,6 +177,15 @@ func splitIDs(csv string) map[string]bool {
 		}
 	}
 	return out
+}
+
+// naiveField renders the console naive figure, printing "-" rather than 0 for
+// a row with no mode block so the terminal line cannot be read as a measurement.
+func naiveField(n int) string {
+	if n < 0 {
+		return "-"
+	}
+	return strconv.Itoa(n)
 }
 
 func firstLine(s string) string {

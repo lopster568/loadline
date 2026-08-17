@@ -175,19 +175,24 @@ func (v *Value) Clone() *Value {
 // whitespace, in stored key order.
 func (v *Value) Serialize() string {
 	var buf bytes.Buffer
-	v.write(&buf, false)
+	v.write(&buf, false, false)
 	return buf.String()
 }
 
-// SerializeSorted renders the value with object keys and tool-like array
-// members ordered deterministically. It backs the order-insensitive digest.
+// SerializeSorted renders the value with object keys sorted at every depth and,
+// when the value is itself the tools array, that array reordered by tool name.
+// It backs the order-insensitive digest of methodology 8. Nested arrays keep
+// server order: the digest must tolerate a cosmetic reorder of the tools array
+// while still detecting a real reorder anywhere inside a tool.
 func (v *Value) SerializeSorted() string {
 	var buf bytes.Buffer
-	v.write(&buf, true)
+	v.write(&buf, true, true)
 	return buf.String()
 }
 
-func (v *Value) write(buf *bytes.Buffer, sorted bool) {
+// write renders v. topLevel is true only for the outermost value, which is the
+// tools array when the caller is SerializeSorted.
+func (v *Value) write(buf *bytes.Buffer, sorted, topLevel bool) {
 	switch v.Kind {
 	case KindNull:
 		buf.WriteString("null")
@@ -204,14 +209,14 @@ func (v *Value) write(buf *bytes.Buffer, sorted bool) {
 	case KindArray:
 		buf.WriteByte('[')
 		elems := v.Arr
-		if sorted {
+		if sorted && topLevel {
 			elems = sortedArrayCopy(elems)
 		}
 		for i, e := range elems {
 			if i > 0 {
 				buf.WriteByte(',')
 			}
-			e.write(buf, sorted)
+			e.write(buf, sorted, false)
 		}
 		buf.WriteByte(']')
 	case KindObject:
@@ -227,15 +232,19 @@ func (v *Value) write(buf *bytes.Buffer, sorted bool) {
 			}
 			writeJSONString(buf, k)
 			buf.WriteByte(':')
-			v.Fields[k].write(buf, sorted)
+			v.Fields[k].write(buf, sorted, false)
 		}
 		buf.WriteByte('}')
 	}
 }
 
 // sortedArrayCopy orders array members by their "name" field when every member
-// carries one, which is the tools array. Other arrays keep their order because
-// element order is semantic in JSON Schema constructs such as "required".
+// carries one. It is applied to the top-level tools array only. Applying it at
+// every depth would silently sort any nested array of named objects, such as a
+// parameter list inside an inputSchema, and a digest that tolerates reordering
+// there tolerates a real surface change: element order is semantic in JSON
+// Schema, and methodology 8 asks this digest to tolerate a cosmetic reorder of
+// the tools array, nothing further.
 func sortedArrayCopy(in []*Value) []*Value {
 	named := make([]string, len(in))
 	for i, e := range in {

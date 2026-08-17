@@ -50,10 +50,18 @@ func DefaultConfig() Config {
 	}
 }
 
+// offlineCounter is the local o200k_base tokenizer. It is an interface so the
+// failed-count path stays testable: with the embedded BPE ranks in the binary
+// a real counter has no reachable failure mode, and the path it leaves behind
+// is exactly the one that must not publish a measured zero.
+type offlineCounter interface {
+	Count(text string) (int, error)
+}
+
 // Runner executes the sweep.
 type Runner struct {
 	cfg    Config
-	openai *tokens.OpenAI
+	openai offlineCounter
 	claude *tokens.Claude
 	gemini *tokens.Gemini
 }
@@ -83,7 +91,22 @@ func (r *Runner) Run(ctx context.Context, servers []corpus.Server) *report.Docum
 		},
 	}
 	for _, s := range servers {
-		doc.Servers = append(doc.Servers, r.runOne(ctx, s))
+		// An operator abort is not a measurement outcome. Methodology 7's
+		// failure classes are all server-attributable, so a server the sweep
+		// never reached, or was cut short on, publishes no row at all; the run
+		// is stamped aborted instead, which keeps the completed rows publishable
+		// (a failure never blocks a release) without inventing a status for a
+		// server nothing was learned about.
+		if ctx.Err() != nil {
+			doc.Run.Aborted = true
+			break
+		}
+		row := r.runOne(ctx, s)
+		if row.Status == statusAborted {
+			doc.Run.Aborted = true
+			break
+		}
+		doc.Servers = append(doc.Servers, row)
 	}
 	return doc
 }
@@ -96,7 +119,6 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 		Category:       s.Category,
 		Status:         report.StatusOK,
 		Counts:         r.emptyCounts(),
-		Modes:          modes.Unmeasured(),
 		CorpusNotes:    s.Notes(),
 		MeasuredAt:     time.Now().UTC(),
 		MethodologyVer: report.MethodologyVersion,
@@ -192,29 +214,52 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 	counted := surface.Counted()
 	row.ToolCount = len(counted)
 
-	perToolTokens := r.countCells(serverCtx, surface, counted, &row)
-	row.Modes = modes.Compute(row.Counts.OpenAI.TotalSchemaTokens, perToolTokens)
+	// Enumeration can succeed while counting fails. That is still status ok,
+	// because nothing about the server failed, but the row then carries no mode
+	// figures: modes are computed on the o200k_base count (methodology 3.1), and
+	// a missing count must publish as a missing block, never as a measured zero.
+	// Passing 0 into modes.Compute would publish naive {tokens:0,
+	// kind:"measured"} and a code-mode estimate of 1000 exceeding it, which
+	// contradicts the clamp of methodology 3.3.
+	perToolTokens, openaiOK := r.countCells(serverCtx, surface, counted, &row)
+	if openaiOK {
+		set := modes.Compute(row.Counts.OpenAI.TotalSchemaTokens, perToolTokens)
+		row.Modes = &set
+	}
 	return row
 }
 
-func (r *Runner) countCells(ctx context.Context, surface *canon.Surface, counted []canon.Tool, row *report.Server) []int {
+// countCells fills the three provider cells and reports whether the o200k_base
+// cell is a complete measurement, which is the precondition for publishing any
+// mode figure.
+func (r *Runner) countCells(ctx context.Context, surface *canon.Surface, counted []canon.Tool, row *report.Server) ([]int, bool) {
 	oa := report.OpenAICell{PerTool: map[string]int{}, Encoding: tokens.OpenAIEncoding}
 	var perToolTokens []int
 	total, err := r.openai.Count(surface.Canonical)
 	if err != nil {
 		oa.Error = err.Error()
 	} else {
-		oa.Available = true
-		oa.TotalSchemaTokens = total
-		oa.MeasuredAt = time.Now().UTC().Format(time.RFC3339)
+		complete := true
 		for _, t := range counted {
 			n, cerr := r.openai.Count(t.Canonical)
 			if cerr != nil {
+				// A partial per-tool set would make the tool-search average a
+				// figure over an arbitrary prefix of the surface, so the whole
+				// cell is withheld rather than published half measured.
 				oa.Error = cerr.Error()
+				complete = false
 				break
 			}
 			oa.PerTool[t.Name] = n
 			perToolTokens = append(perToolTokens, n)
+		}
+		if complete {
+			oa.Available = true
+			oa.TotalSchemaTokens = total
+			oa.MeasuredAt = time.Now().UTC().Format(time.RFC3339)
+		} else {
+			oa.PerTool = map[string]int{}
+			perToolTokens = nil
 		}
 	}
 	row.Counts.OpenAI = oa
@@ -255,7 +300,7 @@ func (r *Runner) countCells(ctx context.Context, surface *canon.Surface, counted
 	}
 	row.Counts.Gemini = gm
 
-	return perToolTokens
+	return perToolTokens, row.Counts.OpenAI.Available
 }
 
 func (r *Runner) emptyCounts() report.Counts {
@@ -342,7 +387,18 @@ func maintainer(s corpus.Server) string {
 	return "community"
 }
 
-// classify maps a harness error onto a methodology 7 failure class.
+// statusAborted is deliberately not one of report's status constants.
+// Methodology 7 enumerates failure classes that are all properties of the
+// server under measurement; an operator pressing Ctrl-C is a property of the
+// run. A row carrying it is dropped by Run rather than published, so no server
+// is ever labelled with a failure the sweep caused itself.
+const statusAborted = "aborted"
+
+// classify maps a harness error onto a methodology 7 failure class, or onto
+// statusAborted when the sweep was cancelled rather than timed out. The two
+// look identical at the call site (both surface as a non-nil ctx.Err()) and
+// must not: context.DeadlineExceeded is a genuine, publishable exceeded budget,
+// while context.Canceled says nothing measurable about the server.
 func classify(ctx context.Context, err error) (string, string) {
 	if err == nil {
 		return report.StatusOK, ""
@@ -353,8 +409,11 @@ func classify(ctx context.Context, err error) (string, string) {
 	if errors.As(err, &authErr) {
 		return report.StatusAuth, detail
 	}
-	if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
+	if errors.Is(err, context.DeadlineExceeded) || errors.Is(ctx.Err(), context.DeadlineExceeded) {
 		return report.StatusTimeout, detail
+	}
+	if errors.Is(err, context.Canceled) || errors.Is(ctx.Err(), context.Canceled) {
+		return statusAborted, detail
 	}
 	var protoErr *mcpwire.ProtocolError
 	if errors.As(err, &protoErr) {

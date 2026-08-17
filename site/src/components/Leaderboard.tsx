@@ -11,6 +11,7 @@ interface Row {
   server: ServerEntry
   naiveTokens: number | null
   perToolAvg: number | null
+  dataOk: boolean
 }
 
 type SortKey = 'name' | 'tool_count' | 'naive' | 'per_tool_avg' | 'status' | 'protocol_revision'
@@ -36,12 +37,14 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
   const rows: Row[] = useMemo(
     () =>
       servers.map((server) => {
-        const naiveTokens = server.counts.openai_o200k.total_schema_tokens
+        const openaiAvailable = server.counts.openai_o200k.available ?? true
+        const dataOk = server.status === 'ok' && openaiAvailable
+        const naiveTokens = dataOk ? server.counts.openai_o200k.total_schema_tokens : null
         const perToolAvg =
           naiveTokens !== null && server.tool_count !== null && server.tool_count > 0
             ? Math.round(naiveTokens / server.tool_count)
             : null
-        return { server, naiveTokens, perToolAvg }
+        return { server, naiveTokens, perToolAvg, dataOk }
       }),
     [servers],
   )
@@ -49,6 +52,12 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
   const sorted = useMemo(() => {
     const copy = [...rows]
     copy.sort((a, b) => {
+      // Servers with a failed/unavailable count never rank on the merits of
+      // a real measurement — pin them last no matter which column or
+      // direction is active, instead of letting a null-as-zero or
+      // null-as-Infinity artifact place them first.
+      if (a.dataOk !== b.dataOk) return a.dataOk ? -1 : 1
+
       let cmp = 0
       switch (sortKey) {
         case 'name':
@@ -104,14 +113,14 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
           </tr>
         </thead>
         <tbody>
-          {sorted.map(({ server, naiveTokens, perToolAvg }) => (
-            <tr key={server.id} className={server.status !== 'ok' ? 'leaderboard__row--unreachable' : ''}>
+          {sorted.map(({ server, naiveTokens, perToolAvg, dataOk }) => (
+            <tr key={server.id} className={!dataOk ? 'leaderboard__row--unreachable' : ''}>
               <td>{server.name}</td>
               <td>{formatTokens(server.tool_count)}</td>
               <td>{formatTokens(naiveTokens)}</td>
               <td>{formatTokens(perToolAvg)}</td>
               <td>{server.status}</td>
-              <td>{server.protocol_revision ?? '—'}</td>
+              <td>{server.protocol_revision ?? 'n/a'}</td>
             </tr>
           ))}
         </tbody>

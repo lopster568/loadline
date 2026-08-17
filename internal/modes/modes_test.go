@@ -53,20 +53,6 @@ func TestCodeModeClampedToNaive(t *testing.T) {
 	}
 }
 
-func TestUnmeasuredCarriesNoTokenFigures(t *testing.T) {
-	set := Unmeasured()
-	if set.Naive.Tokens != 0 || set.ToolSearch.StubTokens != 0 ||
-		set.ToolSearch.PerToolAvg != 0 || set.CodeMode.TokensEstimate != 0 {
-		t.Errorf("failure row published token figures: %+v", set)
-	}
-	if set.Naive.Kind != KindMeasured || set.ToolSearch.Kind != KindModeled || set.CodeMode.Kind != KindModeled {
-		t.Errorf("failure row lost its kind labels: %+v", set)
-	}
-	if set.ToolSearch.KRange != [2]int{KMin, KMax} {
-		t.Errorf("k_range = %v", set.ToolSearch.KRange)
-	}
-}
-
 func TestEmptySurfaceHasNoPerToolAverage(t *testing.T) {
 	if got := Compute(0, nil).ToolSearch.PerToolAvg; got != 0 {
 		t.Errorf("per_tool_avg = %d, want 0", got)

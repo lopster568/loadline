@@ -1,5 +1,6 @@
 import type { ClientMode, ModelId, ServerEntry } from '../types'
 import { formatTokens } from '../lib/format'
+import { NO_DATA_LABEL } from '../lib/aggregate'
 import './StackBuilder.css'
 
 interface StackBuilderProps {
@@ -21,7 +22,7 @@ const MODE_OPTIONS: { id: ClientMode; label: string; hint: string }[] = [
 
 function statusLabel(server: ServerEntry, runDate: string): string | null {
   if (server.status === 'ok') return null
-  return `no data (${server.status} ${runDate})`
+  return `${NO_DATA_LABEL} (${server.status} ${runDate})`
 }
 
 export default function StackBuilder({

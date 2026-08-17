@@ -22,47 +22,23 @@ type launch struct {
 }
 
 // scratchToken is substituted with the per-run scratch directory in launch
-// arguments that need a filesystem root.
+// arguments that need a filesystem root. A corpus entry writes it into its
+// package args; nothing about which server needs one is known to this file.
 const scratchToken = "{{SCRATCH}}"
 
-// referenceLaunch supplies the launch vector for corpus entries whose package
-// block in servers.yaml is still a "TODO verify at onboarding" stub. Only the
-// two auth-free reference servers are covered, because those are the ones the
-// harness validates itself against; every other stub is a skipped row. The
-// corpus file is owned elsewhere, so these live here until it records them.
-var referenceLaunch = map[string]launch{
-	"fetch": {
-		transport: "stdio",
-		source:    "pypi:mcp-server-fetch (unpinned)",
-		command:   "uvx",
-		args:      []string{"mcp-server-fetch"},
-	},
-}
-
-// referenceExtraArgs supplies required runtime arguments that servers.yaml
-// does not carry. The filesystem reference server refuses to start without at
-// least one allowed directory.
-var referenceExtraArgs = map[string][]string{
-	"filesystem": {scratchToken},
-}
-
-// resolveLaunch picks a transport and builds the acquisition plan. stdio wins
-// over remote when both are declared, because a package version is a stronger
-// pin than a self-reported serverInfo (methodology 1.1).
+// resolveLaunch picks a transport and builds the acquisition plan purely from
+// the corpus entry: no server is special-cased here, so a launch plan is always
+// reviewable in servers.yaml rather than half in Go. stdio wins over remote
+// when both are declared, because a package version is a stronger pin than a
+// self-reported serverInfo (methodology 1.1). An entry whose package block is
+// still a "TODO verify at onboarding" stub stays terminally unresolved.
 func resolveLaunch(s corpus.Server, scratch string) (launch, error) {
 	if s.HasTransport("stdio") || len(s.Package) > 0 {
 		if l, ok := stdioLaunch(s); ok {
-			l.args = append(l.args, referenceExtraArgs[s.ID]...)
 			l.recorded = append([]string(nil), l.args...)
 			l.args = substitute(l.args, scratch)
 			return l, nil
 		}
-	}
-	if ref, ok := referenceLaunch[s.ID]; ok {
-		ref.args = append(append([]string(nil), ref.args...), referenceExtraArgs[s.ID]...)
-		ref.recorded = append([]string(nil), ref.args...)
-		ref.args = substitute(ref.args, scratch)
-		return ref, nil
 	}
 	if s.Endpoint != nil && *s.Endpoint != "" {
 		if s.HasTransport("remote") || len(s.Transport) == 0 {

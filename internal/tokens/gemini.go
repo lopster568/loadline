@@ -1,11 +1,9 @@
 package tokens
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"time"
@@ -55,45 +53,20 @@ func (g *Gemini) Count(ctx context.Context, text string) (int, error) {
 	}
 	url := geminiBase + g.Model + ":countTokens"
 
-	var lastErr error
-	for attempt := 0; attempt < 3; attempt++ {
-		if attempt > 0 {
-			select {
-			case <-ctx.Done():
-				return 0, ctx.Err()
-			case <-time.After(time.Duration(attempt) * 2 * time.Second):
-			}
-		}
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
-		if err != nil {
-			return 0, err
-		}
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("x-goog-api-key", g.APIKey)
-
-		resp, err := g.HTTP.Do(req)
-		if err != nil {
-			lastErr = err
-			continue
-		}
-		raw, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
-		resp.Body.Close()
-		if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500 {
-			lastErr = fmt.Errorf("countTokens http %d: %s", resp.StatusCode, trim(raw))
-			continue
-		}
-		if resp.StatusCode != http.StatusOK {
-			return 0, fmt.Errorf("countTokens http %d: %s", resp.StatusCode, trim(raw))
-		}
-		var parsed struct {
-			TotalTokens int `json:"totalTokens"`
-		}
-		if err := json.Unmarshal(raw, &parsed); err != nil {
-			return 0, fmt.Errorf("countTokens response: %w", err)
-		}
-		return parsed.TotalTokens, nil
+	raw, err := retryPost(ctx, g.HTTP, url, payload, map[string]string{
+		"Content-Type":   "application/json",
+		"x-goog-api-key": g.APIKey,
+	}, "countTokens")
+	if err != nil {
+		return 0, err
 	}
-	return 0, lastErr
+	var parsed struct {
+		TotalTokens int `json:"totalTokens"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		return 0, fmt.Errorf("countTokens response: %w", err)
+	}
+	return parsed.TotalTokens, nil
 }
 
 // Stamp returns the cell provenance for a Gemini count.

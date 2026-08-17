@@ -29,14 +29,23 @@ export interface StackResult {
 
 const TOOL_SEARCH_K_MID = 4
 
+// Shared with StackBuilder's per-server disabled-note copy, so the "no data"
+// wording only lives in one place.
+export const NO_DATA_LABEL = 'no data'
+
 function naiveTokensForModel(server: ServerEntry, model: ModelId): number | null {
-  if (model === 'openai_o200k') return server.counts.openai_o200k.total_schema_tokens
+  if (model === 'openai_o200k') {
+    const available = server.counts.openai_o200k.available ?? true
+    return available ? server.counts.openai_o200k.total_schema_tokens : null
+  }
   if (model === 'claude') return server.counts.claude.available ? server.counts.claude.total_schema_tokens : null
   return server.counts.gemini.available ? server.counts.gemini.total_schema_tokens : null
 }
 
 function toolSearchTokens(server: ServerEntry, k: number): number | null {
-  const { stub_tokens, per_tool_avg } = server.modes.tool_search
+  const toolSearch = server.modes?.tool_search
+  if (!toolSearch) return null
+  const { stub_tokens, per_tool_avg } = toolSearch
   if (stub_tokens === null || per_tool_avg === null) return null
   return stub_tokens + per_tool_avg * k
 }
@@ -70,7 +79,7 @@ export function computeStackResult(
 
   for (const server of selected) {
     if (server.status !== 'ok') {
-      excluded.push({ server, reason: `no data (${server.status} ${runDate})` })
+      excluded.push({ server, reason: `${NO_DATA_LABEL} (${server.status} ${runDate})` })
       continue
     }
 
@@ -83,9 +92,10 @@ export function computeStackResult(
       attribution.push({ server, tokens, fraction: 0 })
       totalTokens += tokens
     } else if (mode === 'tool_search') {
-      const midTokens = toolSearchTokens(server, TOOL_SEARCH_K_MID)
-      const lowTokens = toolSearchTokens(server, server.modes.tool_search.k_range[0])
-      const highTokens = toolSearchTokens(server, server.modes.tool_search.k_range[1])
+      const toolSearch = server.modes?.tool_search ?? null
+      const midTokens = toolSearch ? toolSearchTokens(server, TOOL_SEARCH_K_MID) : null
+      const lowTokens = toolSearch ? toolSearchTokens(server, toolSearch.k_range[0]) : null
+      const highTokens = toolSearch ? toolSearchTokens(server, toolSearch.k_range[1]) : null
       if (midTokens === null || lowTokens === null || highTokens === null) {
         excluded.push({ server, reason: 'no tool-search model (pending)' })
         continue
@@ -95,7 +105,7 @@ export function computeStackResult(
       totalLow += lowTokens
       totalHigh += highTokens
     } else {
-      const tokens = server.modes.code_mode.tokens_estimate
+      const tokens = server.modes?.code_mode.tokens_estimate ?? null
       if (tokens === null) {
         excluded.push({ server, reason: 'no code-mode model (pending)' })
         continue

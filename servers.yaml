@@ -45,6 +45,12 @@ servers:
       stdio:
         type: npm
         name: "@modelcontextprotocol/server-filesystem"
+        # TODO verify at onboarding: pin an exact released version.
+        # The server refuses to start without at least one allowed directory.
+        # {{SCRATCH}} is substituted with the per-run scratch directory at
+        # launch and kept verbatim in the run record, so the recorded argument
+        # vector stays reproducible instead of citing one run's temp path.
+        args: ["{{SCRATCH}}"]
     flags: []
 
   - id: fetch
@@ -58,9 +64,10 @@ servers:
       token_env: null
     package:
       stdio:
-        type: binary
-        # TODO verify at onboarding: pip/uv package name and pinned version
-        # (mcp-server-fetch on PyPI, per docs/server-selection.md B.2 item 3).
+        type: pypi
+        name: mcp-server-fetch
+        # TODO verify at onboarding: pinned version. The package name is
+        # mcp-server-fetch on PyPI, per docs/server-selection.md B.2 item 3.
     flags: []
 
   - id: kubernetes

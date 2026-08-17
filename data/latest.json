@@ -3,7 +3,7 @@
   "sample": false,
   "run": {
     "date": "2026-08-17",
-    "methodology_version": "0.1.0",
+    "methodology_version": "0.1.1",
     "harness_version": "0.1.0"
   },
   "servers": [
@@ -41,7 +41,7 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-17T11:49:52Z"
+          "measured_at": "2026-08-17T12:20:46Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -87,13 +87,13 @@
           "{{SCRATCH}}"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-17T11:49:49.866751237Z"
+        "acquired_at": "2026-08-17T12:20:43.676600585Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-17T11:49:49.86672239Z",
-      "methodology_version": "0.1.0",
+      "measured_at": "2026-08-17T12:20:43.676581403Z",
+      "methodology_version": "0.1.1",
       "harness_version": "0.1.0"
     },
     {
@@ -127,39 +127,21 @@
           "total_schema_tokens": 0
         }
       },
-      "modes": {
-        "naive": {
-          "tokens": 0,
-          "kind": "measured"
-        },
-        "tool_search": {
-          "stub_tokens": 0,
-          "per_tool_avg": 0,
-          "k_range": [
-            3,
-            5
-          ],
-          "kind": "modeled"
-        },
-        "code_mode": {
-          "tokens_estimate": 0,
-          "kind": "modeled"
-        }
-      },
+      "modes": null,
       "category": "dev-tools",
       "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/xeLlrrdGVOLvBKDoLWAT9/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
         "transport": "stdio",
-        "source": "pypi:mcp-server-fetch (unpinned)",
+        "source": "pypi:mcp-server-fetch",
         "command": "uvx",
         "args": [
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-17T11:49:52.548159532Z"
+        "acquired_at": "2026-08-17T12:20:46.585724178Z"
       },
-      "measured_at": "2026-08-17T11:49:52.548146115Z",
-      "methodology_version": "0.1.0",
+      "measured_at": "2026-08-17T12:20:46.585707538Z",
+      "methodology_version": "0.1.1",
       "harness_version": "0.1.0"
     }
   ]

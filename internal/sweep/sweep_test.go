@@ -146,6 +146,9 @@ func TestSweepEndToEndProducesMeasuredRow(t *testing.T) {
 	if row.Counts.OpenAI.PerTool["read_file"] <= 0 {
 		t.Error("per-tool count is not positive")
 	}
+	if row.Modes == nil {
+		t.Fatal("a fully counted row published no mode block")
+	}
 	if row.Modes.Naive.Kind != "measured" || row.Modes.Naive.Tokens != row.Counts.OpenAI.TotalSchemaTokens {
 		t.Errorf("naive mode = %+v", row.Modes.Naive)
 	}
@@ -212,6 +215,126 @@ func TestSweepEndToEndProducesMeasuredRow(t *testing.T) {
 	}
 }
 
+// failingCounter fails the o200k_base count after failAfter successful calls.
+// Call 1 is the whole-surface total; the rest are per-tool.
+type failingCounter struct {
+	failAfter int
+	calls     int
+}
+
+func (f *failingCounter) Count(string) (int, error) {
+	f.calls++
+	if f.calls > f.failAfter {
+		return 0, errors.New("o200k_base ranks unavailable")
+	}
+	return 100, nil
+}
+
+// A server that enumerates but cannot be counted is still status ok, because
+// nothing about the server failed. What it must never do is publish the
+// unmeasured count as a measured zero.
+func TestFailedOpenAICountPublishesNoModes(t *testing.T) {
+	cases := []struct {
+		name      string
+		failAfter int
+	}{
+		{"total_count_fails", 0},
+		{"per_tool_count_fails_partway", 1},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := DefaultConfig()
+			cfg.StepTimeout = 20 * time.Second
+			cfg.ServerTimeout = 40 * time.Second
+			cfg.ScratchDir = t.TempDir()
+
+			r := NewRunner(cfg)
+			r.openai = &failingCounter{failAfter: tc.failAfter}
+			doc := r.Run(context.Background(), []corpus.Server{fakeEntry()})
+			row := doc.Servers[0]
+
+			if row.Status != report.StatusOK {
+				t.Errorf("status = %s (%s), want ok: enumeration succeeded", row.Status, row.Error)
+			}
+			if row.ToolCount != 2 {
+				t.Errorf("tool_count = %d, want the enumerated count", row.ToolCount)
+			}
+			if row.Modes != nil {
+				t.Errorf("modes published without an o200k count: %+v", *row.Modes)
+			}
+			if row.Counts.OpenAI.Available {
+				t.Error("openai cell reported available after a count error")
+			}
+			if row.Counts.OpenAI.Error == "" {
+				t.Error("openai cell dropped the count error")
+			}
+			if row.Counts.OpenAI.TotalSchemaTokens != 0 || len(row.Counts.OpenAI.PerTool) != 0 {
+				t.Errorf("openai cell published figures anyway: %+v", row.Counts.OpenAI)
+			}
+
+			raw, err := json.Marshal(doc)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if strings.Contains(string(raw), `"measured"`) {
+				t.Errorf("an uncounted row published a measured figure: %s", raw)
+			}
+			var shape map[string]any
+			if err := json.Unmarshal(raw, &shape); err != nil {
+				t.Fatal(err)
+			}
+			server := shape["servers"].([]any)[0].(map[string]any)
+			m, ok := server["modes"]
+			if !ok {
+				t.Fatal("published row dropped the modes key entirely")
+			}
+			if m != nil {
+				t.Errorf("modes = %v, want null", m)
+			}
+		})
+	}
+}
+
+// An operator abort is not a measurement. Methodology 7's classes are all
+// server-attributable, so an interrupted sweep publishes the completed rows and
+// a run-level marker, never a bogus timeout row for a server it never reached.
+func TestOperatorAbortPublishesNoRowForUnsweptServers(t *testing.T) {
+	cfg := DefaultConfig()
+	cfg.StepTimeout = 20 * time.Second
+	cfg.ServerTimeout = 40 * time.Second
+	cfg.ScratchDir = t.TempDir()
+
+	first := fakeEntry()
+	second := fakeEntry()
+	second.ID = "fake-two"
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Cancel once the first server has produced its row, standing in for a
+	// Ctrl-C partway through a sweep.
+	cfg.Logf = func(string, ...any) {}
+	r := NewRunner(cfg)
+	doc := r.Run(ctx, []corpus.Server{first})
+	if len(doc.Servers) != 1 || doc.Run.Aborted {
+		t.Fatalf("uninterrupted run = %d rows, aborted=%v", len(doc.Servers), doc.Run.Aborted)
+	}
+
+	cancel()
+	aborted := r.Run(ctx, []corpus.Server{first, second})
+	if !aborted.Run.Aborted {
+		t.Error("an interrupted run was not marked aborted")
+	}
+	for _, row := range aborted.Servers {
+		if row.Status == report.StatusTimeout {
+			t.Errorf("%s published a timeout row for an operator abort", row.ID)
+		}
+		if row.Status == statusAborted {
+			t.Errorf("%s published an abort row instead of being dropped", row.ID)
+		}
+	}
+}
+
 func TestSweepFailureRowsDoNotStopTheSweep(t *testing.T) {
 	cfg := DefaultConfig()
 	cfg.StepTimeout = 5 * time.Second
@@ -269,9 +392,8 @@ func TestSweepFailureRowsDoNotStopTheSweep(t *testing.T) {
 		if row.Status == report.StatusOK {
 			continue
 		}
-		if row.Modes.Naive.Tokens != 0 || row.Modes.ToolSearch.StubTokens != 0 ||
-			row.Modes.CodeMode.TokensEstimate != 0 {
-			t.Errorf("%s failure row published token figures: %+v", row.ID, row.Modes)
+		if row.Modes != nil {
+			t.Errorf("%s failure row published a mode block: %+v", row.ID, *row.Modes)
 		}
 		if row.Counts.OpenAI.Available || row.Counts.Claude.Available || row.Counts.Gemini.Available {
 			t.Errorf("%s failure row published an available cell", row.ID)
@@ -328,8 +450,10 @@ func TestPypiConstraintIsRecordedInThePin(t *testing.T) {
 }
 
 func TestClassify(t *testing.T) {
-	expired, cancel := context.WithCancel(context.Background())
+	cancelled, cancel := context.WithCancel(context.Background())
 	cancel()
+	expired, expireCancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
+	defer expireCancel()
 
 	cases := []struct {
 		name string
@@ -339,8 +463,12 @@ func TestClassify(t *testing.T) {
 	}{
 		{"auth_http", context.Background(), &mcpwire.AuthError{Status: http.StatusUnauthorized, Body: "no"}, report.StatusAuth},
 		{"protocol", context.Background(), &mcpwire.ProtocolError{Detail: "malformed"}, report.StatusProtocolError},
-		{"deadline", context.Background(), context.DeadlineExceeded, report.StatusTimeout},
-		{"cancelled_ctx", expired, errors.New("read: interrupted"), report.StatusTimeout},
+		// A genuine exceeded budget is a publishable methodology 7 class; an
+		// operator cancel is not, and the two must not collapse together.
+		{"deadline_err", context.Background(), context.DeadlineExceeded, report.StatusTimeout},
+		{"deadline_ctx", expired, errors.New("read: interrupted"), report.StatusTimeout},
+		{"cancelled_err", context.Background(), context.Canceled, statusAborted},
+		{"cancelled_ctx", cancelled, errors.New("read: interrupted"), statusAborted},
 		{"missing_exe", context.Background(), errors.New(`exec: "npx": executable file not found in $PATH`), report.StatusUnreachable},
 		{"refused", context.Background(), errors.New("dial tcp 127.0.0.1:1: connect: connection refused"), report.StatusUnreachable},
 		{"dns", context.Background(), errors.New(`dial tcp: lookup example.invalid: no such host`), report.StatusUnreachable},
@@ -392,13 +520,29 @@ func TestResolveLaunchFromCorpus(t *testing.T) {
 		}
 	})
 
-	t.Run("fetch_falls_back_to_the_reference_launch", func(t *testing.T) {
+	t.Run("fetch_resolves_from_the_corpus_package_block", func(t *testing.T) {
 		l, err := resolveLaunch(byID["fetch"], "/scratch")
 		if err != nil {
 			t.Fatalf("resolve: %v", err)
 		}
 		if l.command != "uvx" || fmt.Sprint(l.args) != fmt.Sprint([]string{"mcp-server-fetch"}) {
 			t.Errorf("launch = %+v", l)
+		}
+		if l.source != "pypi:mcp-server-fetch" {
+			t.Errorf("source = %q, the pin must come from the corpus", l.source)
+		}
+	})
+
+	// Every launch plan lives in servers.yaml. A per-server table in Go would
+	// put half the acquisition record outside the file the run record cites.
+	t.Run("no_server_is_special_cased_in_go", func(t *testing.T) {
+		bare := corpus.Server{ID: "filesystem", Transport: []string{"stdio"}}
+		if _, err := resolveLaunch(bare, "/scratch"); err == nil {
+			t.Error("filesystem resolved with an empty corpus package block")
+		}
+		bare.ID = "fetch"
+		if _, err := resolveLaunch(bare, "/scratch"); err == nil {
+			t.Error("fetch resolved with an empty corpus package block")
 		}
 	})
 

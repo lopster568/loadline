@@ -53,19 +53,12 @@ type Set struct {
 	CodeMode   CodeMode   `json:"code_mode"`
 }
 
-// Unmeasured is the mode block for a failure row. Methodology 7 gives a failed
-// server the same stamp fields as a successful one minus the token counts, so
-// the published figures are zero rather than the modeled constants.
-func Unmeasured() Set {
-	return Set{
-		Naive:      Naive{Kind: KindMeasured},
-		ToolSearch: ToolSearch{KRange: [2]int{KMin, KMax}, Kind: KindModeled},
-		CodeMode:   CodeMode{Kind: KindModeled},
-	}
-}
-
 // Compute derives the three modes from the canonical-serialization total and
-// the per-tool counts.
+// the per-tool counts. It is called only when the o200k_base count actually
+// succeeded: a row with no o200k figure publishes no mode block at all, rather
+// than a zero labelled "measured". There is deliberately no zero-valued
+// constructor here, because every value one could return would be a figure the
+// harness did not measure.
 func Compute(canonicalTotal int, perTool []int) Set {
 	return Set{
 		Naive: Naive{Tokens: canonicalTotal, Kind: KindMeasured},

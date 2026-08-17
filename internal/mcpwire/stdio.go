@@ -28,6 +28,15 @@ type stdioTransport struct {
 	lines   chan []byte
 	readErr chan error
 
+	// done is closed by Close and unparks the stdout reader. Without it a
+	// server that keeps writing after the harness has abandoned its wait fills
+	// the 32-line buffer and parks the reader on the send forever, leaking a
+	// goroutine and the subprocess pipe behind it for the rest of the sweep.
+	done      chan struct{}
+	closeOnce sync.Once
+	// readerExited is closed when the stdout reader returns.
+	readerExited chan struct{}
+
 	mu     sync.Mutex
 	stderr strings.Builder
 
@@ -60,25 +69,35 @@ func DialStdio(ctx context.Context, cfg StdioConfig) (Transport, error) {
 	}
 
 	t := &stdioTransport{
-		cmd:     cmd,
-		stdin:   stdin,
-		lines:   make(chan []byte, 32),
-		readErr: make(chan error, 1),
-		pending: map[int64][]byte{},
+		cmd:          cmd,
+		stdin:        stdin,
+		lines:        make(chan []byte, 32),
+		readErr:      make(chan error, 1),
+		done:         make(chan struct{}),
+		readerExited: make(chan struct{}),
+		pending:      map[int64][]byte{},
 	}
 
 	go func() {
+		defer close(t.readerExited)
 		sc := bufio.NewScanner(stdout)
 		sc.Buffer(make([]byte, 0, 64<<10), 64<<20)
 		for sc.Scan() {
 			line := append([]byte(nil), sc.Bytes()...)
-			t.lines <- line
+			select {
+			case t.lines <- line:
+			case <-t.done:
+				return
+			}
 		}
-		if err := sc.Err(); err != nil {
-			t.readErr <- err
-			return
+		err := sc.Err()
+		if err == nil {
+			err = io.EOF
 		}
-		t.readErr <- io.EOF
+		select {
+		case t.readErr <- err:
+		case <-t.done:
+		}
 	}()
 
 	go func() {
@@ -172,6 +191,10 @@ func (t *stdioTransport) Close() error {
 		return nil
 	}
 	t.closed = true
+	// Unpark the reader before killing the process: cmd.Wait closes the stdout
+	// pipe, and a reader parked on a channel send would never come back round
+	// to notice.
+	t.closeOnce.Do(func() { close(t.done) })
 	_ = t.stdin.Close()
 	if t.cmd.Process != nil {
 		_ = t.cmd.Process.Kill()

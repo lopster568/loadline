@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 )
@@ -328,4 +329,60 @@ func TestCallRespectsContext(t *testing.T) {
 	if _, err := testClient(tr).Negotiate(ctx); err == nil {
 		t.Fatal("expected an error")
 	}
+}
+
+// A literal JSON null result is four bytes on the wire, so it clears a
+// len(result) == 0 guard and then unmarshals into any result shape as a silent
+// no-op. On tools/list that would publish an ok row with tool_count 0.
+func TestNullResultIsAProtocolError(t *testing.T) {
+	t.Run("tools_list", func(t *testing.T) {
+		tr := &scriptedTransport{handle: func(method string, _ json.RawMessage) (any, *RPCError, error) {
+			switch method {
+			case "server/discover":
+				return nil, &RPCError{Code: CodeMethodNotFound, Message: "Method not found"}, nil
+			case "initialize":
+				return map[string]any{
+					"protocolVersion": Rev20250618,
+					"serverInfo":      map[string]any{"name": "null-result", "version": "1.0.0"},
+				}, nil, nil
+			}
+			// tools/list replies {"result": null}.
+			return nil, nil, nil
+		}}
+		c := testClient(tr)
+		if _, err := c.Negotiate(context.Background()); err != nil {
+			t.Fatalf("negotiate: %v", err)
+		}
+		enum, err := c.ListTools(context.Background())
+		if err == nil {
+			t.Fatalf("a null tools/list result was accepted: %+v", enum)
+		}
+		var protoErr *ProtocolError
+		if !errors.As(err, &protoErr) {
+			t.Fatalf("err = %T (%v), want a protocol error", err, err)
+		}
+		if !strings.Contains(err.Error(), "null result") {
+			t.Errorf("error does not name the cause: %v", err)
+		}
+		if enum != nil && len(enum.RawTools) != 0 {
+			t.Errorf("tools were harvested from a null result: %v", enum.RawTools)
+		}
+	})
+
+	t.Run("discover_and_initialize", func(t *testing.T) {
+		// Every method replies {"result": null}. server/discover falling through
+		// to the legacy probe is methodology 1.3 behaviour; initialize doing the
+		// same must not then produce an empty negotiation.
+		tr := &scriptedTransport{handle: func(string, json.RawMessage) (any, *RPCError, error) {
+			return nil, nil, nil
+		}}
+		neg, err := testClient(tr).Negotiate(context.Background())
+		if err == nil {
+			t.Fatalf("a null handshake result was accepted: %+v", neg)
+		}
+		var protoErr *ProtocolError
+		if !errors.As(err, &protoErr) {
+			t.Fatalf("err = %T (%v), want a protocol error", err, err)
+		}
+	})
 }

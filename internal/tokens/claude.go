@@ -1,11 +1,9 @@
 package tokens
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"time"
@@ -87,57 +85,24 @@ func (c *Claude) post(ctx context.Context, body map[string]any) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	var lastErr error
-	for attempt := 0; attempt < 3; attempt++ {
-		if attempt > 0 {
-			select {
-			case <-ctx.Done():
-				return 0, ctx.Err()
-			case <-time.After(time.Duration(attempt) * 2 * time.Second):
-			}
-		}
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, claudeEndpoint, bytes.NewReader(payload))
-		if err != nil {
-			return 0, err
-		}
-		req.Header.Set("content-type", "application/json")
-		req.Header.Set("x-api-key", c.APIKey)
-		req.Header.Set("anthropic-version", AnthropicVersion)
-
-		resp, err := c.HTTP.Do(req)
-		if err != nil {
-			lastErr = err
-			continue
-		}
-		raw, _ := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
-		resp.Body.Close()
-		if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500 {
-			lastErr = fmt.Errorf("count_tokens http %d: %s", resp.StatusCode, trim(raw))
-			continue
-		}
-		if resp.StatusCode != http.StatusOK {
-			return 0, fmt.Errorf("count_tokens http %d: %s", resp.StatusCode, trim(raw))
-		}
-		var parsed struct {
-			InputTokens int `json:"input_tokens"`
-		}
-		if err := json.Unmarshal(raw, &parsed); err != nil {
-			return 0, fmt.Errorf("count_tokens response: %w", err)
-		}
-		return parsed.InputTokens, nil
+	raw, err := retryPost(ctx, c.HTTP, claudeEndpoint, payload, map[string]string{
+		"content-type":      "application/json",
+		"x-api-key":         c.APIKey,
+		"anthropic-version": AnthropicVersion,
+	}, "count_tokens")
+	if err != nil {
+		return 0, err
 	}
-	return 0, lastErr
+	var parsed struct {
+		InputTokens int `json:"input_tokens"`
+	}
+	if err := json.Unmarshal(raw, &parsed); err != nil {
+		return 0, fmt.Errorf("count_tokens response: %w", err)
+	}
+	return parsed.InputTokens, nil
 }
 
 // Stamp returns the cell provenance for a Claude count.
 func (c *Claude) Stamp() Stamp {
 	return Stamp{Model: c.Model, MeasuredAt: nowUTC()}
-}
-
-func trim(b []byte) string {
-	s := string(bytes.TrimSpace(b))
-	if len(s) > 400 {
-		return s[:400] + "..."
-	}
-	return s
 }

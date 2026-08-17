@@ -1,6 +1,7 @@
 package mcpwire
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -284,8 +285,18 @@ func (c *Client) callRaw(ctx context.Context, method string, params any) (*rawCa
 	if resp.Error != nil {
 		return &rawCall{wire: wire}, resp.Error, nil
 	}
-	if len(resp.Result) == 0 {
+	// A literal JSON null is four bytes, so it clears a length check while
+	// unmarshalling into any result shape as a silent no-op. On tools/list that
+	// would publish an ok row with zero tools; on server/discover or initialize
+	// it would publish an empty negotiation. JSON-RPC 2.0 requires exactly one
+	// of result or error, and none of the MCP methods the harness calls has a
+	// null result, so both cases are protocol errors.
+	result := bytes.TrimSpace(resp.Result)
+	if len(result) == 0 {
 		return nil, nil, &ProtocolError{Detail: fmt.Sprintf("response to %s carries neither result nor error", method)}
+	}
+	if bytes.Equal(result, []byte("null")) {
+		return nil, nil, &ProtocolError{Detail: fmt.Sprintf("response to %s carries a null result, which is neither a result nor an error", method)}
 	}
 	return &rawCall{wire: wire, result: resp.Result}, nil, nil
 }

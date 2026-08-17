@@ -64,6 +64,13 @@ export default function App() {
     }
   }
 
+  // Computed here (before the loading/error early returns) so the hook order
+  // stays stable across renders; null until data has actually loaded.
+  const result = useMemo(() => {
+    if (load.status !== 'ready') return null
+    return computeStackResult(load.data.servers, Array.from(selectedIds), mode, model, load.pricing, load.data.run.date)
+  }, [load, selectedIds, mode, model])
+
   if (load.status === 'loading') {
     return (
       <div className="container app-loading">
@@ -80,8 +87,10 @@ export default function App() {
     )
   }
 
-  const { data, pricing } = load
-  const result = computeStackResult(data.servers, Array.from(selectedIds), mode, model, pricing, data.run.date)
+  const { data } = load
+  // result is non-null here: load.status === 'ready' at this point, and the
+  // useMemo above computes it whenever load is 'ready'.
+  const stackResult = result!
   const unreachableCount = data.servers.filter((s) => s.status === 'unreachable').length
 
   return (
@@ -119,7 +128,7 @@ export default function App() {
                 {copyStatus === 'copied' ? 'Copied' : 'Copy link'}
               </button>
             </div>
-            <ResultsPanel result={result} selectedCount={selectedIds.size} />
+            <ResultsPanel result={stackResult} selectedCount={selectedIds.size} />
           </div>
         </section>
 

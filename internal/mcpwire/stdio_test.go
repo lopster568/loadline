@@ -30,6 +30,8 @@ func TestMain(m *testing.M) {
 	case "crash":
 		fmt.Fprintln(os.Stderr, "fatal: missing required argument")
 		os.Exit(1)
+	case "flood":
+		runFloodServer()
 	}
 	os.Exit(0)
 }
@@ -184,5 +186,55 @@ func TestStdioMissingExecutable(t *testing.T) {
 	_, err := DialStdio(ctx, StdioConfig{Command: "loadline-no-such-binary-xyz"})
 	if err == nil {
 		t.Fatal("expected a launch failure")
+	}
+}
+
+// runFloodServer writes protocol-shaped frames the harness never asked for,
+// standing in for a server that keeps talking after a call has been abandoned.
+func runFloodServer() {
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
+	for i := 0; ; i++ {
+		if _, err := fmt.Fprintf(out, "{\"jsonrpc\":\"2.0\",\"id\":%d,\"result\":{}}\n", 9000+i); err != nil {
+			return
+		}
+		if err := out.Flush(); err != nil {
+			return
+		}
+	}
+}
+
+// The stdout reader must not outlive the transport. A server that keeps writing
+// fills the 32-line buffer, and without a stop select the reader parks on the
+// send forever: one leaked goroutine and one held pipe per swept server.
+func TestStdoutReaderExitsWhenTheTransportCloses(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	tr, err := DialStdio(ctx, StdioConfig{
+		Command: os.Args[0],
+		Env:     append(os.Environ(), fakeServerEnv+"=flood"),
+	})
+	if err != nil {
+		t.Fatalf("dial: %v", err)
+	}
+	st := tr.(*stdioTransport)
+
+	// Wait for the buffer to fill so the reader is parked on the send, which is
+	// the state the leak was in.
+	deadline := time.Now().Add(5 * time.Second)
+	for len(st.lines) < cap(st.lines) && time.Now().Before(deadline) {
+		time.Sleep(10 * time.Millisecond)
+	}
+	if len(st.lines) < cap(st.lines) {
+		t.Fatalf("flood did not fill the buffer: %d/%d", len(st.lines), cap(st.lines))
+	}
+
+	if err := tr.Close(); err != nil {
+		t.Fatalf("close: %v", err)
+	}
+	select {
+	case <-st.readerExited:
+	case <-time.After(5 * time.Second):
+		t.Fatal("stdout reader is still parked after Close; the goroutine leaked")
 	}
 }

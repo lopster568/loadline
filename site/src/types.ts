@@ -19,6 +19,9 @@ export interface Provenance {
 }
 
 export interface OpenAICounts {
+  // Absent in older data files, which predate this field; treated as
+  // available: true for backward compat (see naiveTokensForModel).
+  available?: boolean
   total_schema_tokens: number | null
   per_tool: Record<string, number>
 }
@@ -76,7 +79,9 @@ export interface ServerEntry {
   protocol_revision: string | null
   provenance: Provenance
   counts: ServerCounts
-  modes: ServerModes
+  // Null/omitted when openai_o200k is unavailable: naive/tool_search/code_mode
+  // estimates all derive from the o200k schema-token count.
+  modes?: ServerModes | null
 }
 
 export interface LoadlineData {

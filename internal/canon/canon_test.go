@@ -2,6 +2,7 @@ package canon
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -71,6 +72,33 @@ func TestToolOrderChangesWireHashNotSortedHash(t *testing.T) {
 	}
 	if fwd.SortedSHA256 != rev.SortedSHA256 {
 		t.Error("sorted hash must tolerate tool ordering changes")
+	}
+}
+
+// The name sort exists to tolerate a cosmetic reorder of the tools array. A
+// nested array of named objects inside an inputSchema is not that: reordering
+// it is a real surface change, and the sorted digest has to catch it or it
+// reports "nothing moved" about a surface that did.
+func TestNestedNamedArrayReorderChangesTheSortedHash(t *testing.T) {
+	const shape = `{"name":"a","inputSchema":{"type":"object","properties":{"filters":{"type":"array","prefixItems":[%s,%s]}}}}`
+	first := `{"name":"alpha","const":1}`
+	second := `{"name":"beta","const":2}`
+	fwd := mustCanon(t, fmt.Sprintf(shape, first, second))
+	rev := mustCanon(t, fmt.Sprintf(shape, second, first))
+
+	if fwd.CanonicalSHA256 == rev.CanonicalSHA256 {
+		t.Fatal("the order-preserving hash missed a nested reorder")
+	}
+	if fwd.SortedSHA256 == rev.SortedSHA256 {
+		t.Error("the sorted hash tolerated a reorder inside inputSchema; only the tools array may be name-sorted")
+	}
+
+	// The tolerance methodology 8 does ask for still holds with such an array
+	// present: reordering the tools themselves must not move the sorted hash.
+	toolA := fmt.Sprintf(shape, first, second)
+	toolB := strings.Replace(toolA, `"name":"a"`, `"name":"z"`, 1)
+	if mustCanon(t, toolA, toolB).SortedSHA256 != mustCanon(t, toolB, toolA).SortedSHA256 {
+		t.Error("sorted hash stopped tolerating a tools-array reorder")
 	}
 }
 
