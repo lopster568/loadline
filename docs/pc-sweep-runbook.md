@@ -58,7 +58,7 @@ publish it as a normal ranked row; the row publishes as `partial_surface`
 
 ### Dev tools
 
-**github** — env var `GITHUB_TOKEN`.
+**github**: env var `GITHUB_TOKEN`.
 - Create a free GitHub account token: classic Personal Access Token, broad
   scopes (repo, workflow, read:org, and the other scopes the toolsets in
   `github/github-mcp-server`'s docs require), or go through the server's
@@ -71,13 +71,13 @@ publish it as a normal ranked row; the row publishes as `partial_surface`
   flow instead, not the classic PAT, before this row can publish as a
   ranking.
 
-**filesystem** — no auth. Already validated (`cmd/loadline/README-validation.md`,
+**filesystem**: no auth. Already validated (`cmd/loadline/README-validation.md`,
 14 tools, `ok`). Nothing to do here.
 
-**fetch** — no auth, but broken upstream. See section 3 below before
+**fetch**: no auth, but broken upstream. See section 3 below before
 touching this row.
 
-**kubernetes** — no single env var; `servers.yaml` leaves the credential
+**kubernetes**: no single env var; `servers.yaml` leaves the credential
 convention as a TODO. Use a local `kind` cluster, no cloud account needed:
 ```
 kind create cluster --name loadline
@@ -89,7 +89,7 @@ mounted kubeconfig path vs in-cluster service account) against
 `internal/sweep/acquire.go` before the run; it is not yet resolved there
 either (see section 4).
 
-**cloudflare** — env var `CLOUDFLARE_API_TOKEN`.
+**cloudflare**: env var `CLOUDFLARE_API_TOKEN`.
 - Create a free Cloudflare account, then an API token (dashboard, My
   Profile, API Tokens), scoped to the products you intend to exercise.
 - Known open question (not yet a credential blocker, but a scope-of-run
@@ -99,7 +99,7 @@ either (see section 4).
 
 ### Productivity / SaaS
 
-**notion** — env var `NOTION_TOKEN`.
+**notion**: env var `NOTION_TOKEN`.
 - Free Notion workspace, then an internal integration token at
   notion.so/my-integrations.
 - Share at least one page or database with the integration. This affects
@@ -111,7 +111,7 @@ either (see section 4).
   tool list is plan-tier-invariant. Worth a quick tool_count sanity check
   against the documented 22 tools (v2.0.0) after the run.
 
-**slack** — env var `SLACK_MCP_XOXC_TOKEN`.
+**slack**: env var `SLACK_MCP_XOXC_TOKEN`.
 - THIS IS A DECISION FOR ROSHAN, NOT SOMETHING TO RESOLVE UNILATERALLY
   (B.3, `docs/server-selection.md`: "Roshan's decision: stealth mode risks a
   ToS question, scoped OAuth mode is a genuine partial surface"). Two
@@ -133,7 +133,7 @@ either (see section 4).
   2026-07-16). Re-check the actual default branch's last commit before
   trusting Gate 4 (active maintenance) on this server.
 
-**linear** — env var `LINEAR_API_KEY`.
+**linear**: env var `LINEAR_API_KEY`.
 - Free Linear workspace, then a personal API key from Linear settings.
 - REQUIRED VERIFICATION (B.3, resolvable): use the full `mcp.linear.app/mcp`
   endpoint with a write-scoped credential. Do NOT point the harness at
@@ -144,14 +144,14 @@ either (see section 4).
   vs. API key vs. enterprise SAML/Okta); pick API key (matches the declared
   `LINEAR_API_KEY` env var) unless there's a reason to prefer OAuth.
 
-**stripe** — env var `STRIPE_API_KEY`.
+**stripe**: env var `STRIPE_API_KEY`.
 - Free Stripe account, then a TEST-MODE restricted API key (starts
   `sk_test_`). Do not use a live key. Stripe's own docs recommend a
   restricted key to limit what the agent can actually do; the doc notes
   this affects capability, not the 11-tool `tools/list` count, so a
   restricted test key is fine for Tier 1 measurement.
 
-**figma** — everything is an unresolved TODO in `servers.yaml`: auth,
+**figma**: everything is an unresolved TODO in `servers.yaml`: auth,
 transport, package, tool count. Pre-run research task, not a quick
 credential grab:
 1. Resolve the primary repo first: official `figma/mcp-server-guide` vs.
@@ -166,7 +166,7 @@ credential grab:
 
 ### Observability
 
-**sentry** — env var `SENTRY_ACCESS_TOKEN`.
+**sentry**: env var `SENTRY_ACCESS_TOKEN`.
 - Free Sentry developer account, then an access token via OAuth (broad
   scope) or a personal auth token.
 - REQUIRED VERIFICATION (B.3): source-confirmed partial-surface risk. 54
@@ -177,7 +177,7 @@ credential grab:
   whether it's present or absent in the live run rather than assuming
   either way.
 
-**jaeger** — no credential needed for the Jaeger backend path
+**jaeger**: no credential needed for the Jaeger backend path
 (`BACKEND_URL=http://localhost:16686`; a token is only needed for
 Traceloop's own backend, which this corpus does not use). Stand up a local
 Jaeger instance:
@@ -193,7 +193,7 @@ default; pin Jaeger). The package block itself is a TODO in `servers.yaml`
 
 ### Data
 
-**postgres** — env var `DATABASE_URI`. Local container, no external account:
+**postgres**: env var `DATABASE_URI`. Local container, no external account:
 ```
 docker run --rm -d --name loadline-pg \
   -e POSTGRES_PASSWORD=loadline -e POSTGRES_DB=loadline \
@@ -207,7 +207,7 @@ partial-surface finding when it is actually just the wrong launch flag.
 Confirm the harness (or its args) actually passes the unrestricted flag
 before the run.
 
-**context7** — everything is an unresolved TODO in `servers.yaml`: auth,
+**context7**: everything is an unresolved TODO in `servers.yaml`: auth,
 transport, package, tool count. Same treatment as figma: research the
 `upstash/context7` repo's docs first (a free API key is the likely shape,
 Context7 has historically offered both an unauthenticated mode and an
@@ -217,7 +217,7 @@ required, then run a `tools/list` pass to fill in the tool count.
 
 ### Browser automation
 
-**playwright** — no auth. Nothing to do here.
+**playwright**: no auth. Nothing to do here.
 
 ---
 

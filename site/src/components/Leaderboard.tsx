@@ -53,7 +53,7 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
     const copy = [...rows]
     copy.sort((a, b) => {
       // Servers with a failed/unavailable count never rank on the merits of
-      // a real measurement — pin them last no matter which column or
+      // a real measurement, pin them last no matter which column or
       // direction is active, instead of letting a null-as-zero or
       // null-as-Infinity artifact place them first.
       if (a.dataOk !== b.dataOk) return a.dataOk ? -1 : 1
