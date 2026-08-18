@@ -160,8 +160,9 @@ export function computeStackResult(
     if (priceEntry) {
       const pricePerToken = priceEntry.input_price_per_mtok / 1_000_000
       const minPrefix = priceEntry.min_cacheable_prefix_tokens ?? null
+      const writeMultiplier = priceEntry.cache_write_multiplier ?? pricing.cache_write_multiplier
       dollars = {
-        coldWrite: totalTokens * pricePerToken * pricing.cache_write_multiplier,
+        coldWrite: totalTokens * pricePerToken * writeMultiplier,
         cacheRead: totalTokens * pricePerToken * pricing.cache_read_multiplier,
         minCacheablePrefixTokens: minPrefix,
         cacheReadAchievable: minPrefix === null || totalTokens >= minPrefix,

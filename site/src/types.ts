@@ -132,6 +132,12 @@ export interface ModelPriceEntry {
   // "no minimum on file", never as zero.
   min_cacheable_prefix_tokens?: number
   min_cacheable_prefix_note?: string
+  // Per-model override for PricingData.cache_write_multiplier. Most providers'
+  // cache-write premium matches the global default, but some (e.g. Gemini
+  // explicit caching) charge no premium on the populating write, only a
+  // separate storage fee this site does not model. Absent means "use the
+  // global multiplier," so older pricing files behave exactly as before.
+  cache_write_multiplier?: number
 }
 
 export interface PricingData {

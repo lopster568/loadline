@@ -1,36 +1,39 @@
 {
-  "as_of": "2026-08-17",
-  "label": "verify before publish",
+  "as_of": "2026-08-18",
+  "label": "verified against provider pricing pages 2026-08-18",
   "cache_read_multiplier": 0.1,
   "cache_write_multiplier": 1.25,
   "models": {
     "claude": {
       "label": "Claude Opus 5",
-      "input_price_per_mtok": 15.0,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live. Verify against the published Anthropic price page before any public number ships.",
+      "input_price_per_mtok": 5.0,
+      "notes": "Base input price for Claude Opus 5, the harness-pinned Claude model (internal/tokens/claude.go DefaultClaudeModel = claude-opus-5). 5-minute cache write $6.25/MTok = 1.25x; cache read (hit) $0.50/MTok = 0.1x. Both match this file's global multipliers exactly, confirmed against the official model pricing table.",
       "min_cacheable_prefix_tokens": 512,
-      "min_cacheable_prefix_note": "Methodology v0 section 4, assumption 3: 512 tokens on Claude Opus 5."
-    },
-    "claude_sonnet": {
-      "label": "Claude Sonnet 5",
-      "input_price_per_mtok": 3.0,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
-      "min_cacheable_prefix_tokens": 1024,
-      "min_cacheable_prefix_note": "Methodology v0 section 4, assumption 3 records 1024 for Claude models other than Opus 5, without naming them. Verify before publish."
+      "min_cacheable_prefix_note": "Confirmed on the Anthropic prompt caching docs: Claude Opus 5 (and Fable 5, Mythos 5) require 512 tokens minimum to cache. Other current Claude tiers (e.g. Sonnet 5) require 1024; this pricing.json only carries a Claude entry for the pinned Opus 5 model, so no per-tier branching is needed here."
     },
     "openai_o200k": {
       "label": "GPT (o200k tokenizer family)",
-      "input_price_per_mtok": 2.5,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
-      "min_cacheable_prefix_tokens": 512,
-      "min_cacheable_prefix_note": "No documented minimum on file for this provider. Placeholder carried over from the Claude Opus 5 figure. Verify before publish."
+      "input_price_per_mtok": 5.0,
+      "notes": "The harness only pins the o200k_base tokenizer (internal/tokens/openai.go), not a specific chat model, so no single model ID is canonical. Priced here against GPT-5.6 Sol, OpenAI's current flagship reasoning model on the o200k-family tokenizer, chosen to stay a fair top-tier peer of Claude Opus 5 and Gemini 3.1 Pro Preview rather than a cheaper tier (Terra/Luna/gpt-4.1/etc). Cached input $0.50/MTok = 0.1x, matches this file's global read multiplier. For GPT-5.6 and later, cache writes bill at 1.25x the uncached input rate (matches this file's global write multiplier); earlier GPT generations charged no write premium, which is why this entry does not need a cache_write_multiplier override.",
+      "min_cacheable_prefix_tokens": 1024,
+      "min_cacheable_prefix_note": "OpenAI's automatic prompt caching activates at 1024 tokens minimum for GPT-5.6 and later (a strict cutoff per the docs); earlier model generations varied 1024-2048 and could cache inconsistently just above 1024. Confirmed on the OpenAI prompt caching guide."
     },
     "gemini": {
-      "label": "Gemini 2.5 Pro",
-      "input_price_per_mtok": 1.25,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
-      "min_cacheable_prefix_tokens": 512,
-      "min_cacheable_prefix_note": "No documented minimum on file for this provider. Placeholder carried over from the Claude Opus 5 figure. Verify before publish."
+      "label": "Gemini 3.1 Pro Preview",
+      "input_price_per_mtok": 2.0,
+      "notes": "Standard input price for prompts <= 200k tokens (the >200k tier is $4.00/MTok and is not modeled here; loadline's own context window constant is 200k, see aggregate.ts CONTEXT_WINDOW). Cached content price $0.20/MTok <= 200k = 0.1x, matches this file's global read multiplier. Gemini's pricing page lists no separate premium for the write that first populates the cache (billed at the standard input rate, i.e. 1.0x), only a distinct ongoing storage fee of $4.50/MTok/hour that this site does not model as a dollar figure. cache_write_multiplier below overrides the global 1.25x default for this reason.",
+      "min_cacheable_prefix_tokens": 4096,
+      "min_cacheable_prefix_note": "Confirmed on the Gemini API context caching docs: Gemini 3.1 Pro Preview requires 4096 tokens minimum (same as the 3.x Flash tiers; Gemini 2.5 Pro/Flash use a lower 2048-token minimum).",
+      "cache_write_multiplier": 1.0
     }
-  }
+  },
+  "sources": [
+    "https://platform.claude.com/docs/en/about-claude/pricing",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "https://developers.openai.com/api/docs/pricing",
+    "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "https://ai.google.dev/gemini-api/docs/pricing",
+    "https://ai.google.dev/gemini-api/docs/caching"
+  ],
+  "dropped_entries_note": "Removed the claude_sonnet entry carried in the prior placeholder file: ModelId in src/types.ts only has 'openai_o200k' | 'claude' | 'gemini', and StackBuilder.tsx only ever renders those three model options, so a claude_sonnet key was never reachable from the calculator and pricing.models['claude_sonnet'] was never read by aggregate.ts. For the record, Claude Sonnet 5 (not selectable here) is $2/MTok input, $0.20/MTok cache read, 1024-token cache minimum, per the same Anthropic sources above."
 }
