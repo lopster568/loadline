@@ -1,0 +1,647 @@
+{
+  "server": "filesystem",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "read_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "complete contents text",
+          "terms": [
+            "complete",
+            "contents",
+            "text"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "text deprecated",
+          "terms": [
+            "text",
+            "deprecated"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "complete contents text deprecated instead",
+          "terms": [
+            "complete",
+            "contents",
+            "text",
+            "deprecated",
+            "instead"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "read_text_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "complete contents system",
+          "terms": [
+            "complete",
+            "contents",
+            "system"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "various encodings",
+          "terms": [
+            "various",
+            "encodings"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "complete contents system handles various encodings provides detailed error messages cannot tool",
+          "terms": [
+            "complete",
+            "contents",
+            "system",
+            "handles",
+            "various",
+            "encodings",
+            "provides",
+            "detailed",
+            "error",
+            "messages",
+            "cannot",
+            "tool"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "read_media_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "return base64 encoded",
+          "terms": [
+            "return",
+            "base64",
+            "encoded"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "return base64",
+          "terms": [
+            "return",
+            "base64"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "return base64 encoded content block mime type image audio files returned embedded",
+          "terms": [
+            "return",
+            "base64",
+            "encoded",
+            "content",
+            "block",
+            "mime",
+            "type",
+            "image",
+            "audio",
+            "files",
+            "returned",
+            "embedded"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "read_multiple_files",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "contents simultaneously efficient",
+          "terms": [
+            "contents",
+            "simultaneously",
+            "efficient"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "simultaneously efficient",
+          "terms": [
+            "simultaneously",
+            "efficient"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "contents simultaneously efficient reading one need analyze compare file content returned path",
+          "terms": [
+            "contents",
+            "simultaneously",
+            "efficient",
+            "reading",
+            "one",
+            "need",
+            "analyze",
+            "compare",
+            "file",
+            "content",
+            "returned",
+            "path"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "write_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create new completely",
+          "terms": [
+            "create",
+            "new",
+            "completely"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "completely overwrite",
+          "terms": [
+            "completely",
+            "overwrite"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create new completely overwrite existing content caution files without warning handles text",
+          "terms": [
+            "create",
+            "new",
+            "completely",
+            "overwrite",
+            "existing",
+            "content",
+            "caution",
+            "files",
+            "without",
+            "warning",
+            "handles",
+            "text"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "edit_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "make line based",
+          "terms": [
+            "make",
+            "line",
+            "based"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "make line",
+          "terms": [
+            "make",
+            "line"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "make line based edits text replaces exact sequences new content returns git",
+          "terms": [
+            "make",
+            "line",
+            "based",
+            "edits",
+            "text",
+            "replaces",
+            "exact",
+            "sequences",
+            "new",
+            "content",
+            "returns",
+            "git"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_directory",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "new ensure exists",
+          "terms": [
+            "new",
+            "ensure",
+            "exists"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "succeed silently",
+          "terms": [
+            "succeed",
+            "silently"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "new ensure exists multiple nested directories one operation already succeed silently perfect",
+          "terms": [
+            "new",
+            "ensure",
+            "exists",
+            "multiple",
+            "nested",
+            "directories",
+            "one",
+            "operation",
+            "already",
+            "succeed",
+            "silently",
+            "perfect"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_directory",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get detailed listing",
+          "terms": [
+            "get",
+            "detailed",
+            "listing"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "essential understanding",
+          "terms": [
+            "essential",
+            "understanding"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get detailed listing files directories specified path results clearly distinguish file dir",
+          "terms": [
+            "get",
+            "detailed",
+            "listing",
+            "files",
+            "directories",
+            "specified",
+            "path",
+            "results",
+            "clearly",
+            "distinguish",
+            "file",
+            "dir"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_directory_with_sizes",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get detailed listing",
+          "terms": [
+            "get",
+            "detailed",
+            "listing"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "useful understanding",
+          "terms": [
+            "useful",
+            "understanding"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get detailed listing files directories specified path including results clearly distinguish file",
+          "terms": [
+            "get",
+            "detailed",
+            "listing",
+            "files",
+            "directories",
+            "specified",
+            "path",
+            "including",
+            "results",
+            "clearly",
+            "distinguish",
+            "file"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "directory_tree",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get recursive view",
+          "terms": [
+            "get",
+            "recursive",
+            "view"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "recursive view",
+          "terms": [
+            "recursive",
+            "view"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get recursive view files directories json structure entry includes name type file",
+          "terms": [
+            "get",
+            "recursive",
+            "view",
+            "files",
+            "directories",
+            "json",
+            "structure",
+            "entry",
+            "includes",
+            "name",
+            "type",
+            "file"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "move_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "rename files directories",
+          "terms": [
+            "rename",
+            "files",
+            "directories"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "across different",
+          "terms": [
+            "across",
+            "different"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "rename files directories single operation destination exists fail works across different simple",
+          "terms": [
+            "rename",
+            "files",
+            "directories",
+            "single",
+            "operation",
+            "destination",
+            "exists",
+            "fail",
+            "works",
+            "across",
+            "different",
+            "simple"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_files",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "recursively directories matching",
+          "terms": [
+            "recursively",
+            "directories",
+            "matching"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "matching pattern",
+          "terms": [
+            "matching",
+            "pattern"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "recursively directories matching pattern patterns glob style match paths relative working directory",
+          "terms": [
+            "recursively",
+            "directories",
+            "matching",
+            "pattern",
+            "patterns",
+            "glob",
+            "style",
+            "match",
+            "paths",
+            "relative",
+            "working",
+            "directory"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_file_info",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve detailed metadata",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "metadata"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "comprehensive information",
+          "terms": [
+            "comprehensive",
+            "information"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve detailed metadata directory returns comprehensive information including size creation time last",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "metadata",
+            "directory",
+            "returns",
+            "comprehensive",
+            "information",
+            "including",
+            "size",
+            "creation",
+            "time",
+            "last"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_allowed_directories",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "returns server access",
+          "terms": [
+            "returns",
+            "server",
+            "access"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "server access",
+          "terms": [
+            "server",
+            "access"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "returns server access subdirectories within accessible understand nested paths available trying files",
+          "terms": [
+            "returns",
+            "server",
+            "access",
+            "subdirectories",
+            "within",
+            "accessible",
+            "understand",
+            "nested",
+            "paths",
+            "available",
+            "trying",
+            "files"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

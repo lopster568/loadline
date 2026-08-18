@@ -1,6 +1,6 @@
 # Harness validation log
 
-Tier 1 harness, `harness_version` 0.1.0, `methodology_version` 0.1.0.
+Tier 1 harness, `harness_version` 0.1.0, `methodology_version` 0.2.0.
 
 This file records how the harness was validated against live servers, so the
 run can be reproduced by a third party with their own credentials. It is a

@@ -199,6 +199,10 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 		row.Provenance.WireSHA256 = surface.WireSHA256
 		row.SchemaFlags = surface.Flags
 		row.ExcludedTools = surface.Excluded
+		// The raw pages travel with the row exactly as received, so
+		// report.Write can publish the artifact WireSHA256 is a digest of
+		// without re-fetching or re-serializing anything.
+		row.WirePages = enum.Pages
 	}
 	if err != nil {
 		if errors.Is(err, canon.ErrSchemaInvalid) {

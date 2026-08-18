@@ -1,0 +1,110 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "context7",
+      "name": "Context7 MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 2,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "4.0.2",
+        "wire_sha256": "3d2daa84a1753387686a23a3000fb33e94fee300b3b1b9c1956404f8abff7c5c",
+        "canonical_sha256": "699d8b33d6d2d90ce7deb777994bb408e1e07bb08fa997042b7cce19e6c1ecec",
+        "canonical_sorted_sha256": "db5897e70941bd11b108f75d16a5daaeca47cfd8fca1a5da00500b300de89ad0"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 1052,
+          "per_tool": {
+            "query-docs": 407,
+            "resolve-library-id": 643
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T05:54:13Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 1052,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 525,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "A",
+        "score": 97.22,
+        "dimensions": {
+          "description_adequacy": 83.33,
+          "when_to_use_signal": 100,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 100
+        },
+        "similarity_threshold": 0.6,
+        "kind": "measured"
+      },
+      "category": "data",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@upstash/context7-mcp@4.0.2",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp@4.0.2"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T05:54:10.893888556Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
+      ],
+      "measured_at": "2026-08-18T05:54:10.893881038Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

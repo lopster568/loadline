@@ -13,6 +13,17 @@ export interface ExcludedRow {
   reason: string
 }
 
+export interface StackDollars {
+  coldWrite: number
+  cacheRead: number
+  // Methodology v0 section 4, assumption 3: a surface below the provider's
+  // minimum cacheable prefix does not cache at all, so it can never achieve
+  // the cache-read figure. The cell is annotated rather than showing a number
+  // the stack cannot reach.
+  minCacheablePrefixTokens: number | null
+  cacheReadAchievable: boolean
+}
+
 export interface StackResult {
   mode: ClientMode
   model: ModelId
@@ -23,8 +34,13 @@ export interface StackResult {
   windowFraction: number
   attribution: AttributionRow[]
   excluded: ExcludedRow[]
-  dollars: { coldWrite: number; cacheRead: number } | null
+  dollars: StackDollars | null
   pricingUnavailable: boolean
+  // Dollar provenance: dollars come from pricing.json, not from the sweep, so
+  // they never carry the token measured/modeled chip. These two fields drive
+  // the dollar section's own labelling.
+  pricingAsOf: string | null
+  pricingUnverified: boolean
 }
 
 const TOOL_SEARCH_K_MID = 4
@@ -32,6 +48,21 @@ const TOOL_SEARCH_K_MID = 4
 // Shared with StackBuilder's per-server disabled-note copy, so the "no data"
 // wording only lives in one place.
 export const NO_DATA_LABEL = 'no data'
+
+// PRD section 1.1 / methodology section 3: three modes, always three, never
+// collapsed into one. Order is fixed so the comparison rows, the mode selector
+// and the permalink all agree.
+export const CLIENT_MODES: ClientMode[] = ['naive', 'tool_search', 'code_mode']
+
+export function modeLabel(mode: ClientMode): string {
+  if (mode === 'naive') return 'Naive full load'
+  if (mode === 'tool_search') return 'Tool Search'
+  return 'Code Mode'
+}
+
+export function modeKind(mode: ClientMode): Kind {
+  return mode === 'naive' ? 'measured' : 'modeled'
+}
 
 function naiveTokensForModel(server: ServerEntry, model: ModelId): number | null {
   if (model === 'openai_o200k') {
@@ -120,7 +151,7 @@ export function computeStackResult(
   }
   attribution.sort((a, b) => b.tokens - a.tokens)
 
-  const kind: Kind = mode === 'naive' ? 'measured' : 'modeled'
+  const kind = modeKind(mode)
 
   let dollars: StackResult['dollars'] = null
   let pricingUnavailable = false
@@ -128,9 +159,12 @@ export function computeStackResult(
     const priceEntry = pricing.models[model]
     if (priceEntry) {
       const pricePerToken = priceEntry.input_price_per_mtok / 1_000_000
+      const minPrefix = priceEntry.min_cacheable_prefix_tokens ?? null
       dollars = {
         coldWrite: totalTokens * pricePerToken * pricing.cache_write_multiplier,
         cacheRead: totalTokens * pricePerToken * pricing.cache_read_multiplier,
+        minCacheablePrefixTokens: minPrefix,
+        cacheReadAchievable: minPrefix === null || totalTokens >= minPrefix,
       }
     } else {
       pricingUnavailable = true
@@ -151,6 +185,10 @@ export function computeStackResult(
     excluded,
     dollars,
     pricingUnavailable,
+    pricingAsOf: pricing?.as_of ?? null,
+    // pricing.json ships with label "verify before publish" until real list
+    // prices are fetched; surface that so a placeholder cannot look authoritative.
+    pricingUnverified: pricing ? pricing.label.toLowerCase().includes('verify before publish') : false,
   }
 }
 

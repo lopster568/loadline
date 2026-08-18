@@ -3,6 +3,8 @@ package sweep
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -188,14 +190,31 @@ func TestSweepEndToEndProducesMeasuredRow(t *testing.T) {
 	if err != nil {
 		t.Fatalf("write: %v", err)
 	}
-	// The row, the derived query set, and the aggregate.
-	if len(written) != 3 {
+	// The row, the derived query set, the raw wire pages, and the aggregate.
+	if len(written) != 4 {
 		t.Fatalf("artifacts = %v", written)
 	}
 	queries := filepath.Join(out, "runs", doc.Run.Date, "fake-queries.json")
 	if _, err := os.Stat(queries); err != nil {
 		t.Fatalf("derived query artifact: %v", err)
 	}
+
+	// The raw wire artifact must reproduce provenance.wire_sha256: it is the
+	// run record the site promises maintainers, not just a claim about one.
+	wire := filepath.Join(out, "runs", doc.Run.Date, "fake-wire.jsonl")
+	wireBytes, err := os.ReadFile(wire)
+	if err != nil {
+		t.Fatalf("raw wire artifact: %v", err)
+	}
+	lines := strings.Split(strings.TrimSuffix(string(wireBytes), "\n"), "\n")
+	h := sha256.New()
+	for _, line := range lines {
+		h.Write([]byte(line))
+	}
+	if got := hex.EncodeToString(h.Sum(nil)); got != row.Provenance.WireSHA256 {
+		t.Errorf("recomputed wire sha256 = %s, want %s", got, row.Provenance.WireSHA256)
+	}
+
 	perServer := filepath.Join(out, "runs", doc.Run.Date, "fake.json")
 	if _, err := os.Stat(perServer); err != nil {
 		t.Fatalf("per-server artifact: %v", err)

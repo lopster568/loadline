@@ -128,27 +128,50 @@ either (see section 4).
   tool list is plan-tier-invariant. Worth a quick tool_count sanity check
   against the documented 22 tools (v2.0.0) after the run.
 
-**slack**: env var `SLACK_MCP_XOXC_TOKEN`.
-- THIS IS A DECISION FOR ROSHAN, NOT SOMETHING TO RESOLVE UNILATERALLY
-  (B.3, `docs/server-selection.md`: "Roshan's decision: stealth mode risks a
-  ToS question, scoped OAuth mode is a genuine partial surface"). Two
-  incompatible modes:
-  - Scope-limited OAuth (standard bot/user scopes): straightforward, ToS-clean,
-    but scope-gates the 18-tool list, i.e. fails Gate 2 outright on its own terms.
-  - "Stealth mode" (`xoxc-`/`xoxd-` browser-session cookies pulled from a
-    logged-in Slack web session): reaches the fuller surface, bypasses
-    Slack's own OAuth scope system, and the README does not claim it is
-    ToS-compliant.
-  Get Roshan's call before creating either credential. Do not default to
-  stealth mode to "get more coverage" without that call.
-- If Roshan picks OAuth: create a free Slack workspace (a personal dev
-  workspace is fine), create a Slack app, install it, grab the bot token.
-- If Roshan picks stealth mode: extract `xoxc-`/`xoxd-` values from an
-  authenticated browser session per the server's own README.
-- Separately, `docs/server-selection.md` flags the repo's last-commit date
-  as unresolved (default branch shows 2026-05-14, but `pushed_at` shows
-  2026-07-16). Re-check the actual default branch's last commit before
-  trusting Gate 4 (active maintenance) on this server.
+**slack**: env var `SLACK_MCP_XOXP_TOKEN` (user OAuth token).
+
+**DECISION MADE, 2026-08-18: OAuth, not stealth browser-cookies.** A neutral
+public benchmark cannot rest on session-cookie extraction that violates the
+platform's terms of service and that third parties cannot reproduce;
+governance promises the harness is re-runnable by anyone with their own
+credentials, which stealth-mode cookie extraction is not. If OAuth's tool
+surface turns out smaller than stealth mode's, the slack row publishes as
+`partial_surface` or is excluded outright under the selection rule's
+partial-surface gate (same rule that excluded grafana and atlassian,
+`docs/server-selection.md` B.2.1). That is the accepted cost of the
+principle, not a reason to reconsider it.
+
+Verified live 2026-08-18 via
+https://github.com/korotovsky/slack-mcp-server README:
+- Four auth modes exist: `SLACK_MCP_XOXC_TOKEN` + `SLACK_MCP_XOXD_TOKEN`
+  (paired browser-session "stealth" cookies), `SLACK_MCP_XOXP_TOKEN` (user
+  OAuth token, described in the README as "alternative to xoxc/xoxd"), and
+  `SLACK_MCP_XOXB_TOKEN` (bot token, "alternative to xoxp/xoxc/xoxd").
+- The tool surface is documented to differ by mode: bot tokens (`xoxb`)
+  cannot use `search.messages` (search tool unavailable); the unread-messages
+  tool falls back to a slower per-channel method on `xoxp` and is unavailable
+  on `xoxb`; the `saved_list`/`saved_update`/`saved_clear_completed` tools
+  require browser-session tokens (`xoxc`/`xoxd`) and are unavailable on
+  `xoxp`/`xoxb`; user search uses a local cache on OAuth tokens versus the
+  Slack edge API on browser-session tokens.
+- This corpus uses `SLACK_MCP_XOXP_TOKEN` (user OAuth), not the bot token,
+  because the bot token has the additional documented loss of
+  `search.messages`; the user OAuth token does not carry that specific loss,
+  making it the closer of the two OAuth-family modes to the stealth-mode
+  surface.
+
+**Operator task:** create a Slack app in a free/personal dev workspace,
+install it, generate a user OAuth token (`xoxp-...`), export it as
+`SLACK_MCP_XOXP_TOKEN`, then run the mandatory surface-comparison check from
+section 2 above: compare the live `tool_count` against the server's
+documented full tool list before publishing this row as a ranking rather
+than `partial_surface`.
+
+Separately, `docs/server-selection.md` flags the repo's last-commit date
+as unresolved (default branch shows 2026-05-14, but `pushed_at` shows
+2026-07-16). Re-check the actual default branch's last commit before
+trusting Gate 4 (active maintenance) on this server. This is unrelated to
+the auth-mode decision above and remains open.
 
 **linear**: env var `LINEAR_API_KEY`.
 - Free Linear workspace, then a personal API key from Linear settings.
@@ -285,29 +308,22 @@ Did you mean: 'MCPError'?
 This is server rot, exactly the kind methodology 7 keeps in the dataset as
 data, not something to route around silently.
 
-Two options, both documented, neither decided here:
+**DECISION MADE, 2026-08-18: no pin (Option A).** The unreachable row
+stands as honest data. `servers.yaml`'s fetch package block stays unpinned
+by decision, not by omission; a code comment there records this. The
+harness continues to check upstream on each monthly run, and the row heals
+itself with no `servers.yaml` edit needed once `mcp-server-fetch` ships a
+version compatible with `mcp` 2.x. Option B (a version pin, previously
+documented below for reference) was considered and rejected: pinning would
+change what "the fetch server" means for this dataset (a constrained
+environment rather than the published default) for a transient upstream
+break that is expected to resolve on its own.
 
-**Option A, leave as-is (recommended).** The row publishes `status:
-unreachable` with the traceback in `error`. This is an honest, real finding
-about the state of a widely-used reference server, and it costs nothing to
-publish. `servers.yaml` was deliberately left untouched during validation
-for exactly this reason.
-
-**Option B, ratify a version pin.** The harness already supports a
-constrained pin via a `with` list on a `pypi` package entry
-(`internal/sweep/acquire.go`, `stdioLaunch`, the `pkg.With` loop), and
-`uvx --with "mcp<2" mcp-server-fetch==2026.7.10` is confirmed to start and
-measure cleanly (1 tool, `fetch`, 238 tokens naive). Taking this option
-means editing `servers.yaml`'s fetch package block to declare the pin, and
-it is a CORPUS DECISION, not a harness bugfix: it changes what "the fetch
-server" means for this dataset (a constrained environment rather than the
-published default), so it must be recorded as a changelog event under rule
-A.9 in `docs/server-selection.md`, dated, with the prior and new wording and
-the reason stated, same as any other Part A edit.
-
-This is Roshan's call. Do not silently pick one before the run; if the run
-needs to proceed before he decides, run with Option A (unpinned, honest
-unreachable) and revisit the pin afterward.
+For reference, the rejected Option B: the harness supports a constrained
+pin via a `with` list on a `pypi` package entry (`internal/sweep/acquire.go`,
+`stdioLaunch`, the `pkg.With` loop), and `uvx --with "mcp<2"
+mcp-server-fetch==2026.7.10` was confirmed to start and measure cleanly
+(1 tool, `fetch`, 238 tokens naive). Not taken.
 
 ---
 
@@ -324,9 +340,10 @@ tasks; listed again here so this is a complete checklist on its own.
 2. **github, package.** Pin the exact release (v1.9.0 at time of research)
    and decide binary vs. Docker image distribution. Verification: record
    the chosen version and source in `servers.yaml`'s package block.
-3. **fetch, package.** Confirm the PyPI package name and pin a version
-   (`mcp-server-fetch` on PyPI). Bound to the section 3 decision: if Option
-   B is taken, this is also where the `mcp<2` constraint gets recorded.
+3. **fetch, package. RESOLVED 2026-08-18.** PyPI package name confirmed
+   (`mcp-server-fetch`). No version pin: section 3's decision, ratified
+   2026-08-18, is Option A (unpinned). `servers.yaml`'s fetch package block
+   carries a comment recording this instead of a version.
 4. **kubernetes, auth.token_env.** Not a single env var; document the
    harness's actual convention (kubeconfig path vs. in-cluster service
    account) here and in `internal/sweep/acquire.go` if the harness doesn't
@@ -340,8 +357,10 @@ tasks; listed again here so this is a complete checklist on its own.
    `tools/list` pass against the chosen endpoint(s), tool count recorded.
 7. **cloudflare, tool count.** Not aggregated anywhere upstream.
    Verification: same live `tools/list` pass as above.
-8. **slack, token_env / auth mode.** Roshan's stealth-mode-vs-OAuth call
-   (section 2). Verification: none, this is a decision, not a fact-check.
+8. **slack, token_env / auth mode. RESOLVED 2026-08-18.** OAuth
+   (`SLACK_MCP_XOXP_TOKEN`), not stealth browser-cookies. See section 2's
+   slack entry for the full rationale and the remaining operator task
+   (create the OAuth app/token, then run the surface-comparison check).
 9. **slack, last-commit date.** Discrepancy between default-branch last
    commit (2026-05-14) and repo `pushed_at` (2026-07-16). Verification:
    check the actual default branch's commit log directly before trusting
@@ -374,8 +393,9 @@ tasks; listed again here so this is a complete checklist on its own.
     has no docker/podman to start the local Jaeger container; the
     tool-count-inflation question (5 Jaeger tools vs. Traceloop's extras)
     remains open for the PC run.
-15. **fetch pin decision.** Section 3, Option A vs. B. Not a fact to verify,
-    a decision to make and, if B, to log as a changelog event.
+15. **fetch pin decision. RESOLVED 2026-08-18.** Section 3, Option A (no
+    pin). Monitor upstream each monthly run; the row heals itself once
+    `mcp-server-fetch` ships a fix, no `servers.yaml` edit needed.
 
 None of these are guessed in `servers.yaml` today; each is marked with a
 TODO comment rather than a placeholder value. Keep it that way. If a TODO
@@ -403,7 +423,7 @@ go test ./...
 export GITHUB_TOKEN=...
 export CLOUDFLARE_API_TOKEN=...
 export NOTION_TOKEN=...
-export SLACK_MCP_XOXC_TOKEN=...       # only if the stealth-mode call was made this way
+export SLACK_MCP_XOXP_TOKEN=...       # user OAuth token; decision ratified 2026-08-18, see section 2
 export LINEAR_API_KEY=...
 export STRIPE_API_KEY=...             # sk_test_...
 export SENTRY_ACCESS_TOKEN=...

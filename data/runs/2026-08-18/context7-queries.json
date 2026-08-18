@@ -1,0 +1,102 @@
+{
+  "server": "context7",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "resolve-library-id",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "resolves package product",
+          "terms": [
+            "resolves",
+            "package",
+            "product"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "resolves package",
+          "terms": [
+            "resolves",
+            "package"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "resolves package product name context7 compatible returns matching libraries call function query",
+          "terms": [
+            "resolves",
+            "package",
+            "product",
+            "name",
+            "context7",
+            "compatible",
+            "returns",
+            "matching",
+            "libraries",
+            "call",
+            "function",
+            "query"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "query-docs",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieves queries date",
+          "terms": [
+            "retrieves",
+            "queries",
+            "date"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "retrieves queries",
+          "terms": [
+            "retrieves",
+            "queries"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieves queries date documentation code examples context7 programming library framework call resolve",
+          "terms": [
+            "retrieves",
+            "queries",
+            "date",
+            "documentation",
+            "code",
+            "examples",
+            "context7",
+            "programming",
+            "library",
+            "framework",
+            "call",
+            "resolve"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

@@ -126,6 +126,12 @@ export interface ModelPriceEntry {
   label: string
   input_price_per_mtok: number
   notes?: string
+  // Methodology v0 section 4, assumption 3. Surfaces below this many tokens do
+  // not cache at all, so the cache-read figure is unreachable for them.
+  // Absent on older pricing files, which carried no minimum: treated as
+  // "no minimum on file", never as zero.
+  min_cacheable_prefix_tokens?: number
+  min_cacheable_prefix_note?: string
 }
 
 export interface PricingData {

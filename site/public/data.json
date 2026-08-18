@@ -22,7 +22,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 61024,
-          "per_tool": { "create_issue": 612, "list_pull_requests": 588, "get_file_contents": 701 }
+          "per_tool": {
+            "create_issue": 612,
+            "list_pull_requests": 588,
+            "get_file_contents": 701
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -39,11 +43,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 61024, "kind": "measured" },
-        "tool_search": { "stub_tokens": 640, "per_tool_avg": 656, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 1180, "kind": "modeled" }
+        "naive": {
+          "tokens": 61024,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 640,
+          "per_tool_avg": 656,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 0.89, "mrr": 0.91, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 0.89,
+        "mrr": 0.91,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "C",
         "score": 65.83,
@@ -73,7 +96,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 6202,
-          "per_tool": { "read_file": 398, "write_file": 452, "list_directory": 361 }
+          "per_tool": {
+            "read_file": 398,
+            "write_file": 452,
+            "list_directory": 361
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -90,11 +117,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 6202, "kind": "measured" },
-        "tool_search": { "stub_tokens": 520, "per_tool_avg": 443, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 980, "kind": "modeled" }
+        "naive": {
+          "tokens": 6202,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 520,
+          "per_tool_avg": 443,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 1, "mrr": 0.9881, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9881,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "C",
         "score": 73.41,
@@ -124,7 +170,9 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 351,
-          "per_tool": { "fetch": 351 }
+          "per_tool": {
+            "fetch": 351
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -141,11 +189,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 351, "kind": "measured" },
-        "tool_search": { "stub_tokens": 480, "per_tool_avg": 351, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 620, "kind": "modeled" }
+        "naive": {
+          "tokens": 351,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 480,
+          "per_tool_avg": 351,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 351,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 1, "mrr": 1, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "A",
         "score": 100,
@@ -173,7 +240,10 @@
         "canonical_sha256": null
       },
       "counts": {
-        "openai_o200k": { "total_schema_tokens": null, "per_tool": {} },
+        "openai_o200k": {
+          "total_schema_tokens": null,
+          "per_tool": {}
+        },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
@@ -189,9 +259,23 @@
         }
       },
       "modes": {
-        "naive": { "tokens": null, "kind": "measured" },
-        "tool_search": { "stub_tokens": null, "per_tool_avg": null, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": null, "kind": "modeled" }
+        "naive": {
+          "tokens": null,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": null,
+          "per_tool_avg": null,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": null,
+          "kind": "modeled"
+        }
       },
       "retrievability": null,
       "hygiene": null
@@ -247,7 +331,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 9804,
-          "per_tool": { "query_database": 588, "create_page": 621, "update_block": 540 }
+          "per_tool": {
+            "query_database": 588,
+            "create_page": 621,
+            "update_block": 540
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -264,11 +352,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 9804, "kind": "measured" },
-        "tool_search": { "stub_tokens": 560, "per_tool_avg": 516, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 1040, "kind": "modeled" }
+        "naive": {
+          "tokens": 9804,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 560,
+          "per_tool_avg": 516,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 0.95, "mrr": 0.96, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 0.95,
+        "mrr": 0.96,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "B",
         "score": 77.17,
@@ -298,7 +405,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 14208,
-          "per_tool": { "conversations_history": 640, "chat_postMessage": 705, "users_list": 512 }
+          "per_tool": {
+            "conversations_history": 640,
+            "chat_postMessage": 705,
+            "users_list": 512
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -315,11 +426,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 14208, "kind": "measured" },
-        "tool_search": { "stub_tokens": 580, "per_tool_avg": 592, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 1090, "kind": "modeled" }
+        "naive": {
+          "tokens": 14208,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 580,
+          "per_tool_avg": 592,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 0.83, "mrr": 0.87, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 0.83,
+        "mrr": 0.87,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "C",
         "score": 60,
@@ -349,7 +479,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 9108,
-          "per_tool": { "analyze_issue_with_seer": 812, "get_issue_details": 470, "list_projects": 388 }
+          "per_tool": {
+            "analyze_issue_with_seer": 812,
+            "get_issue_details": 470,
+            "list_projects": 388
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -366,11 +500,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 9108, "kind": "measured" },
-        "tool_search": { "stub_tokens": 540, "per_tool_avg": 569, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 1010, "kind": "modeled" }
+        "naive": {
+          "tokens": 9108,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 540,
+          "per_tool_avg": 569,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 0.94, "mrr": 0.95, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 0.94,
+        "mrr": 0.95,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "C",
         "score": 74.17,
@@ -400,7 +553,11 @@
       "counts": {
         "openai_o200k": {
           "total_schema_tokens": 11403,
-          "per_tool": { "browser_click": 402, "browser_navigate": 388, "browser_snapshot": 610 }
+          "per_tool": {
+            "browser_click": 402,
+            "browser_navigate": 388,
+            "browser_snapshot": 610
+          }
         },
         "claude": {
           "model": "claude-opus-5",
@@ -417,11 +574,30 @@
         }
       },
       "modes": {
-        "naive": { "tokens": 11403, "kind": "measured" },
-        "tool_search": { "stub_tokens": 550, "per_tool_avg": 543, "k_range": [3, 5], "kind": "modeled" },
-        "code_mode": { "tokens_estimate": 1070, "kind": "modeled" }
+        "naive": {
+          "tokens": 11403,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 550,
+          "per_tool_avg": 543,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
       },
-      "retrievability": { "top3_fraction": 0.9524, "mrr": 0.97, "queries_per_tool": 3, "kind": "measured" },
+      "retrievability": {
+        "top3_fraction": 0.9524,
+        "mrr": 0.97,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
       "hygiene": {
         "grade": "B",
         "score": 80.5,

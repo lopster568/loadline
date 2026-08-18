@@ -88,6 +88,15 @@ type Server struct {
 	// calculator rendering it.
 	Queries *retrieval.QuerySet `json:"-"`
 
+	// WirePages carries the raw tools/list wire bytes, one entry per page, in
+	// the exact order and exact bytes canon.WireHash was computed over. It is
+	// written to its own artifact rather than inlined into the row for the
+	// same bulk reason as Queries, but its purpose is different: the site
+	// promises maintainers the raw run artifact backing WireSHA256, and a hash
+	// alone is not that artifact, only its digest. Nil whenever enumeration
+	// never happened, which is every status short of a canon.Canonicalize call.
+	WirePages [][]byte `json:"-"`
+
 	// Fields below are additive to the site contract and carry the run-record
 	// obligations of methodology 1.1, 1.3, 7 and 8.
 	Category       string       `json:"category,omitempty"`
@@ -199,6 +208,19 @@ func Write(outDir string, doc *Document) ([]string, error) {
 			}
 			written = append(written, qpath)
 		}
+
+		// The raw wire pages are published alongside the row so
+		// provenance.wire_sha256 is a checkable claim rather than an assertion:
+		// sha256(concat(pages)) over this file must reproduce the hash. Written
+		// verbatim, one page per line, with no re-encoding, since byte fidelity
+		// to what canon.WireHash actually hashed is the entire point.
+		if len(s.WirePages) > 0 {
+			wpath := filepath.Join(runDir, s.ID+"-wire.jsonl")
+			if err := writeWireJSONL(wpath, s.WirePages); err != nil {
+				return written, err
+			}
+			written = append(written, wpath)
+		}
 	}
 	latest := filepath.Join(outDir, "latest.json")
 	if err := writeJSON(latest, doc); err != nil {
@@ -206,6 +228,30 @@ func Write(outDir string, doc *Document) ([]string, error) {
 	}
 	written = append(written, latest)
 	return written, nil
+}
+
+// writeWireJSONL writes the raw tools/list wire pages verbatim, one per line
+// in wire order. Each page is the exact byte slice canon.WireHash concatenated
+// and hashed (mcpwire reads it off a newline-delimited stdio scanner, so a
+// page carries no embedded newline of its own), so the file is written
+// byte-for-byte with no marshaling: a reader that strips the trailing '\n'
+// from each line and concatenates the pages back together reproduces the
+// exact bytes wire_sha256 was computed over.
+func writeWireJSONL(path string, pages [][]byte) error {
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("write %s: %w", path, err)
+	}
+	defer f.Close()
+	for _, p := range pages {
+		if _, err := f.Write(p); err != nil {
+			return fmt.Errorf("write %s: %w", path, err)
+		}
+		if _, err := f.Write([]byte("\n")); err != nil {
+			return fmt.Errorf("write %s: %w", path, err)
+		}
+	}
+	return nil
 }
 
 func writeJSON(path string, v any) error {

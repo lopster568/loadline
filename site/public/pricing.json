@@ -7,22 +7,30 @@
     "claude": {
       "label": "Claude Opus 5",
       "input_price_per_mtok": 15.0,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live. Verify against the published Anthropic price page before any public number ships."
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live. Verify against the published Anthropic price page before any public number ships.",
+      "min_cacheable_prefix_tokens": 512,
+      "min_cacheable_prefix_note": "Methodology v0 section 4, assumption 3: 512 tokens on Claude Opus 5."
     },
     "claude_sonnet": {
       "label": "Claude Sonnet 5",
       "input_price_per_mtok": 3.0,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
+      "min_cacheable_prefix_tokens": 1024,
+      "min_cacheable_prefix_note": "Methodology v0 section 4, assumption 3 records 1024 for Claude models other than Opus 5, without naming them. Verify before publish."
     },
     "openai_o200k": {
       "label": "GPT (o200k tokenizer family)",
       "input_price_per_mtok": 2.5,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
+      "min_cacheable_prefix_tokens": 512,
+      "min_cacheable_prefix_note": "No documented minimum on file for this provider. Placeholder carried over from the Claude Opus 5 figure. Verify before publish."
     },
     "gemini": {
       "label": "Gemini 2.5 Pro",
       "input_price_per_mtok": 1.25,
-      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live."
+      "notes": "Placeholder list price, per-MTok input. Sample data, not fetched live.",
+      "min_cacheable_prefix_tokens": 512,
+      "min_cacheable_prefix_note": "No documented minimum on file for this provider. Placeholder carried over from the Claude Opus 5 figure. Verify before publish."
     }
   }
 }

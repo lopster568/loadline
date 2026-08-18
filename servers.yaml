@@ -66,8 +66,14 @@ servers:
       stdio:
         type: pypi
         name: mcp-server-fetch
-        # TODO verify at onboarding: pinned version. The package name is
-        # mcp-server-fetch on PyPI, per docs/server-selection.md B.2 item 3.
+        # Unpinned by decision, ratified 2026-08-18 (docs/pc-sweep-runbook.md
+        # section 3): mcp-server-fetch's broken upstream dependency bound
+        # (mcp>=1.1.3, no upper bound, resolves to a mcp 2.0.0 that renamed
+        # McpError) is left unpatched. The row publishes as unreachable; that
+        # is honest data about a widely-used reference server, not a defect
+        # in this corpus. Re-check upstream each monthly run; the row heals
+        # itself once mcp-server-fetch ships a compatible version, with no
+        # servers.yaml edit needed.
     flags: []
 
   - id: kubernetes
@@ -130,17 +136,39 @@ servers:
     transport: [stdio, sse, remote]
     auth:
       required: true
-      # TODO verify at onboarding: two incompatible auth modes exist
-      # (scope-limited OAuth vs. cookie-based "stealth mode"); Roshan's
-      # decision is required before onboarding (docs/server-selection.md B.3).
-      token_env: SLACK_MCP_XOXC_TOKEN
+      # Decision, ratified 2026-08-18: OAuth mode, not stealth browser-cookie
+      # mode. A neutral public benchmark cannot rest on session-cookie
+      # extraction that violates the platform's terms and that third parties
+      # cannot reproduce; governance promises the harness is re-runnable with
+      # anyone's own credentials. If OAuth's tool surface is smaller than
+      # stealth mode's, this row publishes as partial_surface or is excluded
+      # under the selection rule's partial-surface gate, and that is the
+      # accepted cost of the principle. Verified live 2026-08-18 via
+      # https://github.com/korotovsky/slack-mcp-server README: four auth
+      # modes exist (SLACK_MCP_XOXC_TOKEN/SLACK_MCP_XOXD_TOKEN browser-session
+      # "stealth" cookies, SLACK_MCP_XOXP_TOKEN user OAuth token,
+      # SLACK_MCP_XOXB_TOKEN bot token). SLACK_MCP_XOXP_TOKEN (user OAuth) is
+      # the mode declared here rather than the bot token, because the README
+      # documents the bot token as losing search.messages, unread-counts, and
+      # saved_* tools, while the user OAuth token carries no such documented
+      # loss. See docs/pc-sweep-runbook.md's slack section for the full
+      # rationale and the operator task.
+      token_env: SLACK_MCP_XOXP_TOKEN
     package:
       stdio:
         type: npm
         name: slack-mcp-server
     flags:
-      - auth-verification: stealth-mode-vs-oauth-scope-decision
-        resolvable: "no: a compliance decision, not an enumeration fix; Roshan's call"
+      - decision: oauth-not-stealth-ratified-2026-08-18
+        note: >-
+          Compliance decision made; see auth block comment above and
+          docs/pc-sweep-runbook.md for rationale. Not an open TODO anymore.
+      - onboarding-task: surface-comparison-check
+        detail: >-
+          Create the Slack OAuth app and SLACK_MCP_XOXP_TOKEN, run a live
+          tools/list against it, and compare the returned tool count against
+          the server's documented full (stealth-mode) tool list before this
+          row publishes as a ranking rather than partial_surface.
 
   - id: linear
     name: Linear MCP server

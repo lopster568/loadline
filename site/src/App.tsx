@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { ClientMode, LoadlineData, ModelId, PricingData } from './types'
+import type { ClientMode, LoadlineData, ModelId, PricingData, ServerStatus } from './types'
 import Banner from './components/Banner'
 import StackBuilder from './components/StackBuilder'
 import ResultsPanel from './components/ResultsPanel'
 import Leaderboard from './components/Leaderboard'
 import Footer from './components/Footer'
-import { computeStackResult } from './lib/aggregate'
+import { CLIENT_MODES, computeStackResult } from './lib/aggregate'
 import { permalinkUrl, searchFromState, stateFromSearch } from './lib/permalink'
 import './App.css'
 
@@ -13,6 +13,11 @@ type LoadState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
   | { status: 'ready'; data: LoadlineData; pricing: PricingData | null }
+
+// Both files are served from the Vite base, which is not necessarily the site
+// root, so the error copy quotes the URL actually fetched.
+const DATA_URL = `${import.meta.env.BASE_URL}data.json`
+const PRICING_URL = `${import.meta.env.BASE_URL}pricing.json`
 
 export default function App() {
   const [load, setLoad] = useState<LoadState>({ status: 'loading' })
@@ -24,13 +29,12 @@ export default function App() {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle')
 
   useEffect(() => {
-    const base = import.meta.env.BASE_URL
     Promise.all([
-      fetch(`${base}data.json`).then((r) => {
-        if (!r.ok) throw new Error(`data.json: HTTP ${r.status}`)
+      fetch(DATA_URL).then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json() as Promise<LoadlineData>
       }),
-      fetch(`${base}pricing.json`)
+      fetch(PRICING_URL)
         .then((r) => (r.ok ? (r.json() as Promise<PricingData>) : null))
         .catch(() => null),
     ])
@@ -66,10 +70,15 @@ export default function App() {
 
   // Computed here (before the loading/error early returns) so the hook order
   // stays stable across renders; null until data has actually loaded.
-  const result = useMemo(() => {
+  // All three modes are computed on every render, not just the selected one:
+  // PRD section 1.1 requires the panel to show three totals at once, so a
+  // permalink can never open as a single number.
+  const modeResults = useMemo(() => {
     if (load.status !== 'ready') return null
-    return computeStackResult(load.data.servers, Array.from(selectedIds), mode, model, load.pricing, load.data.run.date)
-  }, [load, selectedIds, mode, model])
+    return CLIENT_MODES.map((m) =>
+      computeStackResult(load.data.servers, Array.from(selectedIds), m, model, load.pricing, load.data.run.date),
+    )
+  }, [load, selectedIds, model])
 
   if (load.status === 'loading') {
     return (
@@ -82,16 +91,24 @@ export default function App() {
   if (load.status === 'error') {
     return (
       <div className="container app-loading">
-        <p>Could not load /data.json: {load.message}</p>
+        <p>Could not load {DATA_URL}: {load.message}</p>
       </div>
     )
   }
 
   const { data } = load
-  // result is non-null here: load.status === 'ready' at this point, and the
-  // useMemo above computes it whenever load is 'ready'.
-  const stackResult = result!
-  const unreachableCount = data.servers.filter((s) => s.status === 'unreachable').length
+  // Non-null here: load.status === 'ready' at this point, and the useMemo
+  // above computes the results whenever load is 'ready'.
+  const allModeResults = modeResults!
+  const stackResult = allModeResults.find((r) => r.mode === mode) ?? allModeResults[0]
+
+  // Methodology section 7 defines six failure classes, all of which are
+  // failures; counting only `unreachable` undercounts the run.
+  const failuresByClass: Partial<Record<ServerStatus, number>> = {}
+  for (const server of data.servers) {
+    if (server.status === 'ok') continue
+    failuresByClass[server.status] = (failuresByClass[server.status] ?? 0) + 1
+  }
 
   return (
     <>
@@ -128,7 +145,11 @@ export default function App() {
                 {copyStatus === 'copied' ? 'Copied' : 'Copy link'}
               </button>
             </div>
-            <ResultsPanel result={stackResult} selectedCount={selectedIds.size} />
+            <ResultsPanel
+              result={stackResult}
+              modeResults={allModeResults}
+              selectedCount={selectedIds.size}
+            />
           </div>
         </section>
 
@@ -142,7 +163,7 @@ export default function App() {
         </section>
       </main>
 
-      <Footer run={data.run} unreachableCount={unreachableCount} />
+      <Footer run={data.run} failuresByClass={failuresByClass} serverCount={data.servers.length} />
     </>
   )
 }

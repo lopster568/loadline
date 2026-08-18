@@ -14,7 +14,7 @@ This policy governs what happens when the operator has a financial or employment
 
 ## 2. Funding disclosure
 
-The operator publishes all funding sources for this project. This includes sponsorships, grants, paid placements, and any other form of financial support. The funding disclosure is a standing page, kept current, and any change to it is a changelog event.
+The operator will publish all funding sources for this project before the first ranking, as a standing page kept current thereafter. This includes sponsorships, grants, paid placements, and any other form of financial support. Any change to the disclosure is a changelog event.
 
 ## 3. Ownership, employment, and sponsorship exclusion
 
@@ -28,7 +28,7 @@ An excluded server may still appear on the site, unranked, if it otherwise clear
 
 ### Standing example: HydraDNS
 
-HydraDNS is the operator's own project. It is excluded from rankings under rule 3.1 above. If HydraDNS ever appears on the site, it is listed unranked with an explicit conflict-of-interest label. No research is conducted toward including it in a ranked position, and none should be cited toward that end.
+HydraDNS is the operator's own project. It is excluded from rankings under rule 3, item 1 above. If HydraDNS ever appears on the site, it is listed unranked with an explicit conflict-of-interest label. No research is conducted toward including it in a ranked position, and none should be cited toward that end.
 
 ## 4. Employment taken after a server is already ranked
 

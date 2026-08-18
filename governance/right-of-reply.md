@@ -22,7 +22,7 @@ At notification, the maintainer is sent:
 
 1. The exact rows that will be published for their server (all metrics, all client modes, all stamps).
 2. The raw run artifacts backing those rows (the `tools/list` response, the hashes, the run record).
-3. The methodology version the run was measured under, with a link to `docs/methodology-v0.md` at that version.
+3. The methodology version the run was measured under. Each release is git-tagged, and the notice links the tag.
 
 ## 4. What happens during the window
 
@@ -43,7 +43,7 @@ A single objection may contain both kinds. Each part is routed on its own terms.
 
 ## 6. Publication does not wait beyond the window
 
-Publication proceeds at the end of the 14-day window regardless of whether a reply was received, unless the operator has independently found a fact-level error that changes the row (in which case the fix happens first and the corrected row starts a fresh notice, not a fresh 14-day window). A maintainer cannot indefinitely delay publication by not responding, and cannot delay it further by responding late.
+Publication proceeds at the end of the 14-day window regardless of whether a reply was received, unless the operator has independently found a fact-level error that changes the row. In that case the fix happens first, and the corrected row starts a fresh notice, not a fresh 14-day window. A maintainer cannot indefinitely delay publication by not responding, and cannot delay it further by responding late.
 
 ## 7. Notification email template (skeleton)
 
@@ -54,9 +54,10 @@ Subject: [SERVER] numbers publishing on loadline in 14 days
 
 Hello,
 
-loadline is a standing, vendor-neutral measurement of MCP server
-context cost. [SERVER] is scheduled to publish for the first time
-on [PUBLISH_DATE].
+loadline is a standing measurement of MCP server context cost.
+Funding sources and conflict-of-interest exclusions are published
+in the project's governance directory. [SERVER] is scheduled to
+publish for the first time on [PUBLISH_DATE].
 
 Your rows, as they will appear: [ROWS_LINK]
 Raw run artifacts: [ARTIFACTS_LINK]

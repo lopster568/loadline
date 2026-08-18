@@ -1,4 +1,5 @@
 import type { ClientMode, ModelId } from '../types'
+import { CLIENT_MODES } from './aggregate'
 
 export interface StackState {
   serverIds: string[]
@@ -6,7 +7,9 @@ export interface StackState {
   model: ModelId
 }
 
-const MODES: ClientMode[] = ['naive', 'tool_search', 'code_mode']
+// The permalink still encodes the selected mode: it picks which mode gets the
+// detailed view. The page it opens shows all three totals regardless.
+const MODES = CLIENT_MODES
 const MODELS: ModelId[] = ['openai_o200k', 'claude', 'gemini']
 
 export const DEFAULT_STATE: StackState = {

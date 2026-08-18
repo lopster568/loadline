@@ -1,0 +1,727 @@
+{
+  "server": "playwright",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "browser_close",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "page",
+          "terms": [
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_resize",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "window",
+          "terms": [
+            "window"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_console_messages",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "returns",
+          "terms": [
+            "returns"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_handle_dialog",
+      "source": "description",
+      "queries": null,
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "browser_evaluate",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "java script expression",
+          "terms": [
+            "java",
+            "script",
+            "expression"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "java script",
+          "terms": [
+            "java",
+            "script"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "java script expression page element",
+          "terms": [
+            "java",
+            "script",
+            "expression",
+            "page",
+            "element"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_file_upload",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "one multiple files",
+          "terms": [
+            "one",
+            "multiple",
+            "files"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "one multiple",
+          "terms": [
+            "one",
+            "multiple"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_drop",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "files mime typed",
+          "terms": [
+            "files",
+            "mime",
+            "typed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "mime typed",
+          "terms": [
+            "mime",
+            "typed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "files mime typed data onto element dragged outside page least one paths",
+          "terms": [
+            "files",
+            "mime",
+            "typed",
+            "data",
+            "onto",
+            "element",
+            "dragged",
+            "outside",
+            "page",
+            "least",
+            "one",
+            "paths"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_find",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "search accessibility snapshot",
+          "terms": [
+            "search",
+            "accessibility",
+            "snapshot"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "nodes few",
+          "terms": [
+            "nodes",
+            "few"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "search accessibility snapshot current page text regular expression returns matching nodes few",
+          "terms": [
+            "search",
+            "accessibility",
+            "snapshot",
+            "current",
+            "page",
+            "text",
+            "regular",
+            "expression",
+            "returns",
+            "matching",
+            "nodes",
+            "few"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_fill_form",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "multiple fields",
+          "terms": [
+            "multiple",
+            "fields"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_press_key",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "keyboard",
+          "terms": [
+            "keyboard"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_type",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "text editable element",
+          "terms": [
+            "text",
+            "editable",
+            "element"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "text editable",
+          "terms": [
+            "text",
+            "editable"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_navigate",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "url",
+          "terms": [
+            "url"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_navigate_back",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "go previous page",
+          "terms": [
+            "go",
+            "previous",
+            "page"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "go previous",
+          "terms": [
+            "go",
+            "previous"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "go previous page history",
+          "terms": [
+            "go",
+            "previous",
+            "page",
+            "history"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_network_requests",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "returns numbered list",
+          "terms": [
+            "returns",
+            "numbered",
+            "list"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "since loading",
+          "terms": [
+            "since",
+            "loading"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "returns numbered list since loading page request number get full details",
+          "terms": [
+            "returns",
+            "numbered",
+            "list",
+            "since",
+            "loading",
+            "page",
+            "request",
+            "number",
+            "get",
+            "full",
+            "details"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_network_request",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "returns full details",
+          "terms": [
+            "returns",
+            "full",
+            "details"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "headers body",
+          "terms": [
+            "headers",
+            "body"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "returns full details headers body single part set number requests",
+          "terms": [
+            "returns",
+            "full",
+            "details",
+            "headers",
+            "body",
+            "single",
+            "part",
+            "set",
+            "number",
+            "requests"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_run_code_unsafe",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "playwright snippet executes",
+          "terms": [
+            "playwright",
+            "snippet",
+            "executes"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "playwright snippet",
+          "terms": [
+            "playwright",
+            "snippet"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "playwright snippet executes arbitrary java script server process rce equivalent",
+          "terms": [
+            "playwright",
+            "snippet",
+            "executes",
+            "arbitrary",
+            "java",
+            "script",
+            "server",
+            "process",
+            "rce",
+            "equivalent"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_take_screenshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "current page perform",
+          "terms": [
+            "current",
+            "page",
+            "perform"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "actions based",
+          "terms": [
+            "actions",
+            "based"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "current page perform actions based snapshot",
+          "terms": [
+            "current",
+            "page",
+            "perform",
+            "actions",
+            "based",
+            "snapshot"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_snapshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "capture accessibility current",
+          "terms": [
+            "capture",
+            "accessibility",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "capture accessibility",
+          "terms": [
+            "capture",
+            "accessibility"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "capture accessibility current page better screenshot",
+          "terms": [
+            "capture",
+            "accessibility",
+            "current",
+            "page",
+            "better",
+            "screenshot"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_click",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "perform web page",
+          "terms": [
+            "perform",
+            "web",
+            "page"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "perform web",
+          "terms": [
+            "perform",
+            "web"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_drag",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "perform drop two",
+          "terms": [
+            "perform",
+            "drop",
+            "two"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "two elements",
+          "terms": [
+            "two",
+            "elements"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "perform drop two elements",
+          "terms": [
+            "perform",
+            "drop",
+            "two",
+            "elements"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_hover",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "element page",
+          "terms": [
+            "element",
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_select_option",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "dropdown",
+          "terms": [
+            "dropdown"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_tabs",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "list create close",
+          "terms": [
+            "list",
+            "create",
+            "close"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "list create",
+          "terms": [
+            "list",
+            "create"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "list create close select tab",
+          "terms": [
+            "list",
+            "create",
+            "close",
+            "select",
+            "tab"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "browser_wait_for",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "text appear disappear",
+          "terms": [
+            "text",
+            "appear",
+            "disappear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "appear disappear",
+          "terms": [
+            "appear",
+            "disappear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "text appear disappear specified time pass",
+          "terms": [
+            "text",
+            "appear",
+            "disappear",
+            "specified",
+            "time",
+            "pass"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

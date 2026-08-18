@@ -45,4 +45,10 @@ A routine monthly refresh where a server's own numbers moved because the server 
 
 ## 6. Log
 
-*Empty. No corrections have been recorded yet.*
+### [2026-08-17] Methodology-vs-implementation mismatch, name-charset and canonical-order
+
+- Affected rows or claims: `docs/methodology-v0.md`'s description of the name-charset rule and the canonical-order property for the canonical serialization. No published row was affected; no external release had shipped.
+- What was wrong: the methodology stated a name-charset rule and a canonical-order property that the harness did not implement.
+- Root cause: the methodology document was written ahead of the implementation.
+- What changed: methodology versions 0.1.1 and 0.2.0 corrected the stated rule and property; the harness was fixed to match. No published external release was affected, because the mismatch was found and corrected pre-publication.
+- Reported by: internal.

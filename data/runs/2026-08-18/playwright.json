@@ -1,0 +1,129 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "playwright",
+      "name": "Playwright MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 24,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.63.0-alpha-2026-08-05",
+        "wire_sha256": "06c863d0c63273e669d344f5fdd125fdc6b3f50c01cd58cdb2c9fb4deeed44ba",
+        "canonical_sha256": "5d5d92a7c727ef75bd9a70f076039dbdbfd331c56f022915c2e89b76f7fc88f0",
+        "canonical_sorted_sha256": "702ea437e487a4c7b9711255065632a3798e83f71a7a3330c7ffa639e804fbb0"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4024,
+          "per_tool": {
+            "browser_click": 205,
+            "browser_close": 70,
+            "browser_console_messages": 181,
+            "browser_drag": 183,
+            "browser_drop": 243,
+            "browser_evaluate": 184,
+            "browser_file_upload": 111,
+            "browser_fill_form": 255,
+            "browser_find": 221,
+            "browser_handle_dialog": 112,
+            "browser_hover": 122,
+            "browser_navigate": 92,
+            "browser_navigate_back": 78,
+            "browser_network_request": 207,
+            "browser_network_requests": 184,
+            "browser_press_key": 110,
+            "browser_resize": 107,
+            "browser_run_code_unsafe": 202,
+            "browser_select_option": 162,
+            "browser_snapshot": 184,
+            "browser_tabs": 154,
+            "browser_take_screenshot": 329,
+            "browser_type": 198,
+            "browser_wait_for": 128
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T05:54:17Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4024,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 167,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.9583,
+        "mrr": 0.98,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 82.18,
+        "dimensions": {
+          "description_adequacy": 93.06,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 100
+        },
+        "similarity_threshold": 0.6,
+        "kind": "measured"
+      },
+      "category": "browser-automation",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@playwright/mcp@0.0.79",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@playwright/mcp@0.0.79"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T05:54:13.989887283Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T05:54:13.98988006Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

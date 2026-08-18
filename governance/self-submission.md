@@ -14,7 +14,7 @@ A submission includes:
 2. **Auth requirements.** What credential the server needs to enumerate its full tool surface: none, an API key, OAuth, or another scheme.
 3. **Free-tier credential path.** How a free-tier, no-cost credential can be obtained to run the enumeration. If no free-tier path exists, say so; this is checked directly and affects the outcome.
 
-Submit by opening an issue against the project repository (path published at first public release), using the submission template there.
+Submit by opening an issue against the project repository. The repository path is published at first public release; use the submission template at `.github/ISSUE_TEMPLATE/server-submission.md` in that repository.
 
 ## 3. What gets checked
 
@@ -22,7 +22,7 @@ Every submission is run through the five mandatory gates defined in `docs/server
 
 ## 4. Queue behavior
 
-Submissions are not processed on demand. They are queued and processed at the next monthly Tier 1 run. A submission received partway through a month waits for that month's run; it is not run ahead of the queue.
+Submissions are not processed on demand. They are queued and processed at the next monthly Tier 1 run; the monthly cadence is policy, not an automated schedule. A submission received partway through a month waits for that month's run; it is not run ahead of the queue.
 
 A submission that passes all five gates is added to the ranked set at that run if it wins its category's ranking under `docs/server-selection.md` section A.4. If it passes the gates but does not win its category, it is recorded as qualified and reconsidered every time a slot in its category opens, without needing to be resubmitted.
 

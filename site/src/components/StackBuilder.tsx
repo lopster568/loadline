@@ -1,6 +1,6 @@
 import type { ClientMode, ModelId, ServerEntry } from '../types'
 import { formatTokens } from '../lib/format'
-import { NO_DATA_LABEL } from '../lib/aggregate'
+import { CLIENT_MODES, NO_DATA_LABEL, modeKind, modeLabel } from '../lib/aggregate'
 import './StackBuilder.css'
 
 interface StackBuilderProps {
@@ -14,11 +14,13 @@ interface StackBuilderProps {
   runDate: string
 }
 
-const MODE_OPTIONS: { id: ClientMode; label: string; hint: string }[] = [
-  { id: 'naive', label: 'Naive full load (measured)', hint: 'All tool definitions loaded upfront' },
-  { id: 'tool_search', label: 'Tool Search (modeled)', hint: 'Search stub upfront, 3 to 5 tools loaded on demand' },
-  { id: 'code_mode', label: 'Code Mode (modeled)', hint: 'Whole API expressed as a compact interface' },
-]
+// Labels and kinds come from lib/aggregate so the selector and the three-mode
+// comparison in ResultsPanel can never drift apart.
+const MODE_HINTS: Record<ClientMode, string> = {
+  naive: 'All tool definitions loaded upfront',
+  tool_search: 'Search stub upfront, 3 to 5 tools loaded on demand',
+  code_mode: 'Whole API expressed as a compact interface',
+}
 
 function statusLabel(server: ServerEntry, runDate: string): string | null {
   if (server.status === 'ok') return null
@@ -80,17 +82,19 @@ export default function StackBuilder({
         <div className="stack-builder__group">
           <h3 className="stack-builder__label">Client mode</h3>
           <div className="mode-options">
-            {MODE_OPTIONS.map((opt) => (
-              <label key={opt.id} className={`mode-option${mode === opt.id ? ' mode-option--checked' : ''}`}>
+            {CLIENT_MODES.map((id) => (
+              <label key={id} className={`mode-option${mode === id ? ' mode-option--checked' : ''}`}>
                 <input
                   type="radio"
                   name="mode"
-                  checked={mode === opt.id}
-                  onChange={() => onModeChange(opt.id)}
+                  checked={mode === id}
+                  onChange={() => onModeChange(id)}
                 />
                 <span>
-                  <span className="mode-option__label">{opt.label}</span>
-                  <span className="mode-option__hint">{opt.hint}</span>
+                  <span className="mode-option__label">
+                    {modeLabel(id)} ({modeKind(id)})
+                  </span>
+                  <span className="mode-option__hint">{MODE_HINTS[id]}</span>
                 </span>
               </label>
             ))}
