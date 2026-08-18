@@ -27,6 +27,18 @@ Two determinism properties the tasks depend on:
 - **`$42.00` appears exactly once on `catalog.html`**, in the Widget Pro row. No other price contains the substring `42.00`, so PW-01's transcript check cannot pass on the wrong row.
 - **`form.html` does no server round trip and runs no validation.** The submit handler calls `preventDefault()` and writes the confirmation string with `textContent`, so the confirmation is a pure function of what was typed. Both fields are `type="text"` with no `required` attribute: a browser rejecting an address format is a failure mode the fixture does not need.
 
+## Browser
+
+`@playwright/mcp` defaults to the `chrome` channel, which means branded Google Chrome at `/opt/google/chrome/chrome`, and that is not installed on this estate. The failure mode is nasty because it is quiet: the server starts normally and lists all 24 tools, and only the first tool call that needs a page fails, with "Chromium distribution 'chrome' is not found". A run without the fix reads as five task failures rather than as a setup error.
+
+The runner therefore passes `--browser chromium`, which resolves to the Playwright-managed chrome-for-testing build under `~/.cache/ms-playwright/`. `LOADLINE_TIER2_PW_BROWSER` overrides the choice.
+
+`/usr/bin/chromium-browser` exists on this box but is deliberately not used: it is a shim for the chromium snap, and a snap-confined browser cannot reliably write a screenshot to an arbitrary path, which is exactly what PW-05 requires.
+
+Installing the browser is `npx @playwright/mcp@<version> install-browser chromium`. `run-suite.sh` runs this as a preflight before the first playwright trial, so a missing browser stops the run rather than consuming five trials of plan quota.
+
+The runner also passes `--output-dir <the trial's output directory>`, so the server's own artifacts (page snapshots, console logs) and PW-05's screenshot land in the per-trial output directory instead of a `.playwright-mcp/` directory in the working directory.
+
 ## Per-run setup
 
 The pages are read-only and need no per-trial copy. Start the server once before the run and leave it up:
@@ -55,3 +67,4 @@ Notes on the checks:
 - PW-01 matches `42.00` rather than `$42.00`, which is section 2.2's stated tolerance: both renderings count, and the bare form matches either.
 - PW-04's expected string is built from `$TRIAL_ID`, so a stale transcript from an earlier trial cannot satisfy it.
 - PW-05 checks existence and non-zero size only. Screenshot rendering is not byte-stable across runs, so a byte comparison would fail honest trials.
+- `browser_navigate` returns its page snapshot as a link to a `.yml` file rather than inline, so a client that needs the page content calls `browser_snapshot` afterwards, which does return the snapshot inline. That extra call is real cost the tasks measure and is not a fixture problem; verified against `@playwright/mcp@0.0.79` on 2026-08-18.

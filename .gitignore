@@ -30,3 +30,11 @@ site/out/
 
 # Note: data/ holds JSON measurement results and is intentionally NOT
 # ignored. Do not add data/ or data/** here.
+#
+# The one exception: Tier 2 run artifacts. An interposer frame log carries
+# complete tool-call arguments and, under --full-results, complete tool output,
+# which interposer/README.md's security section classifies as a secret of the
+# same grade as the credentials the server was given. The per-trial client JSON
+# and the fixture scratch copies sit beside it. Only the derived Tier 2 summary
+# is publishable, and it is written outside this tree.
+/data/tier2/
