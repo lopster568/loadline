@@ -1,8 +1,8 @@
 {
   "schema_version": "0.2",
-  "sample": true,
+  "sample": false,
   "run": {
-    "date": "2026-08-17",
+    "date": "2026-08-18",
     "methodology_version": "0.2.0",
     "harness_version": "0.1.0"
   },
@@ -12,44 +12,92 @@
       "name": "GitHub MCP server",
       "maintainer": "official",
       "status": "ok",
-      "tool_count": 93,
-      "protocol_revision": "2026-07-28",
+      "tool_count": 47,
+      "protocol_revision": "2025-03-26",
       "provenance": {
-        "server_version": "v1.9.0",
-        "wire_sha256": "40fa66e114e316b57884eb87fa2ac169b99268becbb1c54891382515da2db75",
-        "canonical_sha256": "0f19c159ca29876bf80745e346f0763b8eadda8dde81738e05fdb6e7d75cd5d"
+        "server_version": "github-mcp-server/remote-af2d0ceb00287f99546c6bb5666c1a2462b8bec7",
+        "wire_sha256": "aef6e6fa25ac3a93ee0fccea5d1b07e0fb9d3bd244cf4169d737ee9bba208c9c",
+        "canonical_sha256": "cbbb3b2c924fb1a87a987ee71564902d95845e5f2e3cf0cbe71b3acfcedd02a5",
+        "canonical_sorted_sha256": "8ebef38dc0fec2a8a323bf4b9bad505583dc461c392dd9f1235ea1bb323d55ee"
       },
       "counts": {
         "openai_o200k": {
-          "total_schema_tokens": 61024,
+          "total_schema_tokens": 59084,
           "per_tool": {
-            "create_issue": 612,
-            "list_pull_requests": 588,
-            "get_file_contents": 701
-          }
+            "add_comment_to_pending_review": 1534,
+            "add_issue_comment": 1513,
+            "add_reply_to_pull_request_comment": 1454,
+            "assign_copilot_to_issue": 1549,
+            "create_branch": 801,
+            "create_or_update_file": 987,
+            "create_pull_request": 1391,
+            "create_pull_request_with_copilot": 1583,
+            "create_repository": 821,
+            "delete_file": 826,
+            "fork_repository": 1242,
+            "get_commit": 937,
+            "get_copilot_job_status": 1480,
+            "get_file_contents": 966,
+            "get_label": 1337,
+            "get_latest_release": 768,
+            "get_me": 1096,
+            "get_release_by_tag": 802,
+            "get_tag": 784,
+            "get_team_members": 1117,
+            "get_teams": 1102,
+            "issue_read": 1575,
+            "issue_write": 1890,
+            "list_branches": 819,
+            "list_commits": 1092,
+            "list_issue_fields": 1394,
+            "list_issue_types": 1359,
+            "list_issues": 1783,
+            "list_pull_requests": 1569,
+            "list_releases": 904,
+            "list_repository_collaborators": 936,
+            "list_tags": 819,
+            "merge_pull_request": 1259,
+            "pull_request_read": 1737,
+            "pull_request_review_write": 1681,
+            "push_files": 878,
+            "request_copilot_review": 1426,
+            "run_secret_scanning": 1599,
+            "search_code": 1075,
+            "search_commits": 1069,
+            "search_issues": 1678,
+            "search_pull_requests": 1595,
+            "search_repositories": 938,
+            "search_users": 1566,
+            "sub_issue_write": 1617,
+            "update_pull_request": 1419,
+            "update_pull_request_branch": 1315
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:34Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
-          "total_schema_tokens": 63510,
-          "native_tools_param_tokens": 66120,
-          "measured_at": "2026-08-17T03:02:11Z"
+          "total_schema_tokens": 86843,
+          "native_tools_param_tokens": 19566,
+          "measured_at": "2026-08-18T15:10:35Z"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
+          "model": "gemini-3.1-pro-preview",
           "available": true,
-          "total_schema_tokens": 59880,
-          "measured_at": "2026-08-17T03:02:41Z"
+          "total_schema_tokens": 61790,
+          "measured_at": "2026-08-18T15:10:37Z"
         }
       },
       "modes": {
         "naive": {
-          "tokens": 61024,
+          "tokens": 59084,
           "kind": "measured"
         },
         "tool_search": {
-          "stub_tokens": 640,
-          "per_tool_avg": 656,
+          "stub_tokens": 500,
+          "per_tool_avg": 1257,
           "k_range": [
             3,
             5
@@ -62,24 +110,98 @@
         }
       },
       "retrievability": {
-        "top3_fraction": 0.89,
-        "mrr": 0.91,
+        "top3_fraction": 0.9149,
+        "mrr": 0.838,
         "queries_per_tool": 3,
         "kind": "measured"
       },
       "hygiene": {
-        "grade": "C",
-        "score": 65.83,
+        "grade": "B",
+        "score": 78.42,
         "dimensions": {
-          "description_adequacy": 90,
-          "when_to_use_signal": 15,
-          "parameter_descriptions": 60,
-          "enum_documentation": 80,
-          "naming_clarity": 95,
-          "disambiguation": 55
+          "description_adequacy": 99.29,
+          "when_to_use_signal": 12.77,
+          "parameter_descriptions": 100,
+          "enum_documentation": 88.24,
+          "naming_clarity": 100,
+          "disambiguation": 70.21
         },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "issue_read",
+            "b": "pull_request_read",
+            "similarity": 0.7
+          },
+          {
+            "a": "create_repository",
+            "b": "fork_repository",
+            "similarity": 0.6667
+          },
+          {
+            "a": "get_release_by_tag",
+            "b": "get_tag",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_branches",
+            "b": "list_releases",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_branches",
+            "b": "list_tags",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_releases",
+            "b": "list_tags",
+            "similarity": 0.6667
+          },
+          {
+            "a": "create_branch",
+            "b": "create_pull_request",
+            "similarity": 0.625
+          },
+          {
+            "a": "create_pull_request",
+            "b": "merge_pull_request",
+            "similarity": 0.625
+          },
+          {
+            "a": "get_commit",
+            "b": "get_tag",
+            "similarity": 0.625
+          },
+          {
+            "a": "merge_pull_request",
+            "b": "update_pull_request",
+            "similarity": 0.625
+          }
+        ],
         "kind": "measured"
-      }
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://api.githubcopilot.com/mcp/",
+        "endpoint": "https://api.githubcopilot.com/mcp/",
+        "env_passed": [
+          "GITHUB_PERSONAL_ACCESS_TOKEN"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:09:49.19112397Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: classic-PAT-scope-filtering",
+        "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
+      ],
+      "measured_at": "2026-08-18T15:09:49.191112217Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
     },
     {
       "id": "filesystem",
@@ -87,43 +209,58 @@
       "maintainer": "official",
       "status": "ok",
       "tool_count": 14,
-      "protocol_revision": "2026-07-28",
+      "protocol_revision": "2025-06-18",
       "provenance": {
-        "server_version": "2025.11.3",
-        "wire_sha256": "0fbe52a8de9ad21af5458db8edf307750c44bc7125b80a2af8ec943e16b43ec",
-        "canonical_sha256": "58228626481a3b97e9771ab9f36d1b07c8810f3484f70a31983c379f4e5f8d4"
+        "server_version": "0.2.0",
+        "wire_sha256": "32070959d6d7e8fbc7809599723c24565f4fd72d26641acbcd7236761381f69d",
+        "canonical_sha256": "a9f0f9e451249c9328d40fb9c6b4bd40359b4ed7830e9f182e2116660763b959",
+        "canonical_sorted_sha256": "5f05e580816653cb4c4ea5c64c164828211f49e8645be0065ca229baf0a0e5cb"
       },
       "counts": {
         "openai_o200k": {
-          "total_schema_tokens": 6202,
+          "total_schema_tokens": 2697,
           "per_tool": {
-            "read_file": 398,
-            "write_file": 452,
-            "list_directory": 361
-          }
+            "create_directory": 168,
+            "directory_tree": 193,
+            "edit_file": 236,
+            "get_file_info": 153,
+            "list_allowed_directories": 140,
+            "list_directory": 157,
+            "list_directory_with_sizes": 192,
+            "move_file": 183,
+            "read_file": 170,
+            "read_media_file": 281,
+            "read_multiple_files": 201,
+            "read_text_file": 247,
+            "search_files": 209,
+            "write_file": 165
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:40Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
-          "total_schema_tokens": 6415,
-          "native_tools_param_tokens": 6690,
-          "measured_at": "2026-08-17T03:03:05Z"
+          "total_schema_tokens": 4432,
+          "native_tools_param_tokens": 3122,
+          "measured_at": "2026-08-18T15:10:41Z"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
+          "model": "gemini-3.1-pro-preview",
           "available": true,
-          "total_schema_tokens": 6040,
-          "measured_at": "2026-08-17T03:03:20Z"
+          "total_schema_tokens": 2860,
+          "measured_at": "2026-08-18T15:10:42Z"
         }
       },
       "modes": {
         "naive": {
-          "tokens": 6202,
+          "tokens": 2697,
           "kind": "measured"
         },
         "tool_search": {
-          "stub_tokens": 520,
-          "per_tool_avg": 443,
+          "stub_tokens": 500,
+          "per_tool_avg": 192,
           "k_range": [
             3,
             5
@@ -152,50 +289,150 @@
           "naming_clarity": 100,
           "disambiguation": 85.71
         },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "list_directory",
+            "b": "list_directory_with_sizes",
+            "similarity": 0.8519
+          }
+        ],
         "kind": "measured"
-      }
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@modelcontextprotocol/server-filesystem",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "{{SCRATCH}}"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:10:37.068734852Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T15:10:37.068728199Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
     },
     {
       "id": "fetch",
       "name": "Fetch MCP server (reference implementation)",
       "maintainer": "official",
-      "status": "ok",
-      "tool_count": 1,
-      "protocol_revision": "2026-07-28",
+      "status": "unreachable",
+      "tool_count": 0,
+      "protocol_revision": "",
       "provenance": {
-        "server_version": "2025.10.1",
-        "wire_sha256": "412d4610eeeb11f55d7928c8fea61b2db1c3e2cd7177eafb4e5568f46a73a03",
-        "canonical_sha256": "d67c908135913b38d5239ff1af268aaa84372a108610f0d64342d30e3c1cbd1"
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
       },
       "counts": {
         "openai_o200k": {
-          "total_schema_tokens": 351,
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null,
+      "category": "dev-tools",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:mcp-server-fetch",
+        "command": "uvx",
+        "args": [
+          "mcp-server-fetch"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:10:42.482460979Z"
+      },
+      "measured_at": "2026-08-18T15:10:42.482449298Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes MCP server (containers/kubernetes-mcp-server)",
+      "maintainer": "community",
+      "status": "ok",
+      "tool_count": 20,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "v0.0.66",
+        "wire_sha256": "3d1decf36c2df6f7dfc1295e0f9831869c108bd2679165acded94a4bed368b1c",
+        "canonical_sha256": "a9c7140b51eef38cf3f196c623be4f3b0ad9b6d5a9ca009065934e784e2f7634",
+        "canonical_sorted_sha256": "8aca20da43cb7f69993a5005b4ee6ca4021ac433fbe73bf07cfdd4b0e4d098d6"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4430,
           "per_tool": {
-            "fetch": 351
-          }
+            "configuration_view": 138,
+            "events_list": 245,
+            "namespaces_list": 169,
+            "nodes_log": 234,
+            "nodes_stats_summary": 184,
+            "nodes_top": 180,
+            "pods_delete": 109,
+            "pods_exec": 216,
+            "pods_get": 107,
+            "pods_list": 308,
+            "pods_list_in_namespace": 335,
+            "pods_log": 194,
+            "pods_run": 166,
+            "pods_top": 286,
+            "projects_list": 71,
+            "resources_create_or_update": 212,
+            "resources_delete": 310,
+            "resources_get": 255,
+            "resources_list": 460,
+            "resources_scale": 268
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:47Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
-          "total_schema_tokens": 366,
-          "native_tools_param_tokens": 392,
-          "measured_at": "2026-08-17T03:03:41Z"
+          "total_schema_tokens": 7552,
+          "native_tools_param_tokens": 6734,
+          "measured_at": "2026-08-18T15:10:48Z"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
+          "model": "gemini-3.1-pro-preview",
           "available": true,
-          "total_schema_tokens": 340,
-          "measured_at": "2026-08-17T03:03:52Z"
+          "total_schema_tokens": 4590,
+          "measured_at": "2026-08-18T15:10:49Z"
         }
       },
       "modes": {
         "naive": {
-          "tokens": 351,
+          "tokens": 4430,
           "kind": "measured"
         },
         "tool_search": {
-          "stub_tokens": 480,
-          "per_tool_avg": 351,
+          "stub_tokens": 500,
+          "per_tool_avg": 222,
           "k_range": [
             3,
             5
@@ -203,7 +440,1418 @@
           "kind": "modeled"
         },
         "code_mode": {
-          "tokens_estimate": 351,
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.8325,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "C",
+        "score": 74.17,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 45
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "resources_delete",
+            "b": "resources_get",
+            "similarity": 0.9286
+          },
+          {
+            "a": "namespaces_list",
+            "b": "pods_list",
+            "similarity": 0.8333
+          },
+          {
+            "a": "pods_get",
+            "b": "pods_log",
+            "similarity": 0.8
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_get",
+            "similarity": 0.7778
+          },
+          {
+            "a": "resources_delete",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "resources_get",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_log",
+            "similarity": 0.6364
+          },
+          {
+            "a": "pods_list",
+            "b": "pods_list_in_namespace",
+            "similarity": 0.625
+          },
+          {
+            "a": "nodes_top",
+            "b": "pods_top",
+            "similarity": 0.6111
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:kubernetes-mcp-server@0.0.66",
+        "command": "npx",
+        "args": [
+          "-y",
+          "kubernetes-mcp-server@0.0.66"
+        ],
+        "env_passed": [
+          "KUBECONFIG"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:10:44.446177894Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T15:10:44.446168485Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare MCP server (cloudflare/mcp-server-cloudflare)",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 3,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "0.1.0",
+        "wire_sha256": "0e32828b9b35d433e24e7792f82bfb065b1a91573f13f4c9cf66910f509a4ad5",
+        "canonical_sha256": "4a85e77fabbaa2518af938b20016472cb2b8101639b6412b5616246c07ae3767",
+        "canonical_sorted_sha256": "5d5f8464fd628c78f6774e66eb320ad21e9a3522c69f2ff50367c9afe867b3e2"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 1596,
+          "per_tool": {
+            "docs": 362,
+            "execute": 660,
+            "search": 572
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:50Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 2641,
+          "native_tools_param_tokens": 2597,
+          "measured_at": "2026-08-18T15:10:51Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 1707,
+          "measured_at": "2026-08-18T15:10:52Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 1596,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 531,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 85.19,
+        "dimensions": {
+          "description_adequacy": 77.78,
+          "when_to_use_signal": 33.33,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 100
+        },
+        "similarity_threshold": 0.6,
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.cloudflare.com/mcp",
+        "endpoint": "https://mcp.cloudflare.com/mcp",
+        "env_passed": [
+          "CLOUDFLARE_API_TOKEN"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:10:49.893360398Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: tool count not aggregated across the 16 product-scoped servers; needs a live tools/list pass at onboarding (docs/server-selection.md B.2 item 5)",
+        "note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above",
+        "note: keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T15:10:49.893350457Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "notion",
+      "name": "Notion MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 24,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "b75ade4478365fc479a68cb22ce24cec7c06f41425da10f7b79f364acd956053",
+        "canonical_sha256": "fa930e30ef6dbc1256c21e0fa5b6fb629decab84c09c63594129ad5fc1ddfa7a",
+        "canonical_sorted_sha256": "6248c92a59a6efa8fbbfad829e436b9ccd63a252449efefe6f193adb535f42c1"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 5180,
+          "per_tool": {
+            "API-create-a-comment": 186,
+            "API-create-a-data-source": 219,
+            "API-delete-a-block": 72,
+            "API-get-block-children": 154,
+            "API-get-self": 56,
+            "API-get-user": 65,
+            "API-get-users": 124,
+            "API-list-data-source-templates": 101,
+            "API-move-page": 196,
+            "API-patch-block-children": 405,
+            "API-patch-page": 350,
+            "API-post-page": 368,
+            "API-post-search": 558,
+            "API-query-data-source": 260,
+            "API-retrieve-a-block": 73,
+            "API-retrieve-a-comment": 148,
+            "API-retrieve-a-data-source": 79,
+            "API-retrieve-a-database": 74,
+            "API-retrieve-a-page": 141,
+            "API-retrieve-a-page-property": 165,
+            "API-retrieve-page-markdown": 167,
+            "API-update-a-block": 188,
+            "API-update-a-data-source": 286,
+            "API-update-page-markdown": 743
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:57Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 8470,
+          "native_tools_param_tokens": 8828,
+          "measured_at": "2026-08-18T15:10:58Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 5494,
+          "measured_at": "2026-08-18T15:11:00Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 5180,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 215,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.5417,
+        "mrr": 0.4527,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "D",
+        "score": 54.79,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 44.03,
+          "enum_documentation": 100,
+          "naming_clarity": 84.72,
+          "disambiguation": 0
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-update-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-move-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-page-markdown",
+            "b": "API-update-page-markdown",
+            "similarity": 0.7931
+          },
+          {
+            "a": "API-create-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-create-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-move-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-post-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-update-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-patch-block-children",
+            "similarity": 0.6923
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-search",
+            "b": "API-post-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-database",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-self",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-post-page",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-update-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-self",
+            "b": "API-get-block-children",
+            "similarity": 0.6
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-users",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@notionhq/notion-mcp-server@2.5.1",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@notionhq/notion-mcp-server@2.5.1"
+        ],
+        "env_passed": [
+          "NOTION_TOKEN"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:10:52.072254124Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
+      ],
+      "measured_at": "2026-08-18T15:10:52.072241421Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "linear",
+      "name": "Linear MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 53,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "1a31f8870fcd32cfbff920a84ffdadb4368d09133987ff436313038ee783b03e",
+        "canonical_sha256": "13a83ed8f6f40e2c52dbdc3d9855dda2c22446b4c098dd95595f6aba979a4e9a",
+        "canonical_sorted_sha256": "11efad71f4c106c36587dda2fc4b30c19807e24b3cc85d02cc291f33f83b112f"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 17780,
+          "per_tool": {
+            "create_attachment": 766,
+            "create_attachment_from_upload": 271,
+            "create_issue_label": 197,
+            "delete_attachment": 113,
+            "delete_comment": 148,
+            "delete_diff_comment": 127,
+            "delete_status_update": 144,
+            "extract_images": 169,
+            "get_agent_skill": 124,
+            "get_attachment": 115,
+            "get_diff": 162,
+            "get_diff_threads": 250,
+            "get_document": 118,
+            "get_issue": 208,
+            "get_issue_status": 153,
+            "get_milestone": 152,
+            "get_project": 191,
+            "get_release": 139,
+            "get_release_note": 143,
+            "get_status_updates": 388,
+            "get_team": 120,
+            "get_user": 124,
+            "get_workspace": 77,
+            "list_agent_skills": 176,
+            "list_comments": 528,
+            "list_cycles": 146,
+            "list_diffs": 250,
+            "list_documents": 395,
+            "list_issue_labels": 202,
+            "list_issue_statuses": 121,
+            "list_issues": 685,
+            "list_milestones": 133,
+            "list_project_labels": 186,
+            "list_projects": 495,
+            "list_release_notes": 343,
+            "list_release_pipelines": 355,
+            "list_releases": 399,
+            "list_teams": 261,
+            "list_users": 198,
+            "merge_diff": 181,
+            "prepare_attachment_upload": 544,
+            "resolve_diff_thread": 157,
+            "save_comment": 616,
+            "save_diff_comment": 384,
+            "save_document": 1031,
+            "save_issue": 1947,
+            "save_milestone": 238,
+            "save_project": 1426,
+            "save_release": 414,
+            "save_release_note": 904,
+            "save_status_update": 321,
+            "search_documentation": 135,
+            "submit_diff_review": 208
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:08Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 29026,
+          "native_tools_param_tokens": 26316,
+          "measured_at": "2026-08-18T15:11:09Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 18463,
+          "measured_at": "2026-08-18T15:11:10Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 17780,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 335,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.9434,
+        "mrr": 0.8003,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 79.1,
+        "dimensions": {
+          "description_adequacy": 98.74,
+          "when_to_use_signal": 7.55,
+          "parameter_descriptions": 92.84,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 75.47
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_diff",
+            "b": "get_diff_threads",
+            "similarity": 0.9412
+          },
+          {
+            "a": "get_project",
+            "b": "get_team",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_project",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_team",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "list_documents",
+            "b": "list_projects",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_documents",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_projects",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "save_release",
+            "b": "save_milestone",
+            "similarity": 0.6364
+          },
+          {
+            "a": "list_issue_labels",
+            "b": "list_project_labels",
+            "similarity": 0.625
+          },
+          {
+            "a": "list_issue_statuses",
+            "b": "list_issue_labels",
+            "similarity": 0.625
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.linear.app/mcp",
+        "endpoint": "https://mcp.linear.app/mcp",
+        "env_passed": [
+          "LINEAR_API_KEY"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:11:00.507578859Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: readonly-endpoint-truncates-surface",
+        "resolvable: yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly",
+        "note: keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}. Confirms auth is genuinely required and the endpoint itself (not readonly) is reachable and answers cleanly."
+      ],
+      "measured_at": "2026-08-18T15:11:00.507571829Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 10,
+      "protocol_revision": "2025-03-26",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "663022ee377da27895b7790e5fe7f2108349c7491b3a46ec20eaa1e8ee6e0edf",
+        "canonical_sha256": "1e6d78edee192497894c5328be2d69287b06c338185e1f04732f44700967308c",
+        "canonical_sorted_sha256": "788e90cd57d59e84fe75eafd3ad87d76cd09792c5efd9d0e2023de7eb74b4129"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4243,
+          "per_tool": {
+            "create_refund": 396,
+            "get_stripe_account_info": 125,
+            "search_stripe_documentation": 326,
+            "send_stripe_mcp_feedback": 367,
+            "stripe_analytics": 963,
+            "stripe_api_details": 253,
+            "stripe_api_read": 291,
+            "stripe_api_search": 428,
+            "stripe_api_write": 514,
+            "stripe_implementation_planner": 578
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:13Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 6963,
+          "native_tools_param_tokens": 6154,
+          "measured_at": "2026-08-18T15:11:13Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4527,
+          "measured_at": "2026-08-18T15:11:14Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4243,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 424,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 84.44,
+        "dimensions": {
+          "description_adequacy": 93.33,
+          "when_to_use_signal": 50,
+          "parameter_descriptions": 100,
+          "enum_documentation": 83.33,
+          "naming_clarity": 100,
+          "disambiguation": 80
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "stripe_api_read",
+            "b": "stripe_api_write",
+            "similarity": 0.8542
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.stripe.com",
+        "endpoint": "https://mcp.stripe.com",
+        "env_passed": [
+          "STRIPE_API_KEY"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:11:10.532035811Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: keyless probe 2026-08-18: HTTP 401 {\"error\":\"Unauthorized. See https://docs.stripe.com/mcp for usage instructions.\"}. Confirms auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T15:11:10.532025717Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "figma",
+      "name": "Figma MCP server",
+      "maintainer": "official",
+      "status": "auth",
+      "tool_count": 0,
+      "protocol_revision": "",
+      "provenance": {
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null,
+      "category": "productivity-saas",
+      "error": "credential required but the corpus declares no env var convention",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.figma.com/mcp",
+        "endpoint": "https://mcp.figma.com/mcp",
+        "pinned": false,
+        "acquired_at": "2026-08-18T15:11:14.415687028Z"
+      },
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass",
+        "note: keyless probe 2026-08-18: HTTP 401 Unauthorized from https://mcp.figma.com/mcp. Confirms the endpoint is live and reachable and that auth is genuinely required; the OAuth-only gap above is the remaining blocker, not endpoint resolution."
+      ],
+      "measured_at": "2026-08-18T15:11:14.415678853Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 9,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "0.37.0",
+        "wire_sha256": "4bf998b6ac8e5072b192b181c0454cab0ad9596975db3576a6af0648ea7855b6",
+        "canonical_sha256": "a4017e0b7256cf07ed89a7bf90940c67f130564c6beee496a5fafe51f6024931",
+        "canonical_sorted_sha256": "5f22688482a140ff0b16dc6666bf32f0cf778fcf82c802186dfa113efb10c10d"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 6382,
+          "per_tool": {
+            "analyze_issue_with_seer": 718,
+            "execute_sentry_tool": 277,
+            "find_organizations": 196,
+            "find_projects": 413,
+            "get_sentry_resource": 744,
+            "search_events": 1235,
+            "search_issues": 924,
+            "search_sentry_tools": 575,
+            "update_issue": 1298
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:20Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 10475,
+          "native_tools_param_tokens": 10470,
+          "measured_at": "2026-08-18T15:11:21Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 6825,
+          "measured_at": "2026-08-18T15:11:22Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 6382,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 708,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9815,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "A",
+        "score": 90.74,
+        "dimensions": {
+          "description_adequacy": 77.78,
+          "when_to_use_signal": 88.89,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 77.78
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "find_organizations",
+            "b": "find_projects",
+            "similarity": 0.8077
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "observability",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@sentry/mcp-server@0.37.0",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@sentry/mcp-server@0.37.0"
+        ],
+        "env_passed": [
+          "SENTRY_ACCESS_TOKEN"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:14.415742143Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: oauth-scope-gating",
+        "resolvable: likely, via a broad-scope OAuth grant; needs live verification",
+        "note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed",
+        "note: endpoint path corrected 2026-08-18 from https://mcp.sentry.dev to https://mcp.sentry.dev/mcp; keyless probe against the corrected remote endpoint returned HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}, confirming auth is genuinely required there. The stdio path (this entry's default launch, npm @sentry/mcp-server) exits before answering JSON-RPC with \"No access token was provided. Run `sentry-mcp auth login` ... or pass --access-token / SENTRY_ACCESS_TOKEN\"; the harness records that as unreachable (crash before initialize), not auth, for the same reason as slack above. Both transports agree: auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T15:11:14.415737674Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "jaeger",
+      "name": "Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)",
+      "maintainer": "community",
+      "status": "ok",
+      "tool_count": 11,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "2.14.7",
+        "wire_sha256": "be7aeb6b0ee41ca1336fa24fc83d007dba2d18107c1ac0931604b46c3d6d17a4",
+        "canonical_sha256": "4af47281a9aba2b6e05116604894bc70ae3d27b94c2e27fab8c6151eeee79ae4",
+        "canonical_sorted_sha256": "74186d21e39f96833a630f4389b7562c6cb86bdec6dd490724072163b153538b"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4063,
+          "per_tool": {
+            "find_errors": 219,
+            "get_llm_expensive_traces": 380,
+            "get_llm_model_stats": 296,
+            "get_llm_slow_traces": 383,
+            "get_llm_usage": 325,
+            "get_trace": 125,
+            "list_llm_models": 308,
+            "list_llm_tools_tool": 316,
+            "list_services": 85,
+            "search_spans_tool": 751,
+            "search_traces": 884
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:25Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 6883,
+          "native_tools_param_tokens": 6535,
+          "measured_at": "2026-08-18T15:11:26Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4500,
+          "measured_at": "2026-08-18T15:11:27Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4063,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 370,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9798,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "C",
+        "score": 61.11,
+        "dimensions": {
+          "description_adequacy": 93.94,
+          "when_to_use_signal": 27.27,
+          "parameter_descriptions": 0,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 45.45
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_llm_expensive_traces",
+            "b": "get_llm_slow_traces",
+            "similarity": 0.7097
+          },
+          {
+            "a": "list_llm_models",
+            "b": "list_llm_tools_tool",
+            "similarity": 0.6271
+          },
+          {
+            "a": "search_traces",
+            "b": "search_spans_tool",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "observability",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:opentelemetry-mcp==0.2.2",
+        "command": "uvx",
+        "args": [
+          "opentelemetry-mcp==0.2.2",
+          "--backend",
+          "jaeger",
+          "--url",
+          "http://localhost:16686"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:22.112892669Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: unified server across Jaeger, Tempo, and Traceloop's own backend; non-Jaeger tools inflate the apparent tool count and should be called out on the published row",
+        "note: not scanned in this pass; this machine has no docker/podman so the required local Jaeger all-in-one container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md)."
+      ],
+      "measured_at": "2026-08-18T15:11:22.112878562Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "postgres",
+      "name": "Postgres MCP server, via crystaldba/postgres-mcp (\"Postgres MCP Pro\")",
+      "maintainer": "community",
+      "status": "unreachable",
+      "tool_count": 0,
+      "protocol_revision": "",
+      "provenance": {
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null,
+      "category": "data",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/4SBrlw7RHfU251TZZTVAZ/bin/postgres-mcp\", line 6, in \u003cmodule\u003e |     from postgres_mcp import main |   File \"/home/oni/.cache/uv/archive-v0/4SBrlw7RHfU251TZZTVAZ/lib/python3.13/site-packages/postgres_mcp/__init__.py\", line 4, in \u003cmodule\u003e |     from . import server",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:postgres-mcp==0.3.0",
+        "command": "uvx",
+        "args": [
+          "postgres-mcp==0.3.0",
+          "--access-mode=unrestricted"
+        ],
+        "env_passed": [
+          "DATABASE_URI"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:27.251479725Z"
+      },
+      "corpus_notes": [
+        "note: launch in Unrestricted Mode for measurement; Restricted Mode truncates the tool surface by operator-set flag, not by credential",
+        "note: not scanned in this pass; this machine has no docker/podman so the required local postgres container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md)."
+      ],
+      "measured_at": "2026-08-18T15:11:27.251457056Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "context7",
+      "name": "Context7 MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 2,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "4.0.2",
+        "wire_sha256": "3d2daa84a1753387686a23a3000fb33e94fee300b3b1b9c1956404f8abff7c5c",
+        "canonical_sha256": "699d8b33d6d2d90ce7deb777994bb408e1e07bb08fa997042b7cce19e6c1ecec",
+        "canonical_sorted_sha256": "db5897e70941bd11b108f75d16a5daaeca47cfd8fca1a5da00500b300de89ad0"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 1052,
+          "per_tool": {
+            "query-docs": 407,
+            "resolve-library-id": 643
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:33Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 1691,
+          "native_tools_param_tokens": 1890,
+          "measured_at": "2026-08-18T15:11:34Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 1119,
+          "measured_at": "2026-08-18T15:11:36Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 1052,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 525,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
           "kind": "modeled"
         }
       },
@@ -215,372 +1863,108 @@
       },
       "hygiene": {
         "grade": "A",
-        "score": 100,
+        "score": 97.22,
         "dimensions": {
-          "description_adequacy": 100,
+          "description_adequacy": 83.33,
           "when_to_use_signal": 100,
           "parameter_descriptions": 100,
           "enum_documentation": 100,
           "naming_clarity": 100,
           "disambiguation": 100
         },
-        "kind": "measured"
-      }
-    },
-    {
-      "id": "kubernetes",
-      "name": "Kubernetes MCP server (containers/kubernetes-mcp-server)",
-      "maintainer": "community",
-      "status": "unreachable",
-      "tool_count": null,
-      "protocol_revision": null,
-      "provenance": {
-        "server_version": null,
-        "wire_sha256": null,
-        "canonical_sha256": null
-      },
-      "counts": {
-        "openai_o200k": {
-          "total_schema_tokens": null,
-          "per_tool": {}
-        },
-        "claude": {
-          "model": "claude-opus-5",
-          "available": false,
-          "total_schema_tokens": null,
-          "native_tools_param_tokens": null,
-          "measured_at": null
-        },
-        "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": null,
-          "measured_at": null
-        }
-      },
-      "modes": {
-        "naive": {
-          "tokens": null,
-          "kind": "measured"
-        },
-        "tool_search": {
-          "stub_tokens": null,
-          "per_tool_avg": null,
-          "k_range": [
-            3,
-            5
-          ],
-          "kind": "modeled"
-        },
-        "code_mode": {
-          "tokens_estimate": null,
-          "kind": "modeled"
-        }
-      },
-      "retrievability": null,
-      "hygiene": null
-    },
-    {
-      "id": "linear",
-      "name": "Linear MCP server",
-      "maintainer": "official",
-      "status": "ok",
-      "tool_count": 12,
-      "protocol_revision": "2026-07-28",
-      "provenance": {
-        "server_version": "0.6.1",
-        "wire_sha256": "9e1c1d1e0b5c2ee7cd8f8b7f9d1a0e2f4b6c8d0e2f4a6c8e0b2d4f6a8c0e2f46",
-        "canonical_sha256": "2f4a6c8e0b2d4f6a8c0e2f469e1c1d1e0b5c2ee7cd8f8b7f9d1a0e2f4b6c8d0e"
-      },
-      "counts": {
-        "openai_o200k": {
-          "available": false,
-          "total_schema_tokens": null,
-          "per_tool": {}
-        },
-        "claude": {
-          "model": "claude-opus-5",
-          "available": true,
-          "total_schema_tokens": 4820,
-          "native_tools_param_tokens": 5010,
-          "measured_at": "2026-08-17T03:04:02Z"
-        },
-        "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": true,
-          "total_schema_tokens": 4590,
-          "measured_at": "2026-08-17T03:04:09Z"
-        }
-      },
-      "modes": null,
-      "retrievability": null,
-      "hygiene": null
-    },
-    {
-      "id": "notion",
-      "name": "Notion MCP server",
-      "maintainer": "official",
-      "status": "ok",
-      "tool_count": 19,
-      "protocol_revision": "2025-06-18",
-      "provenance": {
-        "server_version": "1.8.2",
-        "wire_sha256": "873130f7d1698a6e39640ef4fdb7fd9c7c365839e37e74d96dce0e0cd82997e",
-        "canonical_sha256": "bedac26eb480f7a0fde11ed6e1fa982708570a6decfe75c1d6ad7cf89713d39"
-      },
-      "counts": {
-        "openai_o200k": {
-          "total_schema_tokens": 9804,
-          "per_tool": {
-            "query_database": 588,
-            "create_page": 621,
-            "update_block": 540
-          }
-        },
-        "claude": {
-          "model": "claude-opus-5",
-          "available": true,
-          "total_schema_tokens": 10170,
-          "native_tools_param_tokens": 10640,
-          "measured_at": "2026-08-17T03:04:18Z"
-        },
-        "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": true,
-          "total_schema_tokens": 9590,
-          "measured_at": "2026-08-17T03:04:33Z"
-        }
-      },
-      "modes": {
-        "naive": {
-          "tokens": 9804,
-          "kind": "measured"
-        },
-        "tool_search": {
-          "stub_tokens": 560,
-          "per_tool_avg": 516,
-          "k_range": [
-            3,
-            5
-          ],
-          "kind": "modeled"
-        },
-        "code_mode": {
-          "tokens_estimate": 1000,
-          "kind": "modeled"
-        }
-      },
-      "retrievability": {
-        "top3_fraction": 0.95,
-        "mrr": 0.96,
-        "queries_per_tool": 3,
+        "similarity_threshold": 0.6,
         "kind": "measured"
       },
-      "hygiene": {
-        "grade": "B",
-        "score": 77.17,
-        "dimensions": {
-          "description_adequacy": 88,
-          "when_to_use_signal": 40,
-          "parameter_descriptions": 70,
-          "enum_documentation": 90,
-          "naming_clarity": 95,
-          "disambiguation": 80
-        },
-        "kind": "measured"
-      }
-    },
-    {
-      "id": "slack",
-      "name": "Slack MCP server (korotovsky/slack-mcp-server, community)",
-      "maintainer": "community",
-      "status": "ok",
-      "tool_count": 24,
-      "protocol_revision": "2025-06-18",
-      "provenance": {
-        "server_version": "0.9.4",
-        "wire_sha256": "77b2d8a5551cad5ff55ee3d6ab73e962d3f899bd6eb7b3e7d5eb15e45cc8ba4",
-        "canonical_sha256": "13c405d932d44840c177d982abf995d562c8c27388571d92164eb846ff9c03c"
+      "category": "data",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@upstash/context7-mcp@4.0.2",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@upstash/context7-mcp@4.0.2"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:29.403896056Z"
       },
-      "counts": {
-        "openai_o200k": {
-          "total_schema_tokens": 14208,
-          "per_tool": {
-            "conversations_history": 640,
-            "chat_postMessage": 705,
-            "users_list": 512
-          }
-        },
-        "claude": {
-          "model": "claude-opus-5",
-          "available": true,
-          "total_schema_tokens": 14760,
-          "native_tools_param_tokens": 15390,
-          "measured_at": "2026-08-17T03:05:02Z"
-        },
-        "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": true,
-          "total_schema_tokens": 13940,
-          "measured_at": "2026-08-17T03:05:16Z"
-        }
+      "negotiation": {
+        "branch": "legacy_initialize"
       },
-      "modes": {
-        "naive": {
-          "tokens": 14208,
-          "kind": "measured"
-        },
-        "tool_search": {
-          "stub_tokens": 580,
-          "per_tool_avg": 592,
-          "k_range": [
-            3,
-            5
-          ],
-          "kind": "modeled"
-        },
-        "code_mode": {
-          "tokens_estimate": 1000,
-          "kind": "modeled"
-        }
-      },
-      "retrievability": {
-        "top3_fraction": 0.83,
-        "mrr": 0.87,
-        "queries_per_tool": 3,
-        "kind": "measured"
-      },
-      "hygiene": {
-        "grade": "C",
-        "score": 60,
-        "dimensions": {
-          "description_adequacy": 75,
-          "when_to_use_signal": 20,
-          "parameter_descriptions": 55,
-          "enum_documentation": 60,
-          "naming_clarity": 85,
-          "disambiguation": 65
-        },
-        "kind": "measured"
-      }
-    },
-    {
-      "id": "sentry",
-      "name": "Sentry MCP server",
-      "maintainer": "official",
-      "status": "ok",
-      "tool_count": 16,
-      "protocol_revision": "2026-07-28",
-      "provenance": {
-        "server_version": "0.14.0",
-        "wire_sha256": "8807da46bf5bec1cd81e1c9448f216642a8bee31af94bb01df19557553b92d9",
-        "canonical_sha256": "35decc024fb0282b01579158ee18e8b7019cf3a399fce7b8430e7877997ceb0"
-      },
-      "counts": {
-        "openai_o200k": {
-          "total_schema_tokens": 9108,
-          "per_tool": {
-            "analyze_issue_with_seer": 812,
-            "get_issue_details": 470,
-            "list_projects": 388
-          }
-        },
-        "claude": {
-          "model": "claude-opus-5",
-          "available": false,
-          "total_schema_tokens": null,
-          "native_tools_param_tokens": null,
-          "measured_at": null
-        },
-        "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": true,
-          "total_schema_tokens": 8920,
-          "measured_at": "2026-08-17T03:06:01Z"
-        }
-      },
-      "modes": {
-        "naive": {
-          "tokens": 9108,
-          "kind": "measured"
-        },
-        "tool_search": {
-          "stub_tokens": 540,
-          "per_tool_avg": 569,
-          "k_range": [
-            3,
-            5
-          ],
-          "kind": "modeled"
-        },
-        "code_mode": {
-          "tokens_estimate": 1000,
-          "kind": "modeled"
-        }
-      },
-      "retrievability": {
-        "top3_fraction": 0.94,
-        "mrr": 0.95,
-        "queries_per_tool": 3,
-        "kind": "measured"
-      },
-      "hygiene": {
-        "grade": "C",
-        "score": 74.17,
-        "dimensions": {
-          "description_adequacy": 85,
-          "when_to_use_signal": 35,
-          "parameter_descriptions": 75,
-          "enum_documentation": 85,
-          "naming_clarity": 90,
-          "disambiguation": 75
-        },
-        "kind": "measured"
-      }
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
+      ],
+      "measured_at": "2026-08-18T15:11:29.403885465Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
     },
     {
       "id": "playwright",
       "name": "Playwright MCP server",
       "maintainer": "official",
       "status": "ok",
-      "tool_count": 21,
-      "protocol_revision": "2026-07-28",
+      "tool_count": 24,
+      "protocol_revision": "2025-06-18",
       "provenance": {
-        "server_version": "0.0.42",
-        "wire_sha256": "adef77199db1b557b9d4b041a9120f165c5fbdbef7d10f341d61a4e6aafea14",
-        "canonical_sha256": "6c65cc64e345f82bdbb5112ce817c9ffaf1e8967277e48faadf05802de4ecc1"
+        "server_version": "1.63.0-alpha-2026-08-05",
+        "wire_sha256": "06c863d0c63273e669d344f5fdd125fdc6b3f50c01cd58cdb2c9fb4deeed44ba",
+        "canonical_sha256": "5d5d92a7c727ef75bd9a70f076039dbdbfd331c56f022915c2e89b76f7fc88f0",
+        "canonical_sorted_sha256": "702ea437e487a4c7b9711255065632a3798e83f71a7a3330c7ffa639e804fbb0"
       },
       "counts": {
         "openai_o200k": {
-          "total_schema_tokens": 11403,
+          "total_schema_tokens": 4024,
           "per_tool": {
-            "browser_click": 402,
-            "browser_navigate": 388,
-            "browser_snapshot": 610
-          }
+            "browser_click": 205,
+            "browser_close": 70,
+            "browser_console_messages": 181,
+            "browser_drag": 183,
+            "browser_drop": 243,
+            "browser_evaluate": 184,
+            "browser_file_upload": 111,
+            "browser_fill_form": 255,
+            "browser_find": 221,
+            "browser_handle_dialog": 112,
+            "browser_hover": 122,
+            "browser_navigate": 92,
+            "browser_navigate_back": 78,
+            "browser_network_request": 207,
+            "browser_network_requests": 184,
+            "browser_press_key": 110,
+            "browser_resize": 107,
+            "browser_run_code_unsafe": 202,
+            "browser_select_option": 162,
+            "browser_snapshot": 184,
+            "browser_tabs": 154,
+            "browser_take_screenshot": 329,
+            "browser_type": 198,
+            "browser_wait_for": 128
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:39Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
-          "total_schema_tokens": 11840,
-          "native_tools_param_tokens": 12360,
-          "measured_at": "2026-08-17T03:06:44Z"
+          "total_schema_tokens": 6554,
+          "native_tools_param_tokens": 6179,
+          "measured_at": "2026-08-18T15:11:41Z"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
+          "model": "gemini-3.1-pro-preview",
           "available": true,
-          "total_schema_tokens": 11190,
-          "measured_at": "2026-08-17T03:06:59Z"
+          "total_schema_tokens": 4246,
+          "measured_at": "2026-08-18T15:11:43Z"
         }
       },
       "modes": {
         "naive": {
-          "tokens": 11403,
+          "tokens": 4024,
           "kind": "measured"
         },
         "tool_search": {
-          "stub_tokens": 550,
-          "per_tool_avg": 543,
+          "stub_tokens": 500,
+          "per_tool_avg": 167,
           "k_range": [
             3,
             5
@@ -593,24 +1977,43 @@
         }
       },
       "retrievability": {
-        "top3_fraction": 0.9524,
-        "mrr": 0.97,
+        "top3_fraction": 0.9583,
+        "mrr": 0.98,
         "queries_per_tool": 3,
         "kind": "measured"
       },
       "hygiene": {
         "grade": "B",
-        "score": 80.5,
+        "score": 82.18,
         "dimensions": {
-          "description_adequacy": 88,
-          "when_to_use_signal": 5,
-          "parameter_descriptions": 95,
+          "description_adequacy": 93.06,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 100,
           "enum_documentation": 100,
           "naming_clarity": 100,
-          "disambiguation": 95
+          "disambiguation": 100
         },
+        "similarity_threshold": 0.6,
         "kind": "measured"
-      }
+      },
+      "category": "browser-automation",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@playwright/mcp@0.0.79",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@playwright/mcp@0.0.79"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:36.618462797Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T15:11:36.61845211Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
     }
   ]
 }
