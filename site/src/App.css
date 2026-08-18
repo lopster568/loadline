@@ -1,49 +1,143 @@
 .app-loading {
-  padding: 60px 20px;
-  color: var(--text-muted);
+  padding: 60px 24px;
+  color: var(--muted);
   font-size: 14px;
 }
 
-.app-header {
-  padding: 40px 0 0;
+/* Masthead: the Plimsoll mark, the wordmark, and one stencilled tag. */
+.masthead {
+  padding: 26px 0 20px;
 }
 
-.app-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 6px;
-  letter-spacing: -0.01em;
+.masthead__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.app-subtitle {
-  font-size: 14px;
-  color: var(--text-muted);
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-wrap: wrap;
+}
+
+.brand__mark {
+  color: var(--oxide);
+  flex: none;
+}
+
+.brand__word {
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
   margin: 0;
-  max-width: 62ch;
+}
+
+.brand__tag {
+  padding-left: 11px;
+  border-left: 1px solid var(--line);
+  line-height: 1.2;
+}
+
+.masthead__lede {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  max-width: 66ch;
+}
+
+/* Two columns: the work surface on the left, the instrument that reads it on
+   the right. The rail spans both left-hand rows so the gauge has somewhere to
+   travel while the builder and the result scroll past it. */
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  gap: 26px;
+  align-items: start;
+}
+
+.workbench__builder {
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .results-block {
-  margin-top: 28px;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.gauge-rail {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: sticky;
+  top: 16px;
+  align-self: start;
+}
+
+/* Clear the sample-data banner, which is sticky at the top of the page. */
+#root:has(.banner) .gauge-rail {
+  top: 56px;
 }
 
 .results-block__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
 .copy-link-btn {
-  border: 1px solid var(--border);
-  background: var(--bg-raised);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--edge);
+  background: var(--plate);
+  box-shadow: inset 0 0 0 1px var(--hull);
+  padding: 7px 11px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
   cursor: pointer;
+  transition: color 120ms ease, background 120ms ease;
 }
 
 .copy-link-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--plate-raised);
+  color: var(--text);
+}
+
+.copy-link-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 0 0 1px var(--hull),
+    inset 0 2px 5px var(--press);
+}
+
+@media (max-width: 560px) {
+  /* The rule between wordmark and tag becomes an orphan once the tag wraps. */
+  .brand__tag {
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+@media (max-width: 900px) {
+  /* One column: the gauge rises above the builder and stops travelling, but
+     stays a vertical scale. */
+  .workbench {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .gauge-rail {
+    order: -1;
+    position: static;
+  }
 }

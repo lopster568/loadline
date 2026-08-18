@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import type { ClientMode, LoadlineData, ModelId, PricingData, ServerStatus } from './types'
 import Banner from './components/Banner'
 import StackBuilder from './components/StackBuilder'
+import DraftGauge from './components/DraftGauge'
 import ResultsPanel from './components/ResultsPanel'
 import Leaderboard from './components/Leaderboard'
 import Footer from './components/Footer'
+import { IconCheck, IconLink, PlimsollMark } from './components/Icons'
 import { CLIENT_MODES, computeStackResult } from './lib/aggregate'
 import { permalinkUrl, searchFromState, stateFromSearch } from './lib/permalink'
 import './App.css'
@@ -113,49 +115,70 @@ export default function App() {
   return (
     <>
       <Banner visible={data.sample} />
-      <div className="container app-header">
-        <h1 className="app-title">loadline</h1>
-        <p className="app-subtitle">
-          What an MCP server stack costs an agent's context window, by client mode, before any work happens.
-        </p>
-      </div>
+
+      <header className="masthead">
+        <div className="container masthead__inner">
+          <div className="brand">
+            <PlimsollMark size={26} className="brand__mark" />
+            <h1 className="brand__word">loadline</h1>
+            <span className="stencil brand__tag">MCP stack context cost</span>
+          </div>
+          <p className="masthead__lede">
+            What an MCP server stack costs an agent's context window, by client mode, before any work happens.
+          </p>
+        </div>
+      </header>
+
+      <div className="rule-strip" aria-hidden="true" />
 
       <main>
         <section className="section container" id="calculator">
-          <h2 className="section-title">Stack calculator</h2>
-          <p className="section-note">
+          <h2 className="stencil section__title">Stack calculator</h2>
+          <p className="section__note">
             Pick servers, a client mode, and a model. Results update immediately and encode into the URL.
           </p>
 
-          <StackBuilder
-            servers={data.servers}
-            selectedIds={selectedIds}
-            onToggleServer={toggleServer}
-            mode={mode}
-            onModeChange={setMode}
-            model={model}
-            onModelChange={setModel}
-            runDate={data.run.date}
-          />
-
-          <div className="results-block">
-            <div className="results-block__header">
-              <h3 className="stack-builder__label">Result</h3>
-              <button type="button" className="copy-link-btn" onClick={copyLink}>
-                {copyStatus === 'copied' ? 'Copied' : 'Copy link'}
-              </button>
+          <div className="workbench">
+            <div className="workbench__builder">
+              <StackBuilder
+                servers={data.servers}
+                selectedIds={selectedIds}
+                onToggleServer={toggleServer}
+                mode={mode}
+                onModeChange={setMode}
+                model={model}
+                onModelChange={setModel}
+                runDate={data.run.date}
+              />
             </div>
-            <ResultsPanel
-              result={stackResult}
-              modeResults={allModeResults}
-              selectedCount={selectedIds.size}
-            />
+
+            {/*
+              The gauge rail spans both rows of the left column, so it is the
+              only thing in its own column and can actually travel as the page
+              scrolls instead of sitting on top of the result panel.
+            */}
+            <aside className="gauge-rail">
+              <DraftGauge result={stackResult} selectedCount={selectedIds.size} />
+            </aside>
+
+            <div className="results-block">
+              <div className="results-block__header">
+                <h3 className="stencil">Result</h3>
+                <button type="button" className="copy-link-btn" onClick={copyLink}>
+                  {copyStatus === 'copied' ? <IconCheck size={13} /> : <IconLink size={13} />}
+                  {copyStatus === 'copied' ? 'Copied' : 'Copy link'}
+                </button>
+              </div>
+              <ResultsPanel result={stackResult} modeResults={allModeResults} selectedCount={selectedIds.size} />
+            </div>
           </div>
         </section>
 
+        <div className="rule-strip" aria-hidden="true" />
+
         <section className="section container" id="leaderboard">
-          <h2 className="section-title">Leaderboard</h2>
-          <p className="section-note">
+          <h2 className="stencil section__title">The manifest</h2>
+          <p className="section__note">
             Cost columns sit beside hygiene and retrievability grades; a low-cost server with a low hygiene grade is
             not a recommendation.
           </p>

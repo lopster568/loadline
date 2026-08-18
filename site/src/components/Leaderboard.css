@@ -1,76 +1,106 @@
-.leaderboard-wrap {
+/* The manifest: one line per server, hairline rules, everything numeric set
+   in the instrument face. */
+.manifest-wrap {
   overflow-x: auto;
-  border: 1px solid var(--border);
-  border-radius: 8px;
 }
 
-.leaderboard {
+.manifest {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  min-width: 640px;
+  min-width: 720px;
 }
 
-.leaderboard th {
+.manifest__th {
   text-align: left;
-  background: var(--bg-raised);
-  border-bottom: 1px solid var(--border);
   padding: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--plate-raised);
+  vertical-align: bottom;
 }
 
-.leaderboard__sort-btn {
+.manifest__th--num .manifest__sort {
+  justify-content: flex-end;
+}
+
+.manifest__sort {
   width: 100%;
   background: none;
   border: none;
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 11px;
+  padding: 11px 14px;
+  font-family: var(--font-sans);
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--muted);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  transition: color 120ms ease;
 }
 
-.leaderboard__sort-btn:hover {
+.manifest__sort:hover {
   color: var(--text);
 }
 
-.leaderboard__sort-btn--active {
-  color: var(--accent);
+.manifest__sort:active {
+  transform: translateY(1px);
 }
 
-.leaderboard__sort-arrow {
+.manifest__sort--active {
+  color: var(--oxide-ink);
+}
+
+.manifest__sort-arrow {
+  display: inline-block;
+  min-width: 8px;
+  font-family: var(--font-mono);
   font-size: 11px;
 }
 
-.leaderboard td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  font-variant-numeric: tabular-nums;
+.manifest td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line);
 }
 
-.leaderboard tr:last-child td {
+.manifest tr:last-child td {
   border-bottom: none;
 }
 
-.leaderboard__row--unreachable {
-  color: var(--text-faint);
+.manifest tbody tr:hover td {
+  background: var(--plate-raised);
 }
 
-.hygiene-badge {
+.manifest__num {
+  text-align: right;
+}
+
+.manifest__name {
+  min-width: 220px;
+}
+
+.manifest__status {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 1.6em;
-  padding: 1px 6px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.manifest__row--nodata {
+  color: var(--muted);
+}
+
+.manifest__row--nodata .manifest__status {
+  color: var(--oxide-ink);
+}
+
+.manifest__na {
+  color: var(--muted);
+  font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 600;
-  font-variant-numeric: normal;
-  cursor: default;
 }

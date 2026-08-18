@@ -1,4 +1,5 @@
 import type { RunInfo, ServerStatus } from '../types'
+import { IconExternal } from './Icons'
 import './Footer.css'
 
 interface FooterProps {
@@ -18,27 +19,47 @@ export default function Footer({ run, failuresByClass, serverCount }: FooterProp
 
   return (
     <footer className="site-footer">
+      <div className="rule-strip" aria-hidden="true" />
       <div className="container site-footer__inner">
-        <div className="site-footer__meta">
-          <span>Methodology v{run.methodology_version}</span>
-          <span className="site-footer__dot">·</span>
-          <span>Run date {run.date}</span>
-          <span className="site-footer__dot">·</span>
-          <span>Harness v{run.harness_version}</span>
-        </div>
+        <p className="site-footer__failures" title={breakdown ? `By class: ${breakdown}` : undefined}>
+          Failures publish as data. <span className="num">{failureCount}</span> of{' '}
+          <span className="num">{serverCount}</span> servers failed this run.
+        </p>
+
+        <dl className="site-footer__meta">
+          <div>
+            <dt className="stencil">Methodology</dt>
+            <dd className="num">v{run.methodology_version}</dd>
+          </div>
+          <div>
+            <dt className="stencil">Run date</dt>
+            <dd className="num">{run.date}</dd>
+          </div>
+          <div>
+            <dt className="stencil">Harness</dt>
+            <dd className="num">v{run.harness_version}</dd>
+          </div>
+        </dl>
+
         {/*
           Absolute GitHub URLs, not site-relative paths: the site is a single
           page with no router, so ./docs/... would 404. These resolve once the
           repo goes public at launch.
         */}
         <nav className="site-footer__links">
-          <a href="https://github.com/lopster568/loadline/blob/main/docs/methodology-v0.md">Methodology</a>
-          <a href="https://github.com/lopster568/loadline/tree/main/governance">Governance</a>
-          <a href="https://github.com/lopster568/loadline/blob/main/governance/corrections-log.md">Corrections log</a>
+          <a href="https://github.com/lopster568/loadline/blob/main/docs/methodology-v0.md">
+            Methodology
+            <IconExternal size={13} />
+          </a>
+          <a href="https://github.com/lopster568/loadline/tree/main/governance">
+            Governance
+            <IconExternal size={13} />
+          </a>
+          <a href="https://github.com/lopster568/loadline/blob/main/governance/corrections-log.md">
+            Corrections log
+            <IconExternal size={13} />
+          </a>
         </nav>
-        <p className="site-footer__failures" title={breakdown ? `By class: ${breakdown}` : undefined}>
-          Failures publish as data. {failureCount} of {serverCount} servers failed this run.
-        </p>
       </div>
     </footer>
   )

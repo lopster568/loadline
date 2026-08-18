@@ -1,6 +1,8 @@
 import type { ClientMode, ModelId, ServerEntry } from '../types'
 import { formatTokens } from '../lib/format'
-import { CLIENT_MODES, NO_DATA_LABEL, modeKind, modeLabel } from '../lib/aggregate'
+import { CLIENT_MODES, NO_DATA_LABEL, modeKind, modeLabel, modelLabel } from '../lib/aggregate'
+import { IconCheck, IconWarning } from './Icons'
+import KindChip from './KindChip'
 import './StackBuilder.css'
 
 interface StackBuilderProps {
@@ -22,6 +24,8 @@ const MODE_HINTS: Record<ClientMode, string> = {
   code_mode: 'Whole API expressed as a compact interface',
 }
 
+const MODEL_IDS: ModelId[] = ['openai_o200k', 'claude', 'gemini']
+
 function statusLabel(server: ServerEntry, runDate: string): string | null {
   if (server.status === 'ok') return null
   return `${NO_DATA_LABEL} (${server.status} ${runDate})`
@@ -40,102 +44,122 @@ export default function StackBuilder({
   const claudeAvailableAny = servers.some((s) => s.counts.claude.available)
   const geminiAvailableAny = servers.some((s) => s.counts.gemini.available)
 
+  // A model with no measurement anywhere in the run is still selectable, and
+  // still says so: "pending measurement" is the honest label, on the switch
+  // and in the caption, never a silent zero downstream.
+  const modelHints: Record<ModelId, string> = {
+    openai_o200k: 'Local tiktoken, measured',
+    claude: claudeAvailableAny ? 'count_tokens API, measured where available' : 'pending measurement',
+    gemini: geminiAvailableAny ? 'countTokens, measured where available' : 'pending measurement',
+  }
+  const modelPending: Record<ModelId, boolean> = {
+    openai_o200k: false,
+    claude: !claudeAvailableAny,
+    gemini: !geminiAvailableAny,
+  }
+
   return (
     <div className="stack-builder">
-      <div className="stack-builder__servers">
-        <h3 className="stack-builder__label">Servers</h3>
-        <div className="server-grid">
+      <section className="builder-block">
+        <div className="builder-block__head">
+          <h3 className="stencil">Servers</h3>
+          <span className="builder-block__count num">
+            {selectedIds.size} of {servers.length} loaded
+          </span>
+        </div>
+
+        <div className="cargo-grid">
           {servers.map((server) => {
             const disabledNote = statusLabel(server, runDate)
             const checked = selectedIds.has(server.id)
+            const hygiene = server.hygiene ?? null
+            const grade = hygiene?.grade ?? null
             return (
               <label
                 key={server.id}
-                className={`server-card${checked ? ' server-card--checked' : ''}${disabledNote ? ' server-card--unreachable' : ''}`}
+                className={`cargo-plate plate${checked ? ' cargo-plate--loaded' : ''}${disabledNote ? ' cargo-plate--nodata' : ''}`}
               >
                 <input
                   type="checkbox"
+                  className="cargo-plate__input"
                   checked={checked}
                   onChange={() => onToggleServer(server.id)}
                 />
-                <span className="server-card__body">
-                  <span className="server-card__name">{server.name}</span>
-                  <span className="server-card__meta">
+                <span className="cargo-plate__tick" aria-hidden="true">
+                  {checked && <IconCheck size={12} />}
+                </span>
+                <span className="cargo-plate__body">
+                  <span className="cargo-plate__name">{server.name}</span>
+                  <span className="cargo-plate__meta">
                     {disabledNote ? (
-                      <span className="server-card__unreachable-note">{disabledNote}</span>
+                      <span className="cargo-plate__nodata-note">
+                        <IconWarning size={12} />
+                        {disabledNote}
+                      </span>
                     ) : (
                       <>
-                        <span>{formatTokens(server.tool_count)} tools</span>
-                        <span className="server-card__dot">·</span>
-                        <span>{server.maintainer}</span>
+                        <span className="num">{formatTokens(server.tool_count)}</span>
+                        <span>tools</span>
+                        <span className="cargo-plate__sep">/</span>
+                        <span className="cargo-plate__maintainer">{server.maintainer}</span>
                       </>
                     )}
                   </span>
                 </span>
+                {hygiene !== null && grade !== null && (
+                  <span
+                    className={`grade-square grade-square--${grade.toLowerCase()}`}
+                    title={`Hygiene grade ${grade}, score ${hygiene.score.toFixed(2)} (${hygiene.kind})`}
+                  >
+                    {grade}
+                  </span>
+                )}
               </label>
             )
           })}
         </div>
-      </div>
+      </section>
 
-      <div className="stack-builder__row">
-        <div className="stack-builder__group">
-          <h3 className="stack-builder__label">Client mode</h3>
-          <div className="mode-options">
+      <div className="builder-switches">
+        <section className="builder-block">
+          <h3 className="stencil">Client mode</h3>
+          <div className="switch">
             {CLIENT_MODES.map((id) => (
-              <label key={id} className={`mode-option${mode === id ? ' mode-option--checked' : ''}`}>
-                <input
-                  type="radio"
-                  name="mode"
-                  checked={mode === id}
-                  onChange={() => onModeChange(id)}
-                />
-                <span>
-                  <span className="mode-option__label">
-                    {modeLabel(id)} ({modeKind(id)})
-                  </span>
-                  <span className="mode-option__hint">{MODE_HINTS[id]}</span>
-                </span>
+              <label key={id} className={`switch__seg${mode === id ? ' switch__seg--on' : ''}`} title={MODE_HINTS[id]}>
+                <input type="radio" name="mode" checked={mode === id} onChange={() => onModeChange(id)} />
+                <span className="switch__label">{modeLabel(id)}</span>
               </label>
             ))}
           </div>
-        </div>
+          <p className="switch__caption">
+            <KindChip kind={modeKind(mode)} />
+            {MODE_HINTS[mode]}
+          </p>
+        </section>
 
-        <div className="stack-builder__group">
-          <h3 className="stack-builder__label">Model / tokenizer</h3>
-          <div className="mode-options">
-            <label className={`mode-option${model === 'openai_o200k' ? ' mode-option--checked' : ''}`}>
-              <input
-                type="radio"
-                name="model"
-                checked={model === 'openai_o200k'}
-                onChange={() => onModelChange('openai_o200k')}
-              />
-              <span>
-                <span className="mode-option__label">OpenAI o200k</span>
-                <span className="mode-option__hint">Local tiktoken, measured</span>
-              </span>
-            </label>
-            <label
-              className={`mode-option${model === 'claude' ? ' mode-option--checked' : ''}${!claudeAvailableAny ? ' mode-option--pending' : ''}`}
-            >
-              <input type="radio" name="model" checked={model === 'claude'} onChange={() => onModelChange('claude')} />
-              <span>
-                <span className="mode-option__label">Claude</span>
-                <span className="mode-option__hint">{claudeAvailableAny ? 'count_tokens API, measured where available' : 'pending measurement'}</span>
-              </span>
-            </label>
-            <label
-              className={`mode-option${model === 'gemini' ? ' mode-option--checked' : ''}${!geminiAvailableAny ? ' mode-option--pending' : ''}`}
-            >
-              <input type="radio" name="model" checked={model === 'gemini'} onChange={() => onModelChange('gemini')} />
-              <span>
-                <span className="mode-option__label">Gemini</span>
-                <span className="mode-option__hint">{geminiAvailableAny ? 'countTokens, measured where available' : 'pending measurement'}</span>
-              </span>
-            </label>
+        <section className="builder-block">
+          <h3 className="stencil">Model / tokenizer</h3>
+          <div className="switch">
+            {MODEL_IDS.map((id) => (
+              <label
+                key={id}
+                className={`switch__seg${model === id ? ' switch__seg--on' : ''}${modelPending[id] ? ' switch__seg--pending' : ''}`}
+                title={modelHints[id]}
+              >
+                <input type="radio" name="model" checked={model === id} onChange={() => onModelChange(id)} />
+                <span className="switch__label">{modelLabel(id)}</span>
+                {modelPending[id] && (
+                  <span className="switch__icon switch__icon--warn" aria-hidden="true">
+                    <IconWarning size={13} />
+                  </span>
+                )}
+              </label>
+            ))}
           </div>
-        </div>
+          <p className={`switch__caption${modelPending[model] ? ' switch__caption--pending' : ''}`}>
+            {modelHints[model]}
+          </p>
+        </section>
       </div>
     </div>
   )

@@ -2,11 +2,19 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--banner-bg);
-  color: var(--banner-text);
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--oxide);
+  color: #ffffff;
   padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgb(0 0 0 / 0.35);
+}
+
+.banner__text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }

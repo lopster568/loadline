@@ -1,3 +1,4 @@
+import { IconWarning } from './Icons'
 import './Banner.css'
 
 interface BannerProps {
@@ -14,7 +15,8 @@ export default function Banner({ visible }: BannerProps) {
   if (!visible) return null
   return (
     <div className="banner" role="alert">
-      <span className="banner__text">SAMPLE DATA. These are not measurements.</span>
+      <IconWarning size={14} />
+      <span className="banner__text">Sample data. These are not measurements.</span>
     </div>
   )
 }

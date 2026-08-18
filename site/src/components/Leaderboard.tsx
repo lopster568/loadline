@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ServerEntry } from '../types'
 import { formatFraction, formatTokens } from '../lib/format'
+import { IconWarning } from './Icons'
 import './Leaderboard.css'
 
 interface LeaderboardProps {
@@ -28,15 +29,15 @@ type SortKey =
   | 'retrievability'
 type SortDir = 'asc' | 'desc'
 
-const COLUMNS: { key: SortKey; label: string }[] = [
-  { key: 'name', label: 'Name' },
-  { key: 'tool_count', label: 'Tool count' },
-  { key: 'naive', label: 'Naive tokens' },
-  { key: 'per_tool_avg', label: 'Per-tool avg' },
-  { key: 'status', label: 'Status' },
-  { key: 'protocol_revision', label: 'Protocol revision' },
-  { key: 'hygiene', label: 'Hygiene' },
-  { key: 'retrievability', label: 'Retrievability' },
+const COLUMNS: { key: SortKey; label: string; numeric: boolean }[] = [
+  { key: 'name', label: 'Name', numeric: false },
+  { key: 'tool_count', label: 'Tool count', numeric: true },
+  { key: 'naive', label: 'Naive tokens', numeric: true },
+  { key: 'per_tool_avg', label: 'Per-tool avg', numeric: true },
+  { key: 'status', label: 'Status', numeric: false },
+  { key: 'protocol_revision', label: 'Protocol revision', numeric: false },
+  { key: 'hygiene', label: 'Hygiene', numeric: false },
+  { key: 'retrievability', label: 'Retrievability', numeric: true },
 ]
 
 // Compares two nullable numbers so null always sorts last, in either sort
@@ -121,19 +122,25 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
   }
 
   return (
-    <div className="leaderboard-wrap">
-      <table className="leaderboard">
+    <div className="manifest-wrap plate">
+      <table className="manifest">
         <thead>
           <tr>
             {COLUMNS.map((col) => (
-              <th key={col.key}>
+              <th
+                key={col.key}
+                className={col.numeric ? 'manifest__th manifest__th--num' : 'manifest__th'}
+                aria-sort={sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+              >
                 <button
                   type="button"
-                  className={`leaderboard__sort-btn${sortKey === col.key ? ' leaderboard__sort-btn--active' : ''}`}
+                  className={`manifest__sort${sortKey === col.key ? ' manifest__sort--active' : ''}`}
                   onClick={() => handleSort(col.key)}
                 >
                   {col.label}
-                  {sortKey === col.key && <span className="leaderboard__sort-arrow">{sortDir === 'asc' ? '↑' : '↓'}</span>}
+                  <span className="manifest__sort-arrow" aria-hidden="true">
+                    {sortKey === col.key ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+                  </span>
                 </button>
               </th>
             ))}
@@ -141,26 +148,31 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
         </thead>
         <tbody>
           {sorted.map(({ server, naiveTokens, perToolAvg, dataOk, hygieneGrade, hygieneScore, top3Fraction }) => (
-            <tr key={server.id} className={!dataOk ? 'leaderboard__row--unreachable' : ''}>
-              <td>{server.name}</td>
-              <td>{formatTokens(server.tool_count)}</td>
-              <td>{formatTokens(naiveTokens)}</td>
-              <td>{formatTokens(perToolAvg)}</td>
-              <td>{server.status}</td>
-              <td>{server.protocol_revision ?? 'n/a'}</td>
+            <tr key={server.id} className={!dataOk ? 'manifest__row--nodata' : ''}>
+              <td className="manifest__name">{server.name}</td>
+              <td className="num manifest__num">{formatTokens(server.tool_count)}</td>
+              <td className="num manifest__num">{formatTokens(naiveTokens)}</td>
+              <td className="num manifest__num">{formatTokens(perToolAvg)}</td>
+              <td>
+                <span className="manifest__status">
+                  {server.status !== 'ok' && <IconWarning size={12} />}
+                  {server.status}
+                </span>
+              </td>
+              <td className="num">{server.protocol_revision ?? 'n/a'}</td>
               <td>
                 {hygieneGrade !== null ? (
                   <span
-                    className="hygiene-badge"
+                    className={`grade-square grade-square--${hygieneGrade.toLowerCase()}`}
                     title={hygieneScore !== null ? `score ${hygieneScore.toFixed(2)}` : undefined}
                   >
                     {hygieneGrade}
                   </span>
                 ) : (
-                  'n/a'
+                  <span className="manifest__na">n/a</span>
                 )}
               </td>
-              <td>{formatFraction(top3Fraction)}</td>
+              <td className="num manifest__num">{formatFraction(top3Fraction)}</td>
             </tr>
           ))}
         </tbody>

@@ -1,6 +1,8 @@
 import type { StackResult } from '../lib/aggregate'
 import { modeLabel, modelLabel } from '../lib/aggregate'
 import { formatPercent, formatTokens, formatUsd } from '../lib/format'
+import { IconX } from './Icons'
+import KindChip from './KindChip'
 import './ResultsPanel.css'
 
 interface ResultsPanelProps {
@@ -15,15 +17,11 @@ interface ResultsPanelProps {
   selectedCount: number
 }
 
-function KindChip({ kind }: { kind: 'measured' | 'modeled' }) {
-  return <span className={`kind-chip kind-chip--${kind}`}>{kind}</span>
-}
-
 export default function ResultsPanel({ result, modeResults, selectedCount }: ResultsPanelProps) {
   if (selectedCount === 0) {
     return (
-      <div className="results-panel results-panel--empty">
-        Select one or more servers to see the stack's context cost.
+      <div className="results-panel plate results-panel--empty">
+        Select one or more servers to see what the stack draws from the context window.
       </div>
     )
   }
@@ -35,9 +33,9 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
   const primaryPending = result.attribution.length === 0
 
   return (
-    <div className="results-panel">
+    <div className="results-panel plate">
       <div className="results-panel__modes">
-        <h4 className="results-panel__subhead">All three client modes</h4>
+        <h4 className="stencil results-panel__subhead">All three client modes</h4>
         <div className="mode-compare">
           {modeResults.map((m) => {
             // No selected server produced a figure for this mode. Methodology
@@ -58,13 +56,13 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
                   <span className="mode-compare__pending">pending measurement</span>
                 ) : (
                   <>
-                    <span className="mode-compare__tokens">{formatTokens(m.totalTokens)}</span>
+                    <span className="mode-compare__tokens num">{formatTokens(m.totalTokens)}</span>
                     <span className="mode-compare__window">
-                      {formatPercent(m.windowFraction)} of a 200k window
+                      <span className="num">{formatPercent(m.windowFraction)}</span> of a 200k window
                     </span>
                   </>
                 )}
-                {isPrimary && <span className="mode-compare__primary-tag">detailed below</span>}
+                {isPrimary && <span className="mode-compare__primary-tag">on the gauge</span>}
               </div>
             )
           })}
@@ -76,7 +74,7 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
       </div>
 
       <div className="results-panel__headline">
-        <h4 className="results-panel__subhead">{modeLabel(result.mode)}, in detail</h4>
+        <h4 className="stencil results-panel__subhead">{modeLabel(result.mode)}, in detail</h4>
         {primaryPending ? (
           <p className="results-panel__pending">
             Pending measurement. No selected server has a {modeLabel(result.mode).toLowerCase()} figure for this
@@ -85,13 +83,16 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
         ) : (
           <>
             <div className="results-panel__total">
-              <span className="results-panel__total-number">{formatTokens(result.totalTokens)}</span>
-              <span className="results-panel__total-label">tokens <KindChip kind={result.kind} /></span>
+              <span className="results-panel__total-number num">{formatTokens(result.totalTokens)}</span>
+              <span className="results-panel__total-label">
+                tokens <KindChip kind={result.kind} />
+              </span>
             </div>
             {result.totalTokensLow !== null && result.totalTokensHigh !== null && (
               <p className="results-panel__range">
-                Range across k = 3 to 5 retrieved tools: {formatTokens(result.totalTokensLow)} to{' '}
-                {formatTokens(result.totalTokensHigh)} tokens.
+                Range across k = 3 to 5 retrieved tools:{' '}
+                <span className="num">{formatTokens(result.totalTokensLow)}</span> to{' '}
+                <span className="num">{formatTokens(result.totalTokensHigh)}</span> tokens.
               </p>
             )}
           </>
@@ -99,23 +100,8 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
       </div>
 
       {!primaryPending && (
-        <div className="results-panel__window">
-          <div className="results-panel__window-label">
-            <span>Share of a 200k context window</span>
-            <span>{formatPercent(result.windowFraction)}</span>
-          </div>
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${Math.min(result.windowFraction, 100)}%` }}
-            />
-          </div>
-        </div>
-      )}
-
-      {!primaryPending && (
         <div className="results-panel__attribution">
-          <h4 className="results-panel__subhead">Per-server attribution</h4>
+          <h4 className="stencil results-panel__subhead">Per-server attribution</h4>
           <div className="attribution-list">
             {result.attribution.map((row) => (
               <div className="attribution-row" key={row.server.id}>
@@ -126,7 +112,7 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
                     style={{ width: `${(row.tokens / barMax) * 100}%` }}
                   />
                 </div>
-                <span className="attribution-row__tokens">{formatTokens(row.tokens)}</span>
+                <span className="attribution-row__tokens num">{formatTokens(row.tokens)}</span>
               </div>
             ))}
           </div>
@@ -141,7 +127,7 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
             label, plus an explicit unverified tag while pricing.json is a
             placeholder.
           */}
-          <h4 className="results-panel__subhead">
+          <h4 className="stencil results-panel__subhead">
             Dollar cost, {modelLabel(result.model)}
             {result.pricingAsOf && (
               <span className="price-provenance">estimate, list prices as of {result.pricingAsOf}</span>
@@ -158,8 +144,8 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
               </thead>
               <tbody>
                 <tr>
-                  <td>{formatUsd(result.dollars.coldWrite)}</td>
-                  <td>
+                  <td className="num">{formatUsd(result.dollars.coldWrite)}</td>
+                  <td className="num">
                     {result.dollars.cacheReadAchievable ? (
                       formatUsd(result.dollars.cacheRead)
                     ) : (
@@ -184,11 +170,14 @@ export default function ResultsPanel({ result, modeResults, selectedCount }: Res
 
       {result.excluded.length > 0 && (
         <div className="results-panel__excluded">
-          <h4 className="results-panel__subhead">Excluded from totals</h4>
+          <h4 className="stencil results-panel__subhead">Excluded from totals</h4>
           <ul>
             {result.excluded.map((row) => (
               <li key={row.server.id}>
-                <span className="excluded-row__name">{row.server.name}</span>: {row.reason}
+                <IconX size={13} />
+                <span>
+                  <span className="excluded-row__name">{row.server.name}</span>: {row.reason}
+                </span>
               </li>
             ))}
           </ul>
