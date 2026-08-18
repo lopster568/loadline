@@ -1,0 +1,16 @@
+/* Brand marks are monochrome instrument stamps, never full-colour logos:
+   every <svg> here inherits fill="currentColor" from its placement context
+   (cargo plate, switch segment, or manifest row) rather than carrying its
+   own brand palette. */
+
+.brand-icon__letter {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  border-radius: var(--edge);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  line-height: 1;
+}

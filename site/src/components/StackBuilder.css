@@ -115,9 +115,38 @@
 }
 
 .cargo-plate__name {
+  display: flex;
+  /* flex-start, not center: several server names wrap to two or three
+     lines, and centering against the whole wrapped block would float the
+     icon away from the first line it is meant to sit beside. */
+  align-items: flex-start;
+  gap: 6px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.3;
+}
+
+/* Dimmer than the name text by default so the mark reads as instrument
+   trim, not a logo; the loaded plate lifts it to full --text alongside the
+   red-lead edge, and the no-data plate leaves it at rest with everything
+   else on that plate. Nudged down a hair so a 16px mark optically sits on
+   the cap height of the first text line instead of its full line box. */
+.cargo-plate__icon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--muted);
+}
+
+.cargo-plate--loaded .cargo-plate__icon {
+  color: var(--text);
+}
+
+/* A no-data plate can still be checked (its exclusion shows up in results),
+   so this has to win over --loaded above regardless of source order: the
+   icon stays dim with the rest of the plate instead of lighting up on a
+   server that contributed no tokens. */
+.cargo-plate--nodata .cargo-plate__icon {
+  color: var(--muted);
 }
 
 .cargo-plate__meta {
@@ -236,6 +265,14 @@
   display: inline-flex;
   flex: none;
   color: var(--muted);
+}
+
+/* Model brand mark: no colour override of its own, so it tracks the same
+   muted-to-text transition as the segment label around it. */
+.switch__brand-icon {
+  display: inline-flex;
+  flex: none;
+  color: currentColor;
 }
 
 .switch__icon--warn {

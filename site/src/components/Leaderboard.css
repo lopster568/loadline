@@ -78,7 +78,19 @@
 }
 
 .manifest__name {
+  display: flex;
+  /* flex-start, not center: several names wrap to two lines inside this
+     column, and centering against the wrapped block would float the icon
+     away from the first line it belongs beside. */
+  align-items: flex-start;
+  gap: 6px;
   min-width: 220px;
+}
+
+.manifest__icon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--muted);
 }
 
 .manifest__status {

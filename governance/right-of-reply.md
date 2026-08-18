@@ -1,6 +1,6 @@
 # Right of Reply
 
-> STATUS: draft v0. Public-bound: requires owner review before publication.
+> Version 0, in force since 2026-08-18. Changes to this document are changelog events.
 
 | Field | Value |
 | --- | --- |

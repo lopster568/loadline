@@ -2,6 +2,7 @@ import type { ClientMode, ModelId, ServerEntry } from '../types'
 import { formatTokens } from '../lib/format'
 import { CLIENT_MODES, NO_DATA_LABEL, modeKind, modeLabel, modelLabel } from '../lib/aggregate'
 import { IconCheck, IconWarning } from './Icons'
+import BrandIcon from './BrandIcon'
 import KindChip from './KindChip'
 import './StackBuilder.css'
 
@@ -89,7 +90,10 @@ export default function StackBuilder({
                   {checked && <IconCheck size={12} />}
                 </span>
                 <span className="cargo-plate__body">
-                  <span className="cargo-plate__name">{server.name}</span>
+                  <span className="cargo-plate__name">
+                    <BrandIcon id={server.id} size={16} className="cargo-plate__icon" />
+                    {server.name}
+                  </span>
                   <span className="cargo-plate__meta">
                     {disabledNote ? (
                       <span className="cargo-plate__nodata-note">
@@ -147,6 +151,9 @@ export default function StackBuilder({
                 title={modelHints[id]}
               >
                 <input type="radio" name="model" checked={model === id} onChange={() => onModelChange(id)} />
+                <span className="switch__brand-icon" aria-hidden="true">
+                  <BrandIcon id={id} size={14} />
+                </span>
                 <span className="switch__label">{modelLabel(id)}</span>
                 {modelPending[id] && (
                   <span className="switch__icon switch__icon--warn" aria-hidden="true">

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { ServerEntry } from '../types'
 import { formatFraction, formatTokens } from '../lib/format'
 import { IconWarning } from './Icons'
+import BrandIcon from './BrandIcon'
 import './Leaderboard.css'
 
 interface LeaderboardProps {
@@ -149,7 +150,10 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
         <tbody>
           {sorted.map(({ server, naiveTokens, perToolAvg, dataOk, hygieneGrade, hygieneScore, top3Fraction }) => (
             <tr key={server.id} className={!dataOk ? 'manifest__row--nodata' : ''}>
-              <td className="manifest__name">{server.name}</td>
+              <td className="manifest__name">
+                <BrandIcon id={server.id} size={14} className="manifest__icon" />
+                {server.name}
+              </td>
               <td className="num manifest__num">{formatTokens(server.tool_count)}</td>
               <td className="num manifest__num">{formatTokens(naiveTokens)}</td>
               <td className="num manifest__num">{formatTokens(perToolAvg)}</td>

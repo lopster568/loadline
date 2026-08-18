@@ -112,6 +112,16 @@ export function IconRuler(props: IconProps) {
   )
 }
 
+/** Filesystem fallback: no brand icon exists for the reference filesystem
+ *  server, so this reads as a folder on the same 16-unit grid. */
+export function IconFolder(props: IconProps) {
+  return (
+    <Frame {...props}>
+      <path d="M2 4.6a1 1 0 0 1 1-1h2.8l1.3 1.6H13a1 1 0 0 1 1 1v5.6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" />
+    </Frame>
+  )
+}
+
 /**
  * The Plimsoll mark: a circle with a horizontal line through its centre
  * running past both sides. The brand mark, and the same shape that rides the
