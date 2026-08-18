@@ -1,7 +1,5 @@
 # Corrections Log
 
-> STATUS: draft v0. Public-bound: requires owner review before publication.
-
 ## 1. Purpose
 
 This is the public, append-only record of every correction made to a published number, claim, or row on this site. It exists so a reader can see what was wrong, why, and what changed, without needing to ask.
@@ -51,4 +49,12 @@ A routine monthly refresh where a server's own numbers moved because the server 
 - What was wrong: the methodology stated a name-charset rule and a canonical-order property that the harness did not implement.
 - Root cause: the methodology document was written ahead of the implementation.
 - What changed: methodology versions 0.1.1 and 0.2.0 corrected the stated rule and property; the harness was fixed to match. No published external release was affected, because the mismatch was found and corrected pre-publication.
+- Reported by: internal.
+
+### [2026-08-18] `fetch` published as `unreachable` in the 2026-08-18 run, but starts on a fresh resolve the same afternoon
+
+- Affected rows or claims: `fetch` row, run 2026-08-18, `status: unreachable`, all counts unavailable. The `postgres` row is also partly affected: its published failure is real, but the two rows are not the same failure.
+- What was wrong: the run acquired `fetch` at 15:38 UTC and the server died at import. Re-checked at approximately 16:45 UTC the same day, on the same machine, with the resolver cache forced fresh (`uvx --refresh`), a clean resolve of `mcp-server-fetch` 2026.7.10 returns `mcp` 1.29.0 rather than 2.0.0 and `import mcp_server_fetch` succeeds. The published `unreachable` status therefore does not describe what a reader installing the server today would see. Separately, `fetch` and `postgres` fail differently: `fetch` breaks on `from mcp.shared.exceptions import McpError` (`mcp_server_fetch/server.py:6`), a symbol `mcp` 2.0.0 renamed to `MCPError`; `postgres` breaks on `from mcp.server.fastmcp import FastMCP` (`postgres_mcp/server.py:15`) with `ModuleNotFoundError: No module named 'mcp.server.fastmcp'`.
+- Root cause: two causes. (1) Both servers declare unbounded dependencies on the MCP Python SDK (`mcp>=1.1.3` for fetch, `mcp[cli]>=1.5.0` for postgres), so the failure depends on which SDK version the resolver returns at acquisition time; `mcp` 2.0.0 is the latest release and is not yanked, so nothing upstream was withdrawn between the two checks. (2) Instrument gap: `acquisition` records whether the server package itself was pinned, but does not record the resolved versions of its dependencies, so the run artifact cannot explain why two resolves an hour apart differed.
+- What changed: no published number was edited. The `fetch` row stands as measured at 15:38 UTC, with this entry attached, and the launch post states the row went stale within the hour. The instrument gap is the change: the harness will record resolved dependency versions per acquisition before the next monthly run, so a future `unreachable` row carries the resolve that produced it. `postgres` remains `unreachable` and still fails on a fresh resolve.
 - Reported by: internal.
