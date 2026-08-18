@@ -8,7 +8,8 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px 12px;
 }
 
 .builder-block > .stencil,
@@ -19,6 +20,41 @@
 .builder-block__count {
   font-size: 11px;
   color: var(--muted);
+}
+
+/* Count and legend share the right side of the header row, and wrap onto
+   their own line together once the row can no longer fit "SERVERS" plus
+   both readouts side by side. */
+.builder-block__head-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  min-width: 0;
+}
+
+/* Quiet by design: same footing as the loaded-count readout beside it, not
+   a call to action. Only the hover state hints it is a link. */
+.hygiene-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.hygiene-legend__link {
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 2px;
+}
+
+.hygiene-legend__link:hover,
+.hygiene-legend__link:focus-visible {
+  color: var(--oxide-ink);
+  text-decoration-color: currentColor;
 }
 
 /* Cargo plates: one stencilled plate per server, pressed when loaded. */
@@ -162,6 +198,25 @@
   color: var(--muted);
 }
 
+/* Real brand marks (.brand-icon__mark, set by BrandIcon.tsx) carry their own
+   fill and ignore the color rules above; the plate states above still speak
+   through opacity instead - dim enamel at rest, lit at full brand colour
+   once loaded, same three-state ladder as the muted/--text/muted one above
+   but expressed the way a colour mark reads a "lit up" state. Same
+   equal-specificity, source-order-decides shape as the block above: nodata
+   has to come last so an unchecked no-data plate never lights up. */
+.cargo-plate__icon.brand-icon__mark {
+  opacity: 0.55;
+}
+
+.cargo-plate--loaded .cargo-plate__icon.brand-icon__mark {
+  opacity: 1;
+}
+
+.cargo-plate--nodata .cargo-plate__icon.brand-icon__mark {
+  opacity: 0.35;
+}
+
 .cargo-plate__meta {
   display: flex;
   align-items: center;
@@ -280,12 +335,24 @@
   color: var(--muted);
 }
 
-/* Model brand mark: no colour override of its own, so it tracks the same
-   muted-to-text transition as the segment label around it. */
+/* Model brand mark. The context7/playwright/openai letter-and-generic
+   fallbacks have no colour override of their own, so they still track the
+   muted-to-text transition of the segment label around them via
+   currentColor. Real brand marks (.brand-icon__mark) carry their own fill
+   instead and get their "live" state from opacity: dim on an inactive
+   segment, full brand colour on the selected one. */
 .switch__brand-icon {
   display: inline-flex;
   flex: none;
   color: currentColor;
+}
+
+.switch__brand-icon .brand-icon__mark {
+  opacity: 0.55;
+}
+
+.switch__seg--on .switch__brand-icon .brand-icon__mark {
+  opacity: 1;
 }
 
 .switch__icon--warn {

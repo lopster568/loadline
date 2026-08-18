@@ -64,9 +64,22 @@ export default function StackBuilder({
       <section className="builder-block">
         <div className="builder-block__head">
           <h3 className="stencil">Servers</h3>
-          <span className="builder-block__count num">
-            {selectedIds.size} of {servers.length} loaded
-          </span>
+          <div className="builder-block__head-meta">
+            <span className="builder-block__count num">
+              {selectedIds.size} of {servers.length} loaded
+            </span>
+            <span className="hygiene-legend">
+              <span className="grade-square grade-square--mini grade-square--a" aria-hidden="true">
+                A
+              </span>
+              <a
+                className="hygiene-legend__link stencil"
+                href="https://github.com/lopster568/loadline/blob/main/docs/methodology-v0.md"
+              >
+                = schema hygiene grade
+              </a>
+            </span>
+          </div>
         </div>
 
         <div className="cargo-grid">

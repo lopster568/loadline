@@ -87,6 +87,11 @@
   min-width: 220px;
 }
 
+/* Letter/generic fallbacks only: color: var(--muted) reaches them via
+   currentColor. Real brand marks (.brand-icon__mark) carry their own fill
+   and no opacity override here, so they render at full brand colour in
+   every row, loaded or not - the manifest is a data table, and colour is
+   there to aid scanning rather than to signal a selection state. */
 .manifest__icon {
   flex: none;
   margin-top: 1px;

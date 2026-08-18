@@ -13,6 +13,7 @@
   never renders with an empty slot where its icon should be.
 */
 
+import type { CSSProperties } from 'react'
 import {
   siGithub,
   siNotion,
@@ -56,6 +57,86 @@ const BRAND_ICONS: Record<string, SimpleIcon> = {
   gemini: siGooglegemini,
 }
 
+/*
+  Brand colour resolution. Every mark renders in its own hex by default; the
+  only override is a legibility guard, computed once per icon from the hex
+  itself (pure math, no deps) rather than tuned by eye per brand:
+
+    - dark theme reads the mark off --plate, which is near-black. A hex
+      whose relative luminance sits under DARK_SAFE_FLOOR (github #181717,
+      notion #000000, sentry's near-black purple, and the handful of mid
+      blues/purples that land just under the line too) would nearly
+      disappear there, so it's lightened toward white instead of falling
+      back to grey - the hue stays recognisable, just lifted.
+    - light theme reads the mark off paper. A hex whose luminance sits over
+      LIGHT_SAFE_CEIL would wash out there, so it's darkened the same way.
+      Nothing in the current corpus is that light, but the guard exists for
+      whatever brand shows up next.
+
+  Both substitutes are 75% mixes toward white/black respectively: enough to
+  clear the floor/ceiling with margin, not so much the mark reads as tinted
+  grey.
+*/
+const DARK_SAFE_LUMINANCE_FLOOR = 0.18
+const LIGHT_SAFE_LUMINANCE_CEIL = 0.85
+const SAFE_MIX_AMOUNT = 0.75
+
+function hexToRgb(hex: string): [number, number, number] {
+  const n = parseInt(hex, 16)
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+}
+
+// WCAG relative luminance (the same formula behind contrast-ratio checks),
+// 0 (black) to 1 (white).
+function relativeLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex)
+  const toLinear = (c: number) => {
+    const cs = c / 255
+    return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4)
+  }
+  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b)
+}
+
+// Mix a hex colour toward white (target 255) or black (target 0) by amount
+// (0..1), channel by channel. Returns a bare hex string, no leading '#'.
+function mixToward(hex: string, target: number, amount: number): string {
+  const [r, g, b] = hexToRgb(hex)
+  const mixChannel = (c: number) => Math.round(c + (target - c) * amount).toString(16).padStart(2, '0')
+  return `${mixChannel(r)}${mixChannel(g)}${mixChannel(b)}`
+}
+
+interface ResolvedBrandColor {
+  /** The brand's own hex, unmodified - used in both themes when it's already safe. */
+  brand: string
+  /** What to render in dark theme: the brand hex, or a lightened stand-in if it's too dark to read on --plate. */
+  darkSafe: string
+  /** What to render in light theme: the brand hex, or a darkened stand-in if it's too light to read on paper. */
+  lightSafe: string
+}
+
+// Resolved once at module load, not per render: each entry is pure hex math
+// over BRAND_ICONS, so there's nothing here that benefits from recomputing.
+const BRAND_COLORS: Record<string, ResolvedBrandColor> = Object.fromEntries(
+  Object.entries(BRAND_ICONS).map(([id, icon]) => {
+    const hex = icon.hex
+    const luminance = relativeLuminance(hex)
+    const darkSafe = luminance < DARK_SAFE_LUMINANCE_FLOOR ? mixToward(hex, 255, SAFE_MIX_AMOUNT) : hex
+    const lightSafe = luminance > LIGHT_SAFE_LUMINANCE_CEIL ? mixToward(hex, 0, SAFE_MIX_AMOUNT) : hex
+    const resolved: ResolvedBrandColor = { brand: `#${hex}`, darkSafe: `#${darkSafe}`, lightSafe: `#${lightSafe}` }
+    return [id, resolved]
+  }),
+)
+
+// CSSProperties doesn't know about custom properties; BrandIcon hands the
+// three brand colour tokens to CSS through inline style rather than JS-side
+// theme detection, so the .brand-icon__mark rules in BrandIcon.css can pick
+// the right one per theme the same way every other token in the app does.
+type BrandIconStyle = CSSProperties & {
+  '--brand': string
+  '--brand-dark-safe': string
+  '--brand-light-safe': string
+}
+
 function firstLetter(id: string): string {
   const match = id.match(/[a-zA-Z]/)
   return match ? match[0].toUpperCase() : '?'
@@ -64,15 +145,21 @@ function firstLetter(id: string): string {
 export default function BrandIcon({ id, size = 16, className }: BrandIconProps) {
   const brand = BRAND_ICONS[id]
   if (brand) {
+    const colors = BRAND_COLORS[id]
+    const style: BrandIconStyle = {
+      '--brand': colors.brand,
+      '--brand-dark-safe': colors.darkSafe,
+      '--brand-light-safe': colors.lightSafe,
+    }
     return (
       <svg
         width={size}
         height={size}
         viewBox="0 0 24 24"
-        fill="currentColor"
         aria-hidden="true"
         focusable="false"
-        className={className}
+        className={`brand-icon__mark${className ? ` ${className}` : ''}`}
+        style={style}
       >
         <path d={brand.path} />
       </svg>

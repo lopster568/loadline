@@ -30,14 +30,19 @@ type SortKey =
   | 'retrievability'
 type SortDir = 'asc' | 'desc'
 
-const COLUMNS: { key: SortKey; label: string; numeric: boolean }[] = [
+const COLUMNS: { key: SortKey; label: string; numeric: boolean; title?: string }[] = [
   { key: 'name', label: 'Name', numeric: false },
   { key: 'tool_count', label: 'Tool count', numeric: true },
   { key: 'naive', label: 'Naive tokens', numeric: true },
   { key: 'per_tool_avg', label: 'Per-tool avg', numeric: true },
   { key: 'status', label: 'Status', numeric: false },
   { key: 'protocol_revision', label: 'Protocol revision', numeric: false },
-  { key: 'hygiene', label: 'Hygiene', numeric: false },
+  {
+    key: 'hygiene',
+    label: 'Hygiene',
+    numeric: false,
+    title: 'Schema hygiene grade, methodology section 6. Hover a grade for its score.',
+  },
   { key: 'retrievability', label: 'Retrievability', numeric: true },
 ]
 
@@ -132,6 +137,7 @@ export default function Leaderboard({ servers }: LeaderboardProps) {
                 key={col.key}
                 className={col.numeric ? 'manifest__th manifest__th--num' : 'manifest__th'}
                 aria-sort={sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
+                title={col.title}
               >
                 <button
                   type="button"

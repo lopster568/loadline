@@ -203,6 +203,14 @@ code {
 .grade-square--d { color: var(--grade-d); background: color-mix(in srgb, var(--grade-d) 14%, transparent); }
 .grade-square--f { color: var(--grade-f); background: color-mix(in srgb, var(--grade-f) 14%, transparent); }
 
+/* Miniature grade square for inline legend use, not a real reading. */
+.grade-square--mini {
+  width: 12px;
+  height: 12px;
+  font-size: 7px;
+  cursor: inherit;
+}
+
 .container {
   width: 100%;
   max-width: 1180px;

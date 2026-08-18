@@ -1,7 +1,7 @@
-/* Brand marks are monochrome instrument stamps, never full-colour logos:
-   every <svg> here inherits fill="currentColor" from its placement context
-   (cargo plate, switch segment, or manifest row) rather than carrying its
-   own brand palette. */
+/* Letter-mark and generic (folder/link) fallbacks stay monochrome instrument
+   stamps: they aren't real brand marks, so they inherit currentColor from
+   their placement context (cargo plate, switch segment, manifest row)
+   instead of carrying a palette. */
 
 .brand-icon__letter {
   display: inline-flex;
@@ -13,4 +13,23 @@
   font-family: var(--font-mono);
   font-weight: 700;
   line-height: 1;
+}
+
+/* Real brand marks render in the brand's own hex, set as --brand(-*-safe)
+   custom properties by BrandIcon.tsx (see the module-load colour resolution
+   there). Default is the light-theme-safe value, since --plate is paper by
+   default; the dark override only flips for icons the luminance guard
+   actually flagged (BrandIcon.tsx sets darkSafe = brand's own hex, unchanged,
+   for anything already readable, so this rule is a no-op for most marks).
+   Opacity is left to each placement (cargo plate / switch / manifest) below
+   and in their own component stylesheets - it's a state signal (dim/lit),
+   not part of colour resolution. */
+.brand-icon__mark {
+  fill: var(--brand-light-safe);
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-icon__mark {
+    fill: var(--brand-dark-safe);
+  }
 }
