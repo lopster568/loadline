@@ -11,7 +11,7 @@ import (
 
 // DefaultGeminiModel is the harness default. Methodology 1.6 records the
 // Gemini model ID per run and leaves the v1 pin open, so this is overridable.
-const DefaultGeminiModel = "gemini-2.5-pro"
+const DefaultGeminiModel = "gemini-3.1-pro-preview"
 
 const geminiBase = "https://generativelanguage.googleapis.com/v1beta/models/"
 

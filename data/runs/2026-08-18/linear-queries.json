@@ -1,0 +1,1985 @@
+{
+  "server": "linear",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "get_attachment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve content id",
+          "terms": [
+            "retrieve",
+            "content",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "retrieve content",
+          "terms": [
+            "retrieve",
+            "content"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "prepare_attachment_upload",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "direct linear file",
+          "terms": [
+            "direct",
+            "linear",
+            "file"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "headers part",
+          "terms": [
+            "headers",
+            "part"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "direct linear file existing issue workflow call tool filename content type size",
+          "terms": [
+            "direct",
+            "linear",
+            "file",
+            "existing",
+            "issue",
+            "workflow",
+            "call",
+            "tool",
+            "filename",
+            "content",
+            "type",
+            "size"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_attachment_from_upload",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "link already uploaded",
+          "terms": [
+            "link",
+            "already",
+            "uploaded"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "client successfully",
+          "terms": [
+            "client",
+            "successfully"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "link already uploaded linear asset url existing issue prepare returned request client",
+          "terms": [
+            "link",
+            "already",
+            "uploaded",
+            "linear",
+            "asset",
+            "url",
+            "existing",
+            "issue",
+            "prepare",
+            "returned",
+            "request",
+            "client"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_attachment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "deprecated fallback tiny",
+          "terms": [
+            "deprecated",
+            "fallback",
+            "tiny"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "deprecated fallback",
+          "terms": [
+            "deprecated",
+            "fallback"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "deprecated fallback tiny files accepts base64 file content verifies sha 256 checksum",
+          "terms": [
+            "deprecated",
+            "fallback",
+            "tiny",
+            "files",
+            "accepts",
+            "base64",
+            "file",
+            "content",
+            "verifies",
+            "sha",
+            "256",
+            "checksum"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "delete_attachment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "id",
+          "terms": [
+            "id"
+          ],
+          "rank": 5
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "list_agent_skills",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear available authenticated",
+          "terms": [
+            "linear",
+            "available",
+            "authenticated"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "available authenticated",
+          "terms": [
+            "available",
+            "authenticated"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear available authenticated user",
+          "terms": [
+            "linear",
+            "available",
+            "authenticated",
+            "user"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_agent_skill",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve linear id",
+          "terms": [
+            "retrieve",
+            "linear",
+            "id"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "markdown instructions",
+          "terms": [
+            "markdown",
+            "instructions"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve linear id including full markdown instructions",
+          "terms": [
+            "retrieve",
+            "linear",
+            "id",
+            "including",
+            "full",
+            "markdown",
+            "instructions"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_comments",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear issue project",
+          "terms": [
+            "linear",
+            "issue",
+            "project"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "anchored carry",
+          "terms": [
+            "anchored",
+            "carry"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear issue project initiative document milestone status update provide exactly one id",
+          "terms": [
+            "linear",
+            "issue",
+            "project",
+            "initiative",
+            "document",
+            "milestone",
+            "status",
+            "update",
+            "provide",
+            "exactly",
+            "one",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update linear",
+          "terms": [
+            "create",
+            "update",
+            "linear"
+          ],
+          "rank": 8
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "holds single",
+          "terms": [
+            "holds",
+            "single"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update linear issue project initiative document milestone status id provided updates",
+          "terms": [
+            "create",
+            "update",
+            "linear",
+            "issue",
+            "project",
+            "initiative",
+            "document",
+            "milestone",
+            "status",
+            "id",
+            "provided",
+            "updates"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "delete_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear inline description",
+          "terms": [
+            "linear",
+            "inline",
+            "description"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "mark editor",
+          "terms": [
+            "mark",
+            "editor"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear inline description comments non null quoted text anchor mark editor root",
+          "terms": [
+            "linear",
+            "inline",
+            "description",
+            "comments",
+            "non",
+            "null",
+            "quoted",
+            "text",
+            "anchor",
+            "mark",
+            "editor",
+            "root"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_cycles",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve specific linear",
+          "terms": [
+            "retrieve",
+            "specific",
+            "linear"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "retrieve specific",
+          "terms": [
+            "retrieve",
+            "specific"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve specific linear team",
+          "terms": [
+            "retrieve",
+            "specific",
+            "linear",
+            "team"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_document",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve linear id",
+          "terms": [
+            "retrieve",
+            "linear",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "id slug",
+          "terms": [
+            "id",
+            "slug"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve linear id slug",
+          "terms": [
+            "retrieve",
+            "linear",
+            "id",
+            "slug"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_documents",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "user linear workspace",
+          "terms": [
+            "user",
+            "linear",
+            "workspace"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "user linear",
+          "terms": [
+            "user",
+            "linear"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_document",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update linear",
+          "terms": [
+            "create",
+            "update",
+            "linear"
+          ],
+          "rank": 4
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "parent reparents",
+          "terms": [
+            "parent",
+            "reparents"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update linear id provided updates existing otherwise creates new one creating",
+          "terms": [
+            "create",
+            "update",
+            "linear",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one",
+            "creating"
+          ],
+          "rank": 6
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "extract_images",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "fetch markdown content",
+          "terms": [
+            "fetch",
+            "markdown",
+            "content"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "view screenshots",
+          "terms": [
+            "view",
+            "screenshots"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "fetch markdown content view screenshots diagrams embedded linear issues comments documents pass",
+          "terms": [
+            "fetch",
+            "markdown",
+            "content",
+            "view",
+            "screenshots",
+            "diagrams",
+            "embedded",
+            "linear",
+            "issues",
+            "comments",
+            "documents",
+            "pass"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_issue",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve detailed information",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "information"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "attachments git",
+          "terms": [
+            "attachments",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve detailed information id including attachments git branch name active triage intelligence",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "information",
+            "id",
+            "including",
+            "attachments",
+            "git",
+            "branch",
+            "name",
+            "active",
+            "triage",
+            "intelligence"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issues",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "user linear workspace",
+          "terms": [
+            "user",
+            "linear",
+            "workspace"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "triage my",
+          "terms": [
+            "triage",
+            "my"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "user linear workspace including active triage intelligence suggestions my me assignee null",
+          "terms": [
+            "user",
+            "linear",
+            "workspace",
+            "including",
+            "active",
+            "triage",
+            "intelligence",
+            "suggestions",
+            "my",
+            "me",
+            "assignee",
+            "null"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_issue",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update linear",
+          "terms": [
+            "create",
+            "update",
+            "linear"
+          ],
+          "rank": 6
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "email me",
+          "terms": [
+            "email",
+            "me"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update linear id provided updates existing otherwise creates new one creating",
+          "terms": [
+            "create",
+            "update",
+            "linear",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one",
+            "creating"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issue_statuses",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available linear team",
+          "terms": [
+            "available",
+            "linear",
+            "team"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "available linear",
+          "terms": [
+            "available",
+            "linear"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_issue_status",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve detailed information",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "information"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "detailed information",
+          "terms": [
+            "detailed",
+            "information"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve detailed information linear name id",
+          "terms": [
+            "retrieve",
+            "detailed",
+            "information",
+            "linear",
+            "name",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issue_labels",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available linear workspace",
+          "terms": [
+            "available",
+            "linear",
+            "workspace"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "workspace team",
+          "terms": [
+            "workspace",
+            "team"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "available linear workspace team",
+          "terms": [
+            "available",
+            "linear",
+            "workspace",
+            "team"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_issue_label",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "new linear",
+          "terms": [
+            "new",
+            "linear"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_projects",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "user linear workspace",
+          "terms": [
+            "user",
+            "linear",
+            "workspace"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "user linear",
+          "terms": [
+            "user",
+            "linear"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_project",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve details specific",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details specific",
+          "terms": [
+            "details",
+            "specific"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve details specific linear",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific",
+            "linear"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "save_project",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update linear",
+          "terms": [
+            "create",
+            "update",
+            "linear"
+          ],
+          "rank": 9
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "via add",
+          "terms": [
+            "via",
+            "add"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update linear id provided updates existing otherwise creates new one creating",
+          "terms": [
+            "create",
+            "update",
+            "linear",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one",
+            "creating"
+          ],
+          "rank": 4
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_project_labels",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available linear workspace",
+          "terms": [
+            "available",
+            "linear",
+            "workspace"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "available linear",
+          "terms": [
+            "available",
+            "linear"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_release_pipelines",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "workspace",
+          "terms": [
+            "workspace"
+          ],
+          "rank": 6
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "list_releases",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "workspace optional filtering",
+          "terms": [
+            "workspace",
+            "optional",
+            "filtering"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "optional filtering",
+          "terms": [
+            "optional",
+            "filtering"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "workspace optional filtering pipeline stage version text",
+          "terms": [
+            "workspace",
+            "optional",
+            "filtering",
+            "pipeline",
+            "stage",
+            "version",
+            "text"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_release",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve details id",
+          "terms": [
+            "retrieve",
+            "details",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "id slug",
+          "terms": [
+            "id",
+            "slug"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve details id slug",
+          "terms": [
+            "retrieve",
+            "details",
+            "id",
+            "slug"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_release",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update id",
+          "terms": [
+            "create",
+            "update",
+            "id"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "modeled pipeline",
+          "terms": [
+            "modeled",
+            "pipeline"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update id provided updates existing otherwise creates new one creating name",
+          "terms": [
+            "create",
+            "update",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one",
+            "creating",
+            "name"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_release_notes",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "workspace optionally filtered",
+          "terms": [
+            "workspace",
+            "optionally",
+            "filtered"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "optionally filtered",
+          "terms": [
+            "optionally",
+            "filtered"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "workspace optionally filtered pipeline covered",
+          "terms": [
+            "workspace",
+            "optionally",
+            "filtered",
+            "pipeline",
+            "covered"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_release_note",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve notes id",
+          "terms": [
+            "retrieve",
+            "notes",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "slug including",
+          "terms": [
+            "slug",
+            "including"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve notes id slug including markdown content",
+          "terms": [
+            "retrieve",
+            "notes",
+            "id",
+            "slug",
+            "including",
+            "markdown",
+            "content"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_release_note",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update notes",
+          "terms": [
+            "create",
+            "update",
+            "notes"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "releases range",
+          "terms": [
+            "releases",
+            "range"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "create update notes id provided updates existing otherwise creates new one creating",
+          "terms": [
+            "create",
+            "update",
+            "notes",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one",
+            "creating"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_diff",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "exact lookup linear",
+          "terms": [
+            "exact",
+            "lookup",
+            "linear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "exact lookup",
+          "terms": [
+            "exact",
+            "lookup"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "exact lookup linear review ur ls git hub pr full identifiers uui",
+          "terms": [
+            "exact",
+            "lookup",
+            "linear",
+            "review",
+            "ur",
+            "ls",
+            "git",
+            "hub",
+            "pr",
+            "full",
+            "identifiers",
+            "uui"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_diffs",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear diff pull",
+          "terms": [
+            "linear",
+            "diff",
+            "pull"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "pull requests",
+          "terms": [
+            "pull",
+            "requests"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear diff pull requests visible authenticated user",
+          "terms": [
+            "linear",
+            "diff",
+            "pull",
+            "requests",
+            "visible",
+            "authenticated",
+            "user"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_diff_threads",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "exact lookup review",
+          "terms": [
+            "exact",
+            "lookup",
+            "review"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "exact lookup",
+          "terms": [
+            "exact",
+            "lookup"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "exact lookup review ur ls git hub pr linear full identifiers uui",
+          "terms": [
+            "exact",
+            "lookup",
+            "review",
+            "ur",
+            "ls",
+            "git",
+            "hub",
+            "pr",
+            "linear",
+            "full",
+            "identifiers",
+            "uui"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "save_diff_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create reply edit",
+          "terms": [
+            "create",
+            "reply",
+            "edit"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "edit persisted",
+          "terms": [
+            "edit",
+            "persisted"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create reply edit persisted draft linear set true without submitting provide id",
+          "terms": [
+            "create",
+            "reply",
+            "edit",
+            "persisted",
+            "draft",
+            "linear",
+            "set",
+            "true",
+            "without",
+            "submitting",
+            "provide",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resolve_diff_thread",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "reopen top level",
+          "terms": [
+            "reopen",
+            "top",
+            "level"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "reopen top",
+          "terms": [
+            "reopen",
+            "top"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "reopen top level comment linear",
+          "terms": [
+            "reopen",
+            "top",
+            "level",
+            "comment",
+            "linear"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "delete_diff_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear",
+          "terms": [
+            "linear"
+          ],
+          "rank": 8
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "submit_diff_review",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "approve linear request",
+          "terms": [
+            "approve",
+            "linear",
+            "request"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "request changes",
+          "terms": [
+            "request",
+            "changes"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "approve linear request changes comment",
+          "terms": [
+            "approve",
+            "linear",
+            "request",
+            "changes",
+            "comment"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "merge_diff",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear add repository",
+          "terms": [
+            "linear",
+            "add",
+            "repository"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "repository queue",
+          "terms": [
+            "repository",
+            "queue"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear add repository queue",
+          "terms": [
+            "linear",
+            "add",
+            "repository",
+            "queue"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_milestones",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear project",
+          "terms": [
+            "linear",
+            "project"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_milestone",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve details specific",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific"
+          ],
+          "rank": 4
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details specific",
+          "terms": [
+            "details",
+            "specific"
+          ],
+          "rank": 4
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve details specific id name",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific",
+            "id",
+            "name"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_milestone",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create update linear",
+          "terms": [
+            "create",
+            "update",
+            "linear"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "creating name",
+          "terms": [
+            "creating",
+            "name"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create update linear project id provided updates existing otherwise creates new one",
+          "terms": [
+            "create",
+            "update",
+            "linear",
+            "project",
+            "id",
+            "provided",
+            "updates",
+            "existing",
+            "otherwise",
+            "creates",
+            "new",
+            "one"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_teams",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "user linear workspace",
+          "terms": [
+            "user",
+            "linear",
+            "workspace"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "user linear",
+          "terms": [
+            "user",
+            "linear"
+          ],
+          "rank": 4
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_team",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve details specific",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details specific",
+          "terms": [
+            "details",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve details specific linear",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific",
+            "linear"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_users",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve linear workspace",
+          "terms": [
+            "retrieve",
+            "linear",
+            "workspace"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "linear workspace",
+          "terms": [
+            "linear",
+            "workspace"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_user",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve details specific",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details specific",
+          "terms": [
+            "details",
+            "specific"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "retrieve details specific linear",
+          "terms": [
+            "retrieve",
+            "details",
+            "specific",
+            "linear"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "get_workspace",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "retrieve connected linear",
+          "terms": [
+            "retrieve",
+            "connected",
+            "linear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "retrieve connected",
+          "terms": [
+            "retrieve",
+            "connected"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_documentation",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "linear learn features",
+          "terms": [
+            "linear",
+            "learn",
+            "features"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "learn features",
+          "terms": [
+            "learn",
+            "features"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "linear learn features usage",
+          "terms": [
+            "linear",
+            "learn",
+            "features",
+            "usage"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_status_updates",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "list project initiative",
+          "terms": [
+            "list",
+            "project",
+            "initiative"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "update filter",
+          "terms": [
+            "update",
+            "filter"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "list project initiative pass id specific update filter",
+          "terms": [
+            "list",
+            "project",
+            "initiative",
+            "pass",
+            "id",
+            "specific",
+            "update",
+            "filter"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "save_status_update",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create project initiative",
+          "terms": [
+            "create",
+            "project",
+            "initiative"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "initiative omit",
+          "terms": [
+            "initiative",
+            "omit"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create project initiative omit id provide",
+          "terms": [
+            "create",
+            "project",
+            "initiative",
+            "omit",
+            "id",
+            "provide"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "delete_status_update",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "archive project initiative",
+          "terms": [
+            "archive",
+            "project",
+            "initiative"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "archive project",
+          "terms": [
+            "archive",
+            "project"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

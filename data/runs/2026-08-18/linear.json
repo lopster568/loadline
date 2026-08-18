@@ -1,0 +1,214 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "linear",
+      "name": "Linear MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 53,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "1a31f8870fcd32cfbff920a84ffdadb4368d09133987ff436313038ee783b03e",
+        "canonical_sha256": "13a83ed8f6f40e2c52dbdc3d9855dda2c22446b4c098dd95595f6aba979a4e9a",
+        "canonical_sorted_sha256": "11efad71f4c106c36587dda2fc4b30c19807e24b3cc85d02cc291f33f83b112f"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 17780,
+          "per_tool": {
+            "create_attachment": 766,
+            "create_attachment_from_upload": 271,
+            "create_issue_label": 197,
+            "delete_attachment": 113,
+            "delete_comment": 148,
+            "delete_diff_comment": 127,
+            "delete_status_update": 144,
+            "extract_images": 169,
+            "get_agent_skill": 124,
+            "get_attachment": 115,
+            "get_diff": 162,
+            "get_diff_threads": 250,
+            "get_document": 118,
+            "get_issue": 208,
+            "get_issue_status": 153,
+            "get_milestone": 152,
+            "get_project": 191,
+            "get_release": 139,
+            "get_release_note": 143,
+            "get_status_updates": 388,
+            "get_team": 120,
+            "get_user": 124,
+            "get_workspace": 77,
+            "list_agent_skills": 176,
+            "list_comments": 528,
+            "list_cycles": 146,
+            "list_diffs": 250,
+            "list_documents": 395,
+            "list_issue_labels": 202,
+            "list_issue_statuses": 121,
+            "list_issues": 685,
+            "list_milestones": 133,
+            "list_project_labels": 186,
+            "list_projects": 495,
+            "list_release_notes": 343,
+            "list_release_pipelines": 355,
+            "list_releases": 399,
+            "list_teams": 261,
+            "list_users": 198,
+            "merge_diff": 181,
+            "prepare_attachment_upload": 544,
+            "resolve_diff_thread": 157,
+            "save_comment": 616,
+            "save_diff_comment": 384,
+            "save_document": 1031,
+            "save_issue": 1947,
+            "save_milestone": 238,
+            "save_project": 1426,
+            "save_release": 414,
+            "save_release_note": 904,
+            "save_status_update": 321,
+            "search_documentation": 135,
+            "submit_diff_review": 208
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T10:19:39Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3YW235grTmTEdEziQN\"}"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 18463,
+          "measured_at": "2026-08-18T10:19:40Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 17780,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 335,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.9434,
+        "mrr": 0.8003,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 79.1,
+        "dimensions": {
+          "description_adequacy": 98.74,
+          "when_to_use_signal": 7.55,
+          "parameter_descriptions": 92.84,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 75.47
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_diff",
+            "b": "get_diff_threads",
+            "similarity": 0.9412
+          },
+          {
+            "a": "get_project",
+            "b": "get_team",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_project",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_team",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "list_documents",
+            "b": "list_projects",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_documents",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_projects",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "save_release",
+            "b": "save_milestone",
+            "similarity": 0.6364
+          },
+          {
+            "a": "list_issue_labels",
+            "b": "list_project_labels",
+            "similarity": 0.625
+          },
+          {
+            "a": "list_issue_statuses",
+            "b": "list_issue_labels",
+            "similarity": 0.625
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.linear.app/mcp",
+        "endpoint": "https://mcp.linear.app/mcp",
+        "env_passed": [
+          "LINEAR_API_KEY"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T10:19:35.478263185Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: readonly-endpoint-truncates-surface",
+        "resolvable: yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly",
+        "note: keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}. Confirms auth is genuinely required and the endpoint itself (not readonly) is reachable and answers cleanly."
+      ],
+      "measured_at": "2026-08-18T10:19:35.478252971Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

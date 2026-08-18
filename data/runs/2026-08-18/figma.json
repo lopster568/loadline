@@ -8,10 +8,10 @@
   },
   "servers": [
     {
-      "id": "fetch",
-      "name": "Fetch MCP server (reference implementation)",
+      "id": "figma",
+      "name": "Figma MCP server",
       "maintainer": "official",
-      "status": "unreachable",
+      "status": "auth",
       "tool_count": 0,
       "protocol_revision": "",
       "provenance": {
@@ -41,19 +41,20 @@
       "modes": null,
       "retrievability": null,
       "hygiene": null,
-      "category": "dev-tools",
-      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/u_NTrlkd1f06dl30NnPtC/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/u_NTrlkd1f06dl30NnPtC/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
+      "category": "productivity-saas",
+      "error": "credential required but the corpus declares no env var convention",
       "acquisition": {
-        "transport": "stdio",
-        "source": "pypi:mcp-server-fetch",
-        "command": "uvx",
-        "args": [
-          "mcp-server-fetch"
-        ],
+        "transport": "remote",
+        "source": "endpoint:https://mcp.figma.com/mcp",
+        "endpoint": "https://mcp.figma.com/mcp",
         "pinned": false,
-        "acquired_at": "2026-08-18T10:19:29.937613058Z"
+        "acquired_at": "2026-08-18T10:19:42.2463388Z"
       },
-      "measured_at": "2026-08-18T10:19:29.937601199Z",
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass",
+        "note: keyless probe 2026-08-18: HTTP 401 Unauthorized from https://mcp.figma.com/mcp. Confirms the endpoint is live and reachable and that auth is genuinely required; the OAuth-only gap above is the remaining blocker, not endpoint resolution."
+      ],
+      "measured_at": "2026-08-18T10:19:42.246331864Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

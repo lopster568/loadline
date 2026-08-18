@@ -51,20 +51,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:44Z"
+          "measured_at": "2026-08-18T10:19:34Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3YAyocuqxhZMqnZyhG\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 5494,
+          "measured_at": "2026-08-18T10:19:35Z"
         }
       },
       "modes": {
@@ -482,8 +482,11 @@
           "-y",
           "@notionhq/notion-mcp-server@2.5.1"
         ],
+        "env_passed": [
+          "NOTION_TOKEN"
+        ],
         "pinned": true,
-        "acquired_at": "2026-08-18T07:13:40.143376996Z"
+        "acquired_at": "2026-08-18T10:19:32.070067711Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -491,7 +494,7 @@
       "corpus_notes": [
         "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
       ],
-      "measured_at": "2026-08-18T07:13:40.143297951Z",
+      "measured_at": "2026-08-18T10:19:32.070055214Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

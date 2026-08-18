@@ -1,0 +1,424 @@
+{
+  "server": "sentry",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "find_organizations",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "user access sentry",
+          "terms": [
+            "user",
+            "access",
+            "sentry"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "narrow down",
+          "terms": [
+            "narrow",
+            "down"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "user access sentry tool need view organization slug aid requests search specific",
+          "terms": [
+            "user",
+            "access",
+            "sentry",
+            "tool",
+            "need",
+            "view",
+            "organization",
+            "slug",
+            "aid",
+            "requests",
+            "search",
+            "specific"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "find_projects",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "sentry tool need",
+          "terms": [
+            "sentry",
+            "tool",
+            "need"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "narrow down",
+          "terms": [
+            "narrow",
+            "down"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "sentry tool need view organization project slug aid requests search specific name",
+          "terms": [
+            "sentry",
+            "tool",
+            "need",
+            "view",
+            "organization",
+            "project",
+            "slug",
+            "aid",
+            "requests",
+            "search",
+            "specific",
+            "name"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "update_issue",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "sentry status assignment",
+          "terms": [
+            "sentry",
+            "status",
+            "assignment"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "assignment resolve",
+          "terms": [
+            "assignment",
+            "resolve"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "sentry status assignment resolve reopen assign ignore examples organization slug my org",
+          "terms": [
+            "sentry",
+            "status",
+            "assignment",
+            "resolve",
+            "reopen",
+            "assign",
+            "ignore",
+            "examples",
+            "organization",
+            "slug",
+            "my",
+            "org"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_events",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "sentry replays event",
+          "terms": [
+            "sentry",
+            "replays",
+            "event"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "sums averages",
+          "terms": [
+            "sums",
+            "averages"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "sentry replays event counts statistics query natural language syntax agent configured fixes",
+          "terms": [
+            "sentry",
+            "replays",
+            "event",
+            "counts",
+            "statistics",
+            "query",
+            "natural",
+            "language",
+            "syntax",
+            "agent",
+            "configured",
+            "fixes"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "analyze_issue_with_seer",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "production errors get",
+          "terms": [
+            "production",
+            "errors",
+            "get"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "detailed root",
+          "terms": [
+            "detailed",
+            "root"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "production errors get detailed root cause analysis specific code fixes tool user",
+          "terms": [
+            "production",
+            "errors",
+            "get",
+            "detailed",
+            "root",
+            "cause",
+            "analysis",
+            "specific",
+            "code",
+            "fixes",
+            "tool",
+            "user"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_issues",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "grouped problems sentry",
+          "terms": [
+            "grouped",
+            "problems",
+            "sentry"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "preserving explicit",
+          "terms": [
+            "preserving",
+            "explicit"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "grouped problems sentry returns list counts aggregations provide query natural language issue",
+          "terms": [
+            "grouped",
+            "problems",
+            "sentry",
+            "returns",
+            "list",
+            "counts",
+            "aggregations",
+            "provide",
+            "query",
+            "natural",
+            "language",
+            "issue"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_sentry_resource",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "fetch url type",
+          "terms": [
+            "fetch",
+            "url",
+            "type"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "type plus",
+          "terms": [
+            "type",
+            "plus"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "fetch url type plus id pass directly possible auto detected supports issues",
+          "terms": [
+            "fetch",
+            "url",
+            "type",
+            "plus",
+            "id",
+            "pass",
+            "directly",
+            "possible",
+            "auto",
+            "detected",
+            "supports",
+            "issues"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_sentry_tools",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available mcp tool",
+          "terms": [
+            "available",
+            "mcp",
+            "tool"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "intentionally exposed",
+          "terms": [
+            "intentionally",
+            "exposed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "available mcp tool catalog name description many operations intentionally exposed top level",
+          "terms": [
+            "available",
+            "mcp",
+            "tool",
+            "catalog",
+            "name",
+            "description",
+            "many",
+            "operations",
+            "intentionally",
+            "exposed",
+            "top",
+            "level"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "execute_sentry_tool",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available mcp discovered",
+          "terms": [
+            "available",
+            "mcp",
+            "discovered"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "validated target",
+          "terms": [
+            "validated",
+            "target"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "available mcp discovered search tools need call operation returned name arguments match",
+          "terms": [
+            "available",
+            "mcp",
+            "discovered",
+            "search",
+            "tools",
+            "need",
+            "call",
+            "operation",
+            "returned",
+            "name",
+            "arguments",
+            "match"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

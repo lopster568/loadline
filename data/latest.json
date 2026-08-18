@@ -74,20 +74,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:34Z"
+          "measured_at": "2026-08-18T10:19:25Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3XVdCQZZmcE8Cb37BT\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 61790,
+          "measured_at": "2026-08-18T10:19:26Z"
         }
       },
       "modes": {
@@ -190,7 +190,7 @@
           "GITHUB_PERSONAL_ACCESS_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T07:13:30.613629637Z"
+        "acquired_at": "2026-08-18T10:19:19.501398279Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -199,7 +199,7 @@
         "auth-verification: classic-PAT-scope-filtering",
         "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
       ],
-      "measured_at": "2026-08-18T07:13:30.613608629Z",
+      "measured_at": "2026-08-18T10:19:19.501380648Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -237,20 +237,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:38Z"
+          "measured_at": "2026-08-18T10:19:29Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3XmSiJq2eapXskS9do\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 2860,
+          "measured_at": "2026-08-18T10:19:29Z"
         }
       },
       "modes": {
@@ -310,12 +310,12 @@
           "{{SCRATCH}}"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T07:13:34.403518531Z"
+        "acquired_at": "2026-08-18T10:19:26.611482648Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T07:13:34.403504708Z",
+      "measured_at": "2026-08-18T10:19:26.61147469Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -345,7 +345,7 @@
           "native_tools_param_tokens": 0
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
+          "model": "gemini-3.1-pro-preview",
           "available": false,
           "total_schema_tokens": 0
         }
@@ -354,7 +354,7 @@
       "retrievability": null,
       "hygiene": null,
       "category": "dev-tools",
-      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/u_NTrlkd1f06dl30NnPtC/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/u_NTrlkd1f06dl30NnPtC/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
         "transport": "stdio",
         "source": "pypi:mcp-server-fetch",
@@ -363,9 +363,110 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T07:13:38.703098741Z"
+        "acquired_at": "2026-08-18T10:19:29.937613058Z"
       },
-      "measured_at": "2026-08-18T07:13:38.703083485Z",
+      "measured_at": "2026-08-18T10:19:29.937601199Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare MCP server (cloudflare/mcp-server-cloudflare)",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 3,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "0.1.0",
+        "wire_sha256": "0e32828b9b35d433e24e7792f82bfb065b1a91573f13f4c9cf66910f509a4ad5",
+        "canonical_sha256": "4a85e77fabbaa2518af938b20016472cb2b8101639b6412b5616246c07ae3767",
+        "canonical_sorted_sha256": "5d5f8464fd628c78f6774e66eb320ad21e9a3522c69f2ff50367c9afe867b3e2"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 1596,
+          "per_tool": {
+            "docs": 362,
+            "execute": 660,
+            "search": 572
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T10:19:31Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3XvLkNPJMnkjvXdVjy\"}"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 1707,
+          "measured_at": "2026-08-18T10:19:32Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 1596,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 531,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 85.19,
+        "dimensions": {
+          "description_adequacy": 77.78,
+          "when_to_use_signal": 33.33,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 100
+        },
+        "similarity_threshold": 0.6,
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.cloudflare.com/mcp",
+        "endpoint": "https://mcp.cloudflare.com/mcp",
+        "env_passed": [
+          "CLOUDFLARE_API_TOKEN"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T10:19:31.212979702Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: tool count not aggregated across the 16 product-scoped servers; needs a live tools/list pass at onboarding (docs/server-selection.md B.2 item 5)",
+        "note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above",
+        "note: keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T10:19:31.212971007Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -413,20 +514,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:44Z"
+          "measured_at": "2026-08-18T10:19:34Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3YAyocuqxhZMqnZyhG\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 5494,
+          "measured_at": "2026-08-18T10:19:35Z"
         }
       },
       "modes": {
@@ -844,8 +945,11 @@
           "-y",
           "@notionhq/notion-mcp-server@2.5.1"
         ],
+        "env_passed": [
+          "NOTION_TOKEN"
+        ],
         "pinned": true,
-        "acquired_at": "2026-08-18T07:13:40.143376996Z"
+        "acquired_at": "2026-08-18T10:19:32.070067711Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -853,7 +957,493 @@
       "corpus_notes": [
         "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
       ],
-      "measured_at": "2026-08-18T07:13:40.143297951Z",
+      "measured_at": "2026-08-18T10:19:32.070055214Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "linear",
+      "name": "Linear MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 53,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "1a31f8870fcd32cfbff920a84ffdadb4368d09133987ff436313038ee783b03e",
+        "canonical_sha256": "13a83ed8f6f40e2c52dbdc3d9855dda2c22446b4c098dd95595f6aba979a4e9a",
+        "canonical_sorted_sha256": "11efad71f4c106c36587dda2fc4b30c19807e24b3cc85d02cc291f33f83b112f"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 17780,
+          "per_tool": {
+            "create_attachment": 766,
+            "create_attachment_from_upload": 271,
+            "create_issue_label": 197,
+            "delete_attachment": 113,
+            "delete_comment": 148,
+            "delete_diff_comment": 127,
+            "delete_status_update": 144,
+            "extract_images": 169,
+            "get_agent_skill": 124,
+            "get_attachment": 115,
+            "get_diff": 162,
+            "get_diff_threads": 250,
+            "get_document": 118,
+            "get_issue": 208,
+            "get_issue_status": 153,
+            "get_milestone": 152,
+            "get_project": 191,
+            "get_release": 139,
+            "get_release_note": 143,
+            "get_status_updates": 388,
+            "get_team": 120,
+            "get_user": 124,
+            "get_workspace": 77,
+            "list_agent_skills": 176,
+            "list_comments": 528,
+            "list_cycles": 146,
+            "list_diffs": 250,
+            "list_documents": 395,
+            "list_issue_labels": 202,
+            "list_issue_statuses": 121,
+            "list_issues": 685,
+            "list_milestones": 133,
+            "list_project_labels": 186,
+            "list_projects": 495,
+            "list_release_notes": 343,
+            "list_release_pipelines": 355,
+            "list_releases": 399,
+            "list_teams": 261,
+            "list_users": 198,
+            "merge_diff": 181,
+            "prepare_attachment_upload": 544,
+            "resolve_diff_thread": 157,
+            "save_comment": 616,
+            "save_diff_comment": 384,
+            "save_document": 1031,
+            "save_issue": 1947,
+            "save_milestone": 238,
+            "save_project": 1426,
+            "save_release": 414,
+            "save_release_note": 904,
+            "save_status_update": 321,
+            "search_documentation": 135,
+            "submit_diff_review": 208
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T10:19:39Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3YW235grTmTEdEziQN\"}"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 18463,
+          "measured_at": "2026-08-18T10:19:40Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 17780,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 335,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.9434,
+        "mrr": 0.8003,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 79.1,
+        "dimensions": {
+          "description_adequacy": 98.74,
+          "when_to_use_signal": 7.55,
+          "parameter_descriptions": 92.84,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 75.47
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_diff",
+            "b": "get_diff_threads",
+            "similarity": 0.9412
+          },
+          {
+            "a": "get_project",
+            "b": "get_team",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_project",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "get_team",
+            "b": "get_user",
+            "similarity": 0.7143
+          },
+          {
+            "a": "list_documents",
+            "b": "list_projects",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_documents",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_projects",
+            "b": "list_teams",
+            "similarity": 0.6667
+          },
+          {
+            "a": "save_release",
+            "b": "save_milestone",
+            "similarity": 0.6364
+          },
+          {
+            "a": "list_issue_labels",
+            "b": "list_project_labels",
+            "similarity": 0.625
+          },
+          {
+            "a": "list_issue_statuses",
+            "b": "list_issue_labels",
+            "similarity": 0.625
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.linear.app/mcp",
+        "endpoint": "https://mcp.linear.app/mcp",
+        "env_passed": [
+          "LINEAR_API_KEY"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T10:19:35.478263185Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: readonly-endpoint-truncates-surface",
+        "resolvable: yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly",
+        "note: keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}. Confirms auth is genuinely required and the endpoint itself (not readonly) is reachable and answers cleanly."
+      ],
+      "measured_at": "2026-08-18T10:19:35.478252971Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 10,
+      "protocol_revision": "2025-03-26",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "43f4064a9f16fc02b4f00ac23fd42787d061bb0d19a0ff78bc6d5330605bce9f",
+        "canonical_sha256": "1e6d78edee192497894c5328be2d69287b06c338185e1f04732f44700967308c",
+        "canonical_sorted_sha256": "788e90cd57d59e84fe75eafd3ad87d76cd09792c5efd9d0e2023de7eb74b4129"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4243,
+          "per_tool": {
+            "create_refund": 396,
+            "get_stripe_account_info": 125,
+            "search_stripe_documentation": 326,
+            "send_stripe_mcp_feedback": 367,
+            "stripe_analytics": 963,
+            "stripe_api_details": 253,
+            "stripe_api_read": 291,
+            "stripe_api_search": 428,
+            "stripe_api_write": 514,
+            "stripe_implementation_planner": 578
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T10:19:41Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3Yfu6yVjaF4n2Y2vtV\"}"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4527,
+          "measured_at": "2026-08-18T10:19:42Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4243,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 424,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 1,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 84.44,
+        "dimensions": {
+          "description_adequacy": 93.33,
+          "when_to_use_signal": 50,
+          "parameter_descriptions": 100,
+          "enum_documentation": 83.33,
+          "naming_clarity": 100,
+          "disambiguation": 80
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "stripe_api_read",
+            "b": "stripe_api_write",
+            "similarity": 0.8542
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.stripe.com",
+        "endpoint": "https://mcp.stripe.com",
+        "env_passed": [
+          "STRIPE_API_KEY"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T10:19:40.078992791Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: keyless probe 2026-08-18: HTTP 401 {\"error\":\"Unauthorized. See https://docs.stripe.com/mcp for usage instructions.\"}. Confirms auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T10:19:40.078983143Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "figma",
+      "name": "Figma MCP server",
+      "maintainer": "official",
+      "status": "auth",
+      "tool_count": 0,
+      "protocol_revision": "",
+      "provenance": {
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null,
+      "category": "productivity-saas",
+      "error": "credential required but the corpus declares no env var convention",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://mcp.figma.com/mcp",
+        "endpoint": "https://mcp.figma.com/mcp",
+        "pinned": false,
+        "acquired_at": "2026-08-18T10:19:42.2463388Z"
+      },
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass",
+        "note: keyless probe 2026-08-18: HTTP 401 Unauthorized from https://mcp.figma.com/mcp. Confirms the endpoint is live and reachable and that auth is genuinely required; the OAuth-only gap above is the remaining blocker, not endpoint resolution."
+      ],
+      "measured_at": "2026-08-18T10:19:42.246331864Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 9,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "0.37.0",
+        "wire_sha256": "4bf998b6ac8e5072b192b181c0454cab0ad9596975db3576a6af0648ea7855b6",
+        "canonical_sha256": "a4017e0b7256cf07ed89a7bf90940c67f130564c6beee496a5fafe51f6024931",
+        "canonical_sorted_sha256": "5f22688482a140ff0b16dc6666bf32f0cf778fcf82c802186dfa113efb10c10d"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 6382,
+          "per_tool": {
+            "analyze_issue_with_seer": 718,
+            "execute_sentry_tool": 277,
+            "find_organizations": 196,
+            "find_projects": 413,
+            "get_sentry_resource": 744,
+            "search_events": 1235,
+            "search_issues": 924,
+            "search_sentry_tools": 575,
+            "update_issue": 1298
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T10:19:46Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3Z3V8XZ6DntS5hCgLy\"}"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 6825,
+          "measured_at": "2026-08-18T10:19:47Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 6382,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 708,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9815,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "A",
+        "score": 90.74,
+        "dimensions": {
+          "description_adequacy": 77.78,
+          "when_to_use_signal": 88.89,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 77.78
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "find_organizations",
+            "b": "find_projects",
+            "similarity": 0.8077
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "observability",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@sentry/mcp-server@0.37.0",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@sentry/mcp-server@0.37.0"
+        ],
+        "env_passed": [
+          "SENTRY_ACCESS_TOKEN"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T10:19:42.246348058Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: oauth-scope-gating",
+        "resolvable: likely, via a broad-scope OAuth grant; needs live verification",
+        "note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed",
+        "note: endpoint path corrected 2026-08-18 from https://mcp.sentry.dev to https://mcp.sentry.dev/mcp; keyless probe against the corrected remote endpoint returned HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}, confirming auth is genuinely required there. The stdio path (this entry's default launch, npm @sentry/mcp-server) exits before answering JSON-RPC with \"No access token was provided. Run `sentry-mcp auth login` ... or pass --access-token / SENTRY_ACCESS_TOKEN\"; the harness records that as unreachable (crash before initialize), not auth, for the same reason as slack above. Both transports agree: auth is genuinely required."
+      ],
+      "measured_at": "2026-08-18T10:19:42.246343939Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -879,20 +1469,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:49Z"
+          "measured_at": "2026-08-18T10:19:50Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3ZJABiVh2Zfr1kd5kZ\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 1119,
+          "measured_at": "2026-08-18T10:19:50Z"
         }
       },
       "modes": {
@@ -944,7 +1534,7 @@
           "@upstash/context7-mcp@4.0.2"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T07:13:44.798958164Z"
+        "acquired_at": "2026-08-18T10:19:47.375878045Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -952,7 +1542,7 @@
       "corpus_notes": [
         "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
       ],
-      "measured_at": "2026-08-18T07:13:44.798913704Z",
+      "measured_at": "2026-08-18T10:19:47.375867959Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1000,20 +1590,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T07:13:54Z"
+          "measured_at": "2026-08-18T10:19:53Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": false,
           "total_schema_tokens": 0,
           "native_tools_param_tokens": 0,
-          "error": "ANTHROPIC_API_KEY not set"
+          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3ZYEX46JemWnnbGWTn\"}"
         },
         "gemini": {
-          "model": "gemini-2.5-pro",
-          "available": false,
-          "total_schema_tokens": 0,
-          "error": "GEMINI_API_KEY not set"
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4246,
+          "measured_at": "2026-08-18T10:19:53Z"
         }
       },
       "modes": {
@@ -1065,12 +1655,12 @@
           "@playwright/mcp@0.0.79"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T07:13:49.628289363Z"
+        "acquired_at": "2026-08-18T10:19:50.665351093Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T07:13:49.628271493Z",
+      "measured_at": "2026-08-18T10:19:50.665341967Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

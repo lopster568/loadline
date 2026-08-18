@@ -1,0 +1,431 @@
+{
+  "server": "stripe",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "stripe_implementation_planner",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "payment integration tool",
+          "terms": [
+            "payment",
+            "integration",
+            "tool"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "users accept",
+          "terms": [
+            "users",
+            "accept"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "payment integration tool help users accept payments sell products online set billing",
+          "terms": [
+            "payment",
+            "integration",
+            "tool",
+            "help",
+            "users",
+            "accept",
+            "payments",
+            "sell",
+            "products",
+            "online",
+            "set",
+            "billing"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "send_stripe_mcp_feedback",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "submit user agent",
+          "terms": [
+            "submit",
+            "user",
+            "agent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "agent server",
+          "terms": [
+            "agent",
+            "server"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "submit user agent server tools valid search tool returned irrelevant results wish",
+          "terms": [
+            "submit",
+            "user",
+            "agent",
+            "server",
+            "tools",
+            "valid",
+            "search",
+            "tool",
+            "returned",
+            "irrelevant",
+            "results",
+            "wish"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_stripe_documentation",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "given question language",
+          "terms": [
+            "given",
+            "question",
+            "language"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "given question",
+          "terms": [
+            "given",
+            "question"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "given question language takes two arguments str user answer optional programming",
+          "terms": [
+            "given",
+            "question",
+            "language",
+            "takes",
+            "two",
+            "arguments",
+            "str",
+            "user",
+            "answer",
+            "optional",
+            "programming"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_stripe_account_info",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "logged",
+          "terms": [
+            "logged"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_refund",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "tool payment intent",
+          "terms": [
+            "tool",
+            "payment",
+            "intent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "payment intent",
+          "terms": [
+            "payment",
+            "intent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "tool payment intent stripe",
+          "terms": [
+            "tool",
+            "payment",
+            "intent",
+            "stripe"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "stripe_api_search",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "operations providing intent",
+          "terms": [
+            "operations",
+            "providing",
+            "intent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "resource operate",
+          "terms": [
+            "resource",
+            "operate"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "operations providing intent resource operate specific descriptive phrase issuing card transactions payout",
+          "terms": [
+            "operations",
+            "providing",
+            "intent",
+            "resource",
+            "operate",
+            "specific",
+            "descriptive",
+            "phrase",
+            "issuing",
+            "card",
+            "transactions",
+            "payout"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "stripe_api_details",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get detailed parameter",
+          "terms": [
+            "get",
+            "detailed",
+            "parameter"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "llm context",
+          "terms": [
+            "llm",
+            "context"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get detailed parameter information specific operation provide id search results see path",
+          "terms": [
+            "get",
+            "detailed",
+            "parameter",
+            "information",
+            "specific",
+            "operation",
+            "provide",
+            "id",
+            "search",
+            "results",
+            "see",
+            "path"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "stripe_api_read",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "data get operation",
+          "terms": [
+            "data",
+            "get",
+            "operation"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "mutations post",
+          "terms": [
+            "mutations",
+            "post"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "data get operation search find id details understand parameters required operations nested",
+          "terms": [
+            "data",
+            "get",
+            "operation",
+            "search",
+            "find",
+            "id",
+            "details",
+            "understand",
+            "parameters",
+            "required",
+            "operations",
+            "nested"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "stripe_api_write",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "data via post",
+          "terms": [
+            "data",
+            "via",
+            "post"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "via post",
+          "terms": [
+            "via",
+            "post"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "data via post patch put delete operation search find id details understand",
+          "terms": [
+            "data",
+            "via",
+            "post",
+            "patch",
+            "put",
+            "delete",
+            "operation",
+            "search",
+            "find",
+            "id",
+            "details",
+            "understand"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "stripe_analytics",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "tool analyzing data",
+          "terms": [
+            "tool",
+            "analyzing",
+            "data"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "running sql",
+          "terms": [
+            "running",
+            "sql"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "tool analyzing data revenue products payments running sql based reporting queries query",
+          "terms": [
+            "tool",
+            "analyzing",
+            "data",
+            "revenue",
+            "products",
+            "payments",
+            "running",
+            "sql",
+            "based",
+            "reporting",
+            "queries",
+            "query"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

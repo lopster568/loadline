@@ -1,0 +1,148 @@
+{
+  "server": "cloudflare",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "docs",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "search cloudflare documentation",
+          "terms": [
+            "search",
+            "cloudflare",
+            "documentation"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "answer question",
+          "terms": [
+            "answer",
+            "question"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "search cloudflare documentation tool answer question products features including workers pages r2",
+          "terms": [
+            "search",
+            "cloudflare",
+            "documentation",
+            "tool",
+            "answer",
+            "question",
+            "products",
+            "features",
+            "including",
+            "workers",
+            "pages",
+            "r2"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "cloudflare open api",
+          "terms": [
+            "cloudflare",
+            "open",
+            "api"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "spec refs",
+          "terms": [
+            "spec",
+            "refs"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "cloudflare open api spec refs pre resolved inline products cloudforce one access",
+          "terms": [
+            "cloudflare",
+            "open",
+            "api",
+            "spec",
+            "refs",
+            "pre",
+            "resolved",
+            "inline",
+            "products",
+            "cloudforce",
+            "one",
+            "access"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "execute",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "java script code",
+          "terms": [
+            "java",
+            "script",
+            "code"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "java script",
+          "terms": [
+            "java",
+            "script"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "java script code cloudflare api first search tool find right endpoints write",
+          "terms": [
+            "java",
+            "script",
+            "code",
+            "cloudflare",
+            "api",
+            "first",
+            "search",
+            "tool",
+            "find",
+            "right",
+            "endpoints",
+            "write"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}
