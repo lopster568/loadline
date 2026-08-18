@@ -80,20 +80,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T15:11:08Z"
+          "measured_at": "2026-08-18T15:38:38Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 29026,
           "native_tools_param_tokens": 26316,
-          "measured_at": "2026-08-18T15:11:09Z"
+          "measured_at": "2026-08-18T15:38:38Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 18463,
-          "measured_at": "2026-08-18T15:11:10Z"
+          "measured_at": "2026-08-18T15:38:40Z"
         }
       },
       "modes": {
@@ -196,7 +196,7 @@
           "LINEAR_API_KEY"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T15:11:00.507578859Z"
+        "acquired_at": "2026-08-18T15:38:35.297998752Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -206,7 +206,7 @@
         "resolvable: yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly",
         "note: keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}. Confirms auth is genuinely required and the endpoint itself (not readonly) is reachable and answers cleanly."
       ],
-      "measured_at": "2026-08-18T15:11:00.507571829Z",
+      "measured_at": "2026-08-18T15:38:35.297980004Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

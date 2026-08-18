@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tier 2 Fixture Form</title>
+<style>
+  body { font-family: sans-serif; margin: 2rem; }
+  label { display: block; margin-top: 0.8rem; }
+  input { width: 24rem; }
+  #confirmation { margin-top: 1.2rem; padding: 0.6rem; border: 1px solid #999; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="landing.html">Home</a>
+</nav>
+<h1>Contact</h1>
+
+<!--
+  PW-04 fills both fields and submits. There is no server round trip and no
+  input validation: the submit handler cancels the navigation and writes the
+  confirmation text itself, so the page is a pure function of what was typed
+  and cannot fail on a network hiccup or a rejected address format.
+-->
+<form id="contact">
+  <label for="email">Email</label>
+  <input type="text" id="email" name="email" autocomplete="off">
+
+  <label for="message">Message</label>
+  <input type="text" id="message" name="message" autocomplete="off">
+
+  <p><button type="submit">Submit</button></p>
+</form>
+
+<div id="confirmation" hidden></div>
+
+<script>
+document.getElementById('contact').addEventListener('submit', function (event) {
+  event.preventDefault();
+  var email = document.getElementById('email').value;
+  var message = document.getElementById('message').value;
+  var box = document.getElementById('confirmation');
+  // textContent, not innerHTML: the confirmation string is compared verbatim
+  // against the success criterion, so nothing typed into the form may be
+  // reinterpreted as markup on the way back out.
+  box.textContent = 'Thanks, ' + email + '! Message received: ' + message;
+  box.hidden = false;
+});
+</script>
+</body>
+</html>

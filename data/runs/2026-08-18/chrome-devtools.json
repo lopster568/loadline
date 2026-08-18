@@ -1,0 +1,182 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "chrome-devtools",
+      "name": "Chrome DevTools MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 52,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.7.0",
+        "wire_sha256": "86a286e8c8b8787d3f92ea7997cf7bd6f7e914f831355b6bdd072a9535285b62",
+        "canonical_sha256": "8d5d88b6bf0bed8c204f91f2236ed5be6afb94e476bd9471d53c6b1903f165b2",
+        "canonical_sorted_sha256": "fd8ae97fbd77dd6c917bf22555c41bcec316db5c5ee9cfb7832953a4a848b270"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 7984,
+          "per_tool": {
+            "click": 128,
+            "click_at": 140,
+            "close_heapsnapshot": 101,
+            "close_page": 98,
+            "compare_heapsnapshots": 184,
+            "drag": 126,
+            "emulate": 387,
+            "evaluate_script": 316,
+            "execute_3p_developer_tool": 110,
+            "execute_webmcp_tool": 118,
+            "fill": 158,
+            "fill_form": 237,
+            "get_console_message": 103,
+            "get_heapsnapshot_class_nodes": 258,
+            "get_heapsnapshot_details": 250,
+            "get_heapsnapshot_dominators": 145,
+            "get_heapsnapshot_duplicate_strings": 136,
+            "get_heapsnapshot_edges": 161,
+            "get_heapsnapshot_object_details": 142,
+            "get_heapsnapshot_retainers": 160,
+            "get_heapsnapshot_retaining_paths": 197,
+            "get_heapsnapshot_summary": 107,
+            "get_network_request": 184,
+            "handle_dialog": 113,
+            "hover": 107,
+            "install_extension": 84,
+            "lighthouse_audit": 166,
+            "list_3p_developer_tools": 166,
+            "list_console_messages": 277,
+            "list_extensions": 75,
+            "list_network_requests": 247,
+            "list_pages": 66,
+            "list_webmcp_tools": 68,
+            "navigate_page": 235,
+            "new_page": 197,
+            "performance_analyze_insight": 160,
+            "performance_start_trace": 219,
+            "performance_stop_trace": 112,
+            "press_key": 162,
+            "reload_extension": 83,
+            "resize_page": 97,
+            "screencast_start": 116,
+            "screencast_stop": 77,
+            "select_page": 117,
+            "take_heapsnapshot": 110,
+            "take_screenshot": 247,
+            "take_snapshot": 181,
+            "trigger_extension_action": 87,
+            "type_text": 109,
+            "uninstall_extension": 83,
+            "upload_file": 142,
+            "wait_for": 133
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:39:17Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 13317,
+          "native_tools_param_tokens": 13082,
+          "measured_at": "2026-08-18T15:39:17Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 8207,
+          "measured_at": "2026-08-18T15:39:18Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 7984,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 153,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9255,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 80.28,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 3.85,
+          "parameter_descriptions": 100,
+          "enum_documentation": 90,
+          "naming_clarity": 95.51,
+          "disambiguation": 92.31
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_heapsnapshot_edges",
+            "b": "get_heapsnapshot_retainers",
+            "similarity": 0.6667
+          },
+          {
+            "a": "click",
+            "b": "click_at",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "browser-automation",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:chrome-devtools-mcp@1.7.0",
+        "command": "npx",
+        "args": [
+          "-y",
+          "chrome-devtools-mcp@1.7.0",
+          "--headless",
+          "--isolated",
+          "--experimentalVision",
+          "--memoryDebugging",
+          "--categoryExtensions",
+          "--categoryExperimentalThirdParty",
+          "--categoryPwa",
+          "--categoryExperimentalWebmcp",
+          "--experimentalScreencast"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:39:12.582433782Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: promoted from reserve bench 2026-08-18, backfilling the slot vacated by Figma's exclusion under the partial-surface rule (see docs/server-selection.md B.2 item 15 and B.2.1).",
+        "note: keyless probe 2026-08-18 (npx -y chrome-devtools-mcp@1.7.0 with the args above, raw JSON-RPC initialize + tools/list, no browser launched): 52 tools returned. The README at HEAD documents 57 tools across 11 categories, including a Progressive Web Apps category (4 tools) and a 13th Memory tool (query_heapsnapshot_objects); none of those 5 appeared live even with --categoryPwa and --memoryDebugging both set, and the 1.7.0 CHANGELOG does not mention shipping either, so this corpus treats them as documented-but-unreleased-at-1.7.0 rather than a credential or plan-tier gate. 52 is the live-verified figure this entry expects a real scan to reproduce."
+      ],
+      "measured_at": "2026-08-18T15:39:12.582398306Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

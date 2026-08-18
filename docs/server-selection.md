@@ -96,9 +96,11 @@ Research conducted live 2026-08-17 via GitHub API, npm/PyPI download APIs, the o
 
 ### B.2 The 15-server list
 
-Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser automation 1. Kubernetes and Cloudflare are classified under dev tools (infrastructure and platform tooling) rather than productivity/SaaS, which is what keeps productivity/SaaS at 5 instead of 7 and respects the 5-slot category cap in rule A.3.
+Categories: dev tools 5, productivity/SaaS 4, observability 2, data 2, browser automation 2. Kubernetes and Cloudflare are classified under dev tools (infrastructure and platform tooling) rather than productivity/SaaS, which is what keeps productivity/SaaS from running over the 5-slot category cap in rule A.3.
 
 **Ratified 2026-08-17.** Grafana and Atlassian/Jira are excluded under the partial-surface rule (Gate 2); see B.2.1. The top 2 reserves from B.5, Figma and Context7, are promoted to backfill the vacated slots, classified under productivity/SaaS and data respectively to keep every category at or under the 5-slot cap. Observability drops from 3 to 2 slots and data rises from 1 to 2, both still within the 1-to-5 range rule A.3 requires.
+
+**Amended 2026-08-18.** Figma is excluded under the partial-surface rule (Gate 2); see B.2.1. Reserve #3 from B.5, Chrome DevTools MCP, is promoted to backfill the vacated slot, classified under browser automation (its natural category per B.5, with room under the 5-slot cap, so no reclassification judgment call was needed the way Context7's was). Productivity/SaaS drops from 5 to 4 slots and browser automation rises from 1 to 2, both still within the 1-to-5 range rule A.3 requires. All 15 items below are renumbered accordingly.
 
 #### Dev tools
 
@@ -176,18 +178,9 @@ Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser a
 - Transport: remote HTTP/JSON-RPC at mcp.stripe.com. No stdio path documented on the current docs page.
 - Tool count: 11 named tools (`stripe_api_read`, `stripe_api_write`, `create_refund`, `search_stripe_documentation`, and others) fronting roughly 90 underlying API operations.
 
-**10. Figma MCP server**
-- Promoted from the reserve bench (B.5) on 2026-08-17, backfilling the productivity/SaaS slot vacated by Atlassian/Jira's exclusion under the partial-surface rule (see B.2.1).
-- Maintainer: dual-tracked, not yet resolved to a single primary. Community: GLips/Figma-Context-MCP, 15,670 stars, 1,242 forks, last push 2026-08-07. Official: figma/mcp-server-guide, 1,896 stars, last push 2026-08-14 (both checked 2026-08-17, per B.5). Per rule A.4, official-vendor status outranks star count, so figma/mcp-server-guide is the presumptive primary pending onboarding verification.
-- Adoption: see maintainer line above; higher raw star count than several servers already in the 15 (Sentry at 819, Cloudflare's domain-specific server at 4,082).
-- Last commit: see maintainer line above.
-- Auth and free-tier surface: not researched in this pass. # TODO verify at onboarding
-- Transport: not researched in this pass. # TODO verify at onboarding
-- Tool count: not researched in this pass. # TODO verify at onboarding
-
 #### Observability
 
-**11. Sentry MCP server**
+**10. Sentry MCP server**
 - Maintainer: official, Sentry (getsentry). Repo: github.com/getsentry/sentry-mcp.
 - Adoption: 819 stars (checked 2026-08-17); npm `@sentry/mcp-server` 436,434 downloads in the trailing month; listed in the official MCP registry as `io.github.getsentry/sentry-mcp` v0.25.0.
 - Last commit: 2026-08-16, the day before observation. Latest tagged release 0.37.0 is from 2026-07-02; trunk is well ahead of the last formal tag, which is a maintenance-cadence quirk worth noting rather than a red flag.
@@ -196,7 +189,7 @@ Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser a
 - Transport: remote MCP with OAuth at mcp.sentry.dev; local stdio via `SENTRY_ACCESS_TOKEN`, documented by Sentry as still work-in-progress for self-hosted installs.
 - Tool count: 54.
 
-**12. Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)**
+**11. Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)**
 - **No Jaeger-project or CNCF-official MCP server exists.** Confirmed by enumerating all 36 repositories in the `jaegertracing` GitHub org, checked 2026-08-17: no MCP repo present. The official MCP registry's only Jaeger-named entry, `io.github.mshegolev/jaeger-mcp`, has 1 star and is too new/small to be a credible primary candidate. A dedicated community server, serkan-ozal/jaeger-mcp-server (18 stars), last committed 2025-05-13, more than a year stale, and fails the Gate 4 active-maintenance threshold.
 - Maintainer of the candidate actually proposed here: community/vendor. traceloop/opentelemetry-mcp-server is built by Traceloop, an LLM-observability company, and is not Jaeger-specific: it is a unified server across Jaeger, Tempo, and Traceloop's own backend, selected by a `BACKEND_TYPE` config flag.
 - Adoption: 198 stars (github.com/traceloop/opentelemetry-mcp-server, checked 2026-08-17). This is real, verifiable evidence and clears Gate 3's minimum bar, but it is thin, and this doc does not overstate it.
@@ -208,7 +201,7 @@ Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser a
 
 #### Data
 
-**13. Postgres MCP server, via crystaldba/postgres-mcp ("Postgres MCP Pro")**
+**12. Postgres MCP server, via crystaldba/postgres-mcp ("Postgres MCP Pro")**
 - **The original reference implementation is archived and excluded.** `modelcontextprotocol/servers`'s postgres server moved to `modelcontextprotocol/servers-archived` (confirmed: `src/postgres` 404s on the live repo, checked 2026-08-17), frozen since 2025-05-28, carrying an explicit "NO SECURITY GUARANTEES ARE PROVIDED FOR THESE ARCHIVED SERVERS" banner. It fails Gate 4 (last activity well over 12 months before this sweep) and is not eligible regardless of its residual download volume; see B.4 for the full accounting of why raw downloads on an archived package would otherwise be misleading.
 - Maintainer of the candidate actually proposed here: community (Crystal DBA / Johann Schleier-Smith). Repo: github.com/crystaldba/postgres-mcp.
 - Adoption: 3,196 stars (checked 2026-08-17); PyPI `postgres-mcp` 619,780 downloads in the trailing month (pypistats.org, checked 2026-08-17).
@@ -217,7 +210,7 @@ Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser a
 - Transport: stdio and SSE.
 - Tool count: 9 (`list_schemas`, `execute_sql`, `explain_query`, `analyze_workload_indexes`, and others).
 
-**14. Context7 MCP server**
+**13. Context7 MCP server**
 - Promoted from the reserve bench (B.5) on 2026-08-17, backfilling the observability slot vacated by Grafana's exclusion under the partial-surface rule (see B.2.1). Classified under data (documentation/knowledge retrieval) rather than observability or dev tools, which keeps dev tools at its 5-slot cap; this is a judgment call in the same spirit as the Kubernetes/Cloudflare classification note in B.2, not a strong categorical fit, and should be revisited if a cleaner category emerges at onboarding.
 - Maintainer: official, Upstash. Repo: github.com/upstash/context7.
 - Adoption: 60,868 stars, pushed 2026-08-17, checked same day (per B.5); independently strong on both Smithery and PulseMCP's traffic list, the single strongest multi-source adoption signal of any server surfaced in the B.5 research pass.
@@ -228,13 +221,22 @@ Categories: dev tools 5, productivity/SaaS 5, observability 2, data 2, browser a
 
 #### Browser automation
 
-**15. Playwright MCP server**
+**14. Playwright MCP server**
 - Maintainer: official, Microsoft. Repo: github.com/microsoft/playwright-mcp.
 - Adoption: 36,197 stars (checked 2026-08-17); npm `@playwright/mcp` 25,444,935 downloads in the trailing month, by far the highest raw download figure of any candidate; listed in the official MCP registry as `io.github.microsoft/playwright-mcp` v0.0.79.
 - Last commit: 2026-08-07 (commit 7e0457a). Latest release v0.0.79, 2026-08-06.
 - Auth and free-tier surface: none required to run the server. No account or token gates any tool. No partial-surface risk. Structural note: this repo's `src/` directory now only contains a redirect notice, the implementation moved into the main microsoft/playwright monorepo (`packages/playwright-core/src/tools/mcp`), so this repo functions as the packaging/release surface; this should be documented in the harness's provenance record so a future contributor does not mistake it for a dead repo.
 - Transport: stdio (default), SSE, streamable HTTP.
 - Tool count: 50+ across roughly 10 categories (core automation, tabs, network, storage, DevTools, coordinate/vision, PDF, test assertions).
+
+**15. Chrome DevTools MCP server**
+- Promoted from the reserve bench (B.5) on 2026-08-18, backfilling the 15th slot vacated by Figma's exclusion under the partial-surface rule (see B.2.1). Unlike Context7's backfill of the observability vacancy into data, this one needs no reclassification judgment call: browser automation is this server's natural category per B.5 (item 3), and it had room under the 5-slot cap (1 of 5 filled by Playwright), so the vacated slot count is restored to 15 without borrowing across categories.
+- Maintainer: official, Google (ChromeDevTools org, the Chrome DevTools team). Repo: github.com/ChromeDevTools/chrome-devtools-mcp.
+- Adoption: 49,349 stars (github.com/ChromeDevTools/chrome-devtools-mcp, checked live 2026-08-18 via `gh repo view`), up from 49,287 at the B.5 research pass a day earlier; higher raw star count than Playwright itself (36,197), the server already in this category.
+- Last commit: 2026-08-17 (checked live 2026-08-18 via `gh api repos/ChromeDevTools/chrome-devtools-mcp/commits`). npm package `chrome-devtools-mcp` latest dist-tag `1.7.0`, published 2026-08-10 (registry.npmjs.org, checked live 2026-08-18).
+- Auth and free-tier surface: **none required, no partial-surface risk of the credential kind.** The server automates a locally-launched Chrome/Chromium instance via CDP; no account, API key, or OAuth grant of any kind gates `tools/list` or tool execution. Verified live 2026-08-18 with a raw JSON-RPC probe (`npx -y chrome-devtools-mcp@1.7.0`, no credential set): `tools/list` answers cleanly. Several tool categories are opt-in behind free CLI flags rather than a credential (`--experimentalVision`, `--memoryDebugging`, `--categoryExtensions`, `--categoryExperimentalThirdParty`, `--categoryPwa`, `--categoryExperimentalWebmcp`, `--experimentalScreencast`, the last needing only a local `ffmpeg` binary); this is the same class of thing as postgres's `--access-mode=unrestricted` launch flag, an operator-set launch choice, not a permission-scope, plan-tier, or workspace-role gate, so it does not trigger Gate 2.
+- Tool count: **52, live-verified 2026-08-18** with every category/experimental flag above enabled (`click, click_at, close_heapsnapshot, close_page, compare_heapsnapshots, drag, emulate, evaluate_script, execute_3p_developer_tool, execute_webmcp_tool, fill, fill_form, get_console_message, get_heapsnapshot_class_nodes, get_heapsnapshot_details, get_heapsnapshot_dominators, get_heapsnapshot_duplicate_strings, get_heapsnapshot_edges, get_heapsnapshot_object_details, get_heapsnapshot_retainers, get_heapsnapshot_retaining_paths, get_heapsnapshot_summary, get_network_request, handle_dialog, hover, install_extension, lighthouse_audit, list_3p_developer_tools, list_console_messages, list_extensions, list_network_requests, list_pages, list_webmcp_tools, navigate_page, new_page, performance_analyze_insight, performance_start_trace, performance_stop_trace, press_key, reload_extension, resize_page, screencast_start, screencast_stop, select_page, take_heapsnapshot, take_screenshot, take_snapshot, trigger_extension_action, type_text, uninstall_extension, upload_file, wait_for`). The README at HEAD documents 57 tools across 11 categories, including a Progressive Web Apps category (4 tools) and a 13th Memory tool, `query_heapsnapshot_objects`; none of those 5 appeared live even with `--categoryPwa` and `--memoryDebugging` both set. The CHANGELOG for the pinned `1.7.0` release does not mention shipping either, so this doc's working conclusion is that the HEAD README documents unreleased-at-1.7.0 functionality, not a credential or plan-tier gate; 52 is the empirically verified figure this corpus records, not the docs figure, per this doc's discipline of preferring live verification over documentation where they disagree.
+- Transport: stdio (npx, default; documented alternates for connecting to an already-running Chrome via `--browser-url`/`--ws-endpoint` were not exercised in this pass).
 
 ### B.2.1 Excluded under the partial-surface rule
 
@@ -258,9 +260,18 @@ Decision ratified 2026-08-17, applying rule A.2 Gate 2 and the partial-surface r
 
 Either may re-enter consideration via the self-submission path (rule A.5) if its vendor ships a free tier that reaches full tool-surface enumerability, per Gate 2's own re-test provision for servers marked blocked, auth-gated.
 
+**Figma MCP server. Excluded 2026-08-18: the only credential this server accepts is an OAuth 2.1 browser sign-in, which no free-tier static credential can stand in for.**
+- Maintainer, adoption, and last-commit evidence: unchanged from B.2 item 10's prior text (retained here per rule A.6's discipline of keeping a server's evidence on file rather than deleting it): dual-tracked, community GLips/Figma-Context-MCP (15,670 stars, 1,242 forks, last push 2026-08-07) and official figma/mcp-server-guide (1,896 stars, last push 2026-08-14), both checked 2026-08-17.
+- Auth and free-tier surface: confirmed hard partial-surface risk, resolved live 2026-08-18 (`servers.yaml`'s figma entry carries the full citation trail): the primary candidate resolved to Figma's official remote-hosted server at `mcp.figma.com/mcp`. Per developers.figma.com/docs/figma-mcp-server/ and help.figma.com/hc/en-us/articles/32132100833559 (both checked 2026-08-18), the remote server requires an interactive OAuth 2.1 browser sign-in on first connect; there is no static personal-access-token or API-key convention this harness's remote dialer can pass as a bearer header. A community forum thread requests PAT-based auth support, but it is not shipped as of 2026-08-18. A keyless `tools/list` probe against `https://mcp.figma.com/mcp` returned HTTP 401, confirming the endpoint is live and auth is genuinely required, with the OAuth-browser-flow gap as the remaining, structural blocker.
+- This is a different flavor of Gate 2 failure than Grafana and Atlassian/Jira above: those two have a free-tier *credential* that exists but returns a truncated surface (paid plugins, licensed toolsets); Figma has no acquirable free-tier credential at all for this harness, because the only auth path is a browser-interactive flow with no scriptable, reproducible token this harness (or a third party re-running it) can obtain non-interactively. Both failure modes fail the same Gate 2 test ("obtain the server's complete `tools/list` response using a credential we can obtain at no cost... checked, not assumed"), so both are excluded under the same rule.
+- Decision made by the session on 2026-08-18, applying rule A.2 Gate 2 mechanically per the operator's standing instruction to run this rule without per-server escalation; published here for Roshan's review, on the same ratification footing as the 2026-08-17 grafana/atlassian exclusions and reserve promotions above.
+- Re-eligible via the self-submission path (rule A.5) the day the harness gains OAuth 2.1 support, or the day Figma ships a static-token convention for the remote server's `tools/list`, whichever comes first; neither is true as of 2026-08-18.
+- Transport: remote streamable HTTP at `/mcp`.
+- Tool count: never measured; OAuth-only auth means this harness could not complete a keyless or single-token probe against the tool surface itself, only confirm the endpoint is live and gated.
+
 ### B.3 Auth-enumeration risk summary
 
-Four of the fifteen carry a flag that must be resolved or explicitly accepted before onboarding, per Gate 2 and the PRD's partial-surface refusal rule. Two more, Grafana and Atlassian/Jira, carried the same kind of flag but were excluded outright on 2026-08-17 rather than carried into the fifteen with a flag; see B.2.1 for the ratified rationale.
+Four of the fifteen carry a flag that must be resolved or explicitly accepted before onboarding, per Gate 2 and the PRD's partial-surface refusal rule. Three more, Grafana, Atlassian/Jira, and Figma, carried a Gate 2 problem severe enough to be excluded outright rather than carried into the fifteen with a flag; see B.2.1 for the ratified rationale. Grafana and Atlassian/Jira fail on a truncated-surface-behind-a-paid-tier basis (excluded 2026-08-17); Figma fails on a no-acquirable-free-credential basis, OAuth-2.1-browser-flow-only with no static-token convention (excluded 2026-08-18).
 
 | Server | Risk type | Resolvable on a free/no-cost credential? |
 | --- | --- | --- |
@@ -277,11 +288,11 @@ The brief named "Postgres/SQLite" as a paired candidate. Research found the SQLi
 
 ### B.5 Five reserve candidates
 
-Selected for strong independent adoption evidence and readiness to backfill a category slot, particularly the two auth-blocked candidates in B.3. Reserves 1 and 2 were promoted into the 15 on 2026-08-17 (see B.2 item 10 and item 14, and B.2.1); they stay listed here in their original reserve-ordering position for the record.
+Selected for strong independent adoption evidence and readiness to backfill a category slot, particularly the two auth-blocked candidates in B.3. Reserves 1 and 2 were promoted into the 15 on 2026-08-17 (see B.2 item 10 and item 14 at the time, and B.2.1); they stay listed here in their original reserve-ordering position for the record. Reserve 1, Figma, was subsequently excluded 2026-08-18 on a separate Gate 2 failure discovered at onboarding (see B.2.1); reserve 3, Chrome DevTools MCP, was promoted the same day to backfill the vacated slot (see B.2 item 15) and is next in reserve order after reserves 1 and 2.
 
-1. **Figma MCP.** Promoted into the 15, 2026-08-17 (see B.2 item 10). (community: GLips/Figma-Context-MCP, 15,670 stars, 1,242 forks, last push 2026-08-07; official: figma/mcp-server-guide, 1,896 stars, last push 2026-08-14; both checked 2026-08-17). Fills a design/creative-tooling gap no current candidate covers. Higher raw stars than several servers already in the 15 (Grafana at 3,361, Cloudflare's domain-specific server at 4,082).
-2. **Context7.** Promoted into the 15, 2026-08-17 (see B.2 item 14). (Upstash, upstash/context7, 60,868 stars, pushed 2026-08-17, checked same day). Documentation-retrieval category; independently strong on both Smithery and PulseMCP's traffic list, the single strongest multi-source adoption signal of any server surfaced in this research pass.
-3. **Chrome DevTools MCP** (Google, ChromeDevTools/chrome-devtools-mcp, 49,287 stars, pushed 2026-08-17, checked same day). Browser-automation backup for Playwright, with a higher raw star count than Playwright itself.
+1. **Figma MCP.** Promoted into the 15, 2026-08-17 (originally B.2 item 10); excluded 2026-08-18 under the partial-surface rule once the primary candidate resolved to an OAuth-2.1-browser-flow-only remote server with no static-token convention (see B.2.1). (community: GLips/Figma-Context-MCP, 15,670 stars, 1,242 forks, last push 2026-08-07; official: figma/mcp-server-guide, 1,896 stars, last push 2026-08-14; both checked 2026-08-17). Fills a design/creative-tooling gap no current candidate covers. Higher raw stars than several servers already in the 15 (Grafana at 3,361, Cloudflare's domain-specific server at 4,082). Re-eligible per rule A.5 if the harness gains OAuth support or Figma ships a static-token convention.
+2. **Context7.** Promoted into the 15, 2026-08-17 (see B.2 item 13). (Upstash, upstash/context7, 60,868 stars, pushed 2026-08-17, checked same day). Documentation-retrieval category; independently strong on both Smithery and PulseMCP's traffic list, the single strongest multi-source adoption signal of any server surfaced in this research pass.
+3. **Chrome DevTools MCP.** Promoted into the 15, 2026-08-18, backfilling the slot vacated by Figma's exclusion (see B.2 item 15). (Google, ChromeDevTools/chrome-devtools-mcp, 49,287 stars, pushed 2026-08-17, checked at the time this reserve list was compiled; 49,349 stars checked live again 2026-08-18 at promotion). Browser-automation backup for Playwright, with a higher raw star count than Playwright itself. No credential of any kind gates its tool surface; onboarding found 52 tools live with every free category/experimental flag enabled (B.2 item 15).
 4. **Brave Search MCP** (official, brave/brave-search-mcp-server, 1,384 stars, last push 2026-08-14, checked 2026-08-17). Fills a web-search category gap; notably, the archived `modelcontextprotocol/servers-archived` README names this repo as the official successor to its own archived Brave Search reference server, and it is the single highest-useCount server found on Smithery (104,186).
 5. **AWS Labs MCP** (official, awslabs/mcp, 9,609 stars, 1,709 forks, pushed 2026-08-14, checked 2026-08-17). Cloud-infrastructure category gap; a component of this monorepo (AWS Documentation) also appears on PulseMCP's claimed top-15 list.
 

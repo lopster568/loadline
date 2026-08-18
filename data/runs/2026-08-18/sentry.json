@@ -36,20 +36,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T15:11:20Z"
+          "measured_at": "2026-08-18T15:38:51Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 10475,
           "native_tools_param_tokens": 10470,
-          "measured_at": "2026-08-18T15:11:21Z"
+          "measured_at": "2026-08-18T15:38:51Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 6825,
-          "measured_at": "2026-08-18T15:11:22Z"
+          "measured_at": "2026-08-18T15:38:52Z"
         }
       },
       "modes": {
@@ -111,7 +111,7 @@
           "SENTRY_ACCESS_TOKEN"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T15:11:14.415742143Z"
+        "acquired_at": "2026-08-18T15:38:45.138235114Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -122,7 +122,7 @@
         "note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed",
         "note: endpoint path corrected 2026-08-18 from https://mcp.sentry.dev to https://mcp.sentry.dev/mcp; keyless probe against the corrected remote endpoint returned HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}, confirming auth is genuinely required there. The stdio path (this entry's default launch, npm @sentry/mcp-server) exits before answering JSON-RPC with \"No access token was provided. Run `sentry-mcp auth login` ... or pass --access-token / SENTRY_ACCESS_TOKEN\"; the harness records that as unreachable (crash before initialize), not auth, for the same reason as slack above. Both transports agree: auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T15:11:14.415737674Z",
+      "measured_at": "2026-08-18T15:38:45.138219621Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

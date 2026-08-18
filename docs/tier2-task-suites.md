@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Task-suite version | 0.1.0 (draft, not yet run) |
-| Date | 2026-08-17 |
+| Task-suite version | 0.1.1 (draft, not yet run) |
+| Date | 2026-08-18 |
 | Status | Draft, for Phase 2 sign-off (PRD.md 10, Open Decision 5) |
 | Scope | Tier 2 dynamic runs only. Tier 1 static sweep is specified in `methodology-v0.md`. |
 | Governs | Task selection, fixtures, protocol, and metrics for the 3-server dynamic tier (PRD.md 2.4) |
@@ -231,15 +231,131 @@ Every published Tier 2 result carries all three stamps from the table above. A r
 
 ---
 
-## 7. OPEN items
+## 7. Runner invocation
 
-The following remain open and are not resolved by this document. None of them blocks writing the spec; all of them block actually running a suite.
+Verified live on **2026-08-18** against the installed clients and against current vendor documentation. Both clients ship fast, so this section is evidence with a decay rate: re-verify the flags below before a suite run, and record the client version per trial (section 3.2) either way.
 
-1. **Claude Code non-interactive automation.** This document assumes a way to invoke Claude Code non-interactively with a fixed prompt, a specific MCP config pointed at the interposer, and a captured token-usage/output stream, but the exact flags and output format for that invocation are not yet confirmed against the installed client version.
-2. **Gemini CLI equivalent.** Same gap for Gemini CLI: non-interactive invocation flags, MCP config wiring, and whatever usage reporting it exposes are not yet confirmed.
+Installed versions at verification time: **Claude Code 2.1.234**, **Gemini CLI 0.18.4**.
+
+### 7.1 Claude Code
+
+Sources: `https://code.claude.com/docs/en/headless.md`, `https://code.claude.com/docs/en/cli-reference.md`, `https://code.claude.com/docs/en/mcp.md`, `https://code.claude.com/docs/en/permissions.md`, plus `claude --help` and two live print-mode runs on 2.1.234.
+
+```sh
+claude -p "<rendered prompt>" \
+  --mcp-config "$TRIAL_DIR/mcp.json" \
+  --strict-mcp-config \
+  --max-turns 20 \
+  --output-format json \
+  --permission-mode dontAsk \
+  --allowedTools "mcp__filesystem__*" \
+  --model claude-sonnet-5 \
+  > "$TRIAL_DIR/client.json"
+```
+
+| Flag | Behaviour that matters here |
+| --- | --- |
+| `-p` / `--print` | Print mode: run the prompt, print the response, exit. The prompt is positional; stdin is also read when no positional prompt is given. |
+| `--mcp-config <configs...>` | Loads MCP servers from JSON files or inline JSON strings, space-separated. The JSON wraps servers in an `mcpServers` key, the same shape `interposer/README.md` already documents. |
+| `--strict-mcp-config` | Uses only the servers from `--mcp-config` and ignores every other MCP configuration source. Confirmed empirically: with it set, the run's `system/init` event listed only the server from the passed file, and none of the machine's user-scope or plugin-bundled servers. |
+| `--max-turns <n>` | Print mode only. Caps agentic turns and **exits with an error** when the cap is reached. No limit by default. |
+| `--output-format <text\|json\|stream-json>` | `json` emits one structured result object. `stream-json` emits newline-delimited events whose last line is the result. |
+| `--permission-mode <mode>` | Modes include `dontAsk` (denies anything not explicitly allowed, never prompts) and `bypassPermissions` (approves everything). Print mode starts in the prompting default unless one is passed, so a suite run must pass one. |
+| `--allowedTools` / `--allowed-tools` | Both spellings work. MCP tools are named `mcp__<server>__<tool>`, and an allow rule may glob the tool segment as long as the server segment is literal, so `mcp__filesystem__*` allows that one server's whole surface. A fully unanchored glob such as `*` or `mcp__*` is skipped with a warning in an allow rule and approves nothing. |
+| `--model <model>` | Alias or full model name. Pin it; do not let a trial inherit whatever the machine defaults to. |
+
+**Do not use `--bare` for these trials.** It skips auto-discovery of hooks, skills, plugins, `CLAUDE.md` and MCP servers, which sounds like the right hygiene for a benchmark but also skips the project `.mcp.json`. `--strict-mcp-config` plus an explicit `--mcp-config` is the isolation this suite wants, and it keeps the passed server.
+
+**What `--output-format json` gives section 3.2 and section 4.** Field names below are from a live 2.1.234 run, not from a documented schema block; the docs confirm the presence of `total_cost_usd` and a per-model cost breakdown but do not print the full object.
+
+| Field | Use |
+| --- | --- |
+| `usage.input_tokens`, `usage.output_tokens` | Client-reported token usage, section 3.2. |
+| `usage.cache_creation_input_tokens`, `usage.cache_read_input_tokens` | The cache state of the trial. This is the observable OPEN 3 needs before it can be decided either way. |
+| `total_cost_usd`, `modelUsage` | Client-side cost estimate, per model. Recorded, not published as a price: PRD.md 6 rides plan quota, so this figure is an estimate of a cost the run did not actually pay. |
+| `duration_ms`, `duration_api_ms`, `num_turns` | Cross-check on the runner's own wall clock and on whether `--max-turns` was reached. |
+| `session_id`, `uuid`, `is_error`, `stop_reason` | Trial identity and terminal state. |
+| `result` | The final assistant-facing message. This is the string every transcript check in section 2 matches against. |
+| `permission_denials` | Non-empty means the trial was shaped by the permission mode rather than by the model, which is a setup fault, not a capability result. |
+
+Client version comes from `claude --version`, or from the `claude_code_version` field on the `system/init` event under `--output-format stream-json`.
+
+### 7.2 Gemini CLI
+
+Sources, all fetched live at HEAD on 2026-08-18: `docs/cli/headless.md`, `docs/cli/cli-reference.md`, `docs/cli/settings.md`, `docs/reference/configuration.md`, `docs/tools/mcp-server.md`, `docs/cli/telemetry.md`, `docs/cli/tutorials/automation.md` under `https://raw.githubusercontent.com/google-gemini/gemini-cli/main/`, plus `gemini --help` on 0.18.4.
+
+```sh
+cd "$TRIAL_DIR"   # holds .gemini/settings.json, see below
+gemini -p "<rendered prompt>" \
+  --output-format json \
+  --approval-mode yolo \
+  --allowed-mcp-server-names filesystem \
+  --model flash \
+  > "$TRIAL_DIR/client.json"
+```
+
+| Flag | Behaviour that matters here |
+| --- | --- |
+| `-p` / `--prompt` | Forces non-interactive mode. Deprecated in favour of a bare positional prompt but still functional and still used in current doc examples. A bare positional prompt is interactive in a TTY and only goes headless when stdin or stdout is not a TTY, so `-p` is the form a runner should use: it does not depend on how the harness happens to be attached. |
+| `-i` / `--prompt-interactive` | Not this. It runs the prompt and then drops into the REPL. |
+| `-o` / `--output-format <text\|json\|stream-json>` | Same three shapes as Claude Code. |
+| `--approval-mode <default\|auto_edit\|yolo\|plan>` | `yolo` auto-approves everything. `-y` / `--yolo` is the deprecated spelling. |
+| `--allowed-mcp-server-names <names...>` | Restricts which of the configured MCP servers load. This is the nearest analogue to `--strict-mcp-config`, and it is weaker: it filters a configured set rather than replacing it. |
+| `-m` / `--model` | Defaults to `auto`. Pin it. See the note on `auto` below. |
+
+**MCP wiring is by settings file, not by flag.** The `mcpServers` block lives in `~/.gemini/settings.json` or a project `.gemini/settings.json`, in the shape `interposer/README.md` already shows. Per-key detail from `docs/reference/configuration.md`: at least one of `command`, `url`, `httpUrl` is required, precedence is `httpUrl` then `url` then `command`; `timeout` defaults to 600000 ms; `trust` defaults to `false`; `excludeTools` wins over `includeTools`; and server aliases must not contain underscores, which break the `mcp_<server>_<tool>` name parsing.
+
+**There is no flag or environment variable that redirects the user or project settings file.** `GEMINI_CLI_SYSTEM_DEFAULTS_PATH` and `GEMINI_CLI_SYSTEM_SETTINGS_PATH` redirect the system-level layers only. The consequence for the runner is concrete: a Gemini trial must run with its working directory set to a per-trial directory containing a `.gemini/settings.json` that names exactly one server, pointed at the interposer with that trial's log path. Claude Code takes the equivalent file as a `--mcp-config` argument and needs no such directory. This is the single largest asymmetry between the two runners and it belongs in the runner's design, not in a wrapper script written the morning of a run.
+
+**The turn cap is a settings key, not a flag.** `model.maxSessionTurns` (default `-1`, unlimited) is set in the same per-trial `settings.json`. Headless mode has a dedicated exit code `53` for "turn limit exceeded". To keep the trial matrix even, set `maxSessionTurns` to the same number passed to Claude Code's `--max-turns`.
+
+**What `--output-format json` gives section 3.2 and section 4.** Verified against a live run:
+
+```json
+{
+  "response": "<final message>",
+  "stats": {
+    "models": {
+      "<model-id>": {
+        "api":    {"totalRequests": 1, "totalErrors": 0, "totalLatencyMs": 2875},
+        "tokens": {"prompt": 1367, "candidates": 46, "total": 1503,
+                   "cached": 0, "thoughts": 90, "tool": 0}
+      }
+    },
+    "tools": {"totalCalls": 0, "totalSuccess": 0, "totalFail": 0,
+              "totalDurationMs": 0,
+              "totalDecisions": {"accept": 0, "reject": 0, "modify": 0, "auto_accept": 0},
+              "byName": {}},
+    "files": {"totalLinesAdded": 0, "totalLinesRemoved": 0}
+  }
+}
+```
+
+`response` is the string the transcript checks match against. `stats.models.<id>.tokens.cached` is Gemini's cache observable, the counterpart to Claude Code's `cache_read_input_tokens`. `stats.tools` is a client-side count of tool calls that can be cross-checked against the interposer's own `tools/call` frame count, which is a useful integrity check on the log rather than a second source for the metric.
+
+**Gemini CLI reports no cost figure.** There is no dollar field anywhere in the output, only token counts and latencies. Cross-client cost comparison therefore cannot be built from the clients' own cost reporting, and must not be: the comparable basis is the wire token count from the interposer under one tokenizer, per `methodology-v0.md` 1.6, which is what Tier 2 measures anyway.
+
+**Do not leave `--model` at `auto`.** In the verification run, `auto` resolved to two models for a single prompt, a lite routing pass plus the answering model, each with its own token block in `stats.models`. Client-reported usage is then not attributable to one model, which breaks the section 3.2 record before it reaches section 4. This is distinct from OPEN 8 (which asks whether client versions are pinned) and is settled here: the model is pinned per trial, by flag, and recorded.
+
+**Telemetry is configuration, not a flag.** `telemetry.enabled`, `telemetry.target`, `telemetry.outfile`, `telemetry.otlpEndpoint` and friends are settings keys with `GEMINI_TELEMETRY_*` environment overrides; the OTel stream includes `gemini_cli.token.usage`. No `--telemetry` or `--telemetry-outfile` CLI flag was found in `gemini --help` on 0.18.4 or in the current `cli-reference.md`; treat any claim that those flags exist as unverified. The suite does not need telemetry: `--output-format json` already carries the per-model token counts.
+
+Client version comes from `gemini --version` (`-v` works too).
+
+### 7.3 What remains unbuilt
+
+This section confirms the invocations. It does not build the runner. Still to be written: per-trial directory setup, `{trial_id}` generation and prompt rendering, the per-trial `mcp.json` / `.gemini/settings.json` emission with the interposer wrapping the target server, invocation with wall-clock timing around it, success-criterion evaluation per section 2, and aggregation into `summary.json` per section 6.
+
+---
+
+## 8. OPEN items
+
+None of these blocks writing the spec. The unresolved ones block actually running a suite.
+
+1. **RESOLVED 2026-08-18. Claude Code non-interactive automation.** Confirmed against client 2.1.234 and current docs; see section 7.1.
+2. **RESOLVED 2026-08-18. Gemini CLI equivalent.** Confirmed against client 0.18.4 and docs at HEAD; see section 7.2.
 3. **Cost attribution under client-side caching.** Three trials against the same server, close together in time, may hit the client's own prompt cache on trials 2 and 3, suppressing schema-attributable tokens relative to a cold trial 1. Whether to force a cold session per trial, or accept and record cache state per trial as an additional field, is not decided.
-4. **The interposer's `analyze` subcommand does not exist yet.** `interposer/README.md` lists per-call token counting as an explicit v0.1 non-goal, deferred to a future `analyze` subcommand. Section 4's call-response token metric depends on that subcommand (or an equivalent one-off script) existing before a suite can actually be run.
-5. **GitHub fixture repo is not yet created.** `lopster568/loadline-tier2-fixture` and its `tier2-baseline` tag, along with the reset/cleanup automation described in section 2.3, do not exist yet.
-6. **Playwright fixture pages and local server are not yet built.** The four HTML fixtures in section 2.2 and the static file server that serves them are specified but not implemented, and the choice of server tooling is not made.
+4. **RESOLVED 2026-08-18. The analyze step exists.** It is `loadline analyze --log <trial.jsonl> [--out <report.json>]`, implemented in `internal/t2analyze`, not a subcommand of the interposer. Keeping it out of the interposer preserves that binary's stdlib-only property, which `interposer/README.md` names as the reason per-call token counting was a v0.1 non-goal in the first place; analysis runs offline on a finished log and has no reason to inherit the constraint. It correlates requests to responses by id, counts `params_full` under `o200k_base` via the same tokenizer Tier 1 uses (`methodology-v0.md` 1.6), and emits the section 4 per-trial metrics stamped with both the log's `interposer_version` and its own analyzer version. One limit is worth stating up front: call-response **result** tokens are only measured when the log was produced with the interposer's `--full-results`, because without it the log carries a byte count and a text length for each result but not the text. The report leaves that figure null and says so rather than estimating it.
+5. **NARROWED 2026-08-18. GitHub fixture repo is an operator task.** `lopster568/loadline-tier2-fixture`, its `tier2-baseline` tag, and the reset/cleanup automation in section 2.3 still do not exist. Unlike the local fixtures this one cannot be created from the repo: it needs the credentialed account, so it is Roshan's to create on the PC per the build-on-PC rule, and it stays open until it is.
+6. **RESOLVED 2026-08-18. Playwright fixture pages and local server are built.** They live in `tier2/fixtures/playwright/`, with the pages under `site/` rather than directly under the directory as section 2.2's path line says, and `serve.sh` starting `python3 -m http.server` bound to `127.0.0.1` on `${LOADLINE_TIER2_HTTP_PORT:-8930}`. python3 is the tooling choice: present on both machines, no dependency added to the repo, static and read-only with no configuration. The filesystem seed tree of section 2.1 is built alongside it by `tier2/fixtures/filesystem/setup.sh`, which has a `--verify` mode that rebuilds into a temp directory and fails on drift from the committed tree. Both fixture directories carry a README mapping each task id to its prerequisites and a mechanical success-check command.
 7. **Decline-rate parsing rule.** Section 4 defines a decline as zero `tools/call` frames plus a completed response, or explicit refusal text, but no documented procedure yet distinguishes a genuine decline from a client that solved the task without needing a tool call (unlikely for these 15 tasks, but not impossible for the read-heavy ones if a client hallucinates an answer instead of calling a tool, which is itself a failure this metric needs to be able to catch, not silently miss as if it were a call-free success).
 8. **Client version pinning.** Whether Claude Code and Gemini CLI are pinned to a specific released version for the duration of a suite run, and what happens to an in-flight run if either client auto-updates mid-run, is not decided.

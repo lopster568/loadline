@@ -55,13 +55,13 @@
           "DATABASE_URI"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T15:11:27.251479725Z"
+        "acquired_at": "2026-08-18T15:38:56.179072387Z"
       },
       "corpus_notes": [
         "note: launch in Unrestricted Mode for measurement; Restricted Mode truncates the tool surface by operator-set flag, not by credential",
         "note: not scanned in this pass; this machine has no docker/podman so the required local postgres container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md)."
       ],
-      "measured_at": "2026-08-18T15:11:27.251457056Z",
+      "measured_at": "2026-08-18T15:38:56.179042981Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

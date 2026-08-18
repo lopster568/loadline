@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -16,6 +17,7 @@ import (
 	"github.com/lopster568/loadline/internal/corpus"
 	"github.com/lopster568/loadline/internal/report"
 	"github.com/lopster568/loadline/internal/sweep"
+	"github.com/lopster568/loadline/internal/t2analyze"
 )
 
 func main() {
@@ -29,9 +31,14 @@ func main() {
 			fmt.Fprintln(os.Stderr, "loadline:", err)
 			os.Exit(1)
 		}
+	case "analyze":
+		if err := runAnalyze(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, "loadline:", err)
+			os.Exit(1)
+		}
 	case "version":
-		fmt.Printf("loadline %s (methodology %s, schema %s)\n",
-			report.HarnessVersion, report.MethodologyVersion, report.SchemaVersion)
+		fmt.Printf("loadline %s (methodology %s, schema %s, tier2 analyzer %s)\n",
+			report.HarnessVersion, report.MethodologyVersion, report.SchemaVersion, t2analyze.Version)
 	case "-h", "--help", "help":
 		usage()
 	default:
@@ -45,6 +52,7 @@ func usage() {
 
 Usage:
   loadline scan --servers servers.yaml [--only id1,id2] [--out data/]
+  loadline analyze --log <trial.jsonl> [--out <report.json>]
   loadline version
 
 scan flags:
@@ -57,7 +65,58 @@ scan flags:
   --claude-model id pinned Claude model for count_tokens
   --gemini-model id pinned Gemini model for countTokens
   --dry-run         resolve the corpus and print the plan without contacting servers
+
+analyze flags:
+  --log path        interposer JSONL log for one Tier 2 trial. Required
+  --out path        write the report JSON here (default stdout)
 `)
+}
+
+// runAnalyze derives the Tier 2 section 4 per-trial metrics from one
+// interposer frame log. It is a separate subcommand rather than an interposer
+// one because the interposer stays dependency-free by design; see
+// internal/t2analyze's package comment.
+func runAnalyze(argv []string) error {
+	fs := flag.NewFlagSet("analyze", flag.ContinueOnError)
+	fs.SetOutput(os.Stderr)
+	logPath := fs.String("log", "", "interposer JSONL log for one trial")
+	outPath := fs.String("out", "", "report output path (default stdout)")
+	if err := fs.Parse(argv); err != nil {
+		return err
+	}
+	if *logPath == "" {
+		return fmt.Errorf("analyze: --log is required")
+	}
+
+	f, err := os.Open(*logPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	rep, err := t2analyze.Analyze(f, t2analyze.Options{Source: *logPath})
+	if err != nil {
+		return err
+	}
+
+	body, err := json.MarshalIndent(rep, "", "  ")
+	if err != nil {
+		return err
+	}
+	body = append(body, '\n')
+
+	if *outPath == "" {
+		_, err = os.Stdout.Write(body)
+		return err
+	}
+	// A trial log is a secret (interposer/README.md security section) and the
+	// report quotes tool names and sizes derived from it, so it inherits the
+	// same 0600 mode rather than the 0644 the Tier 1 artifacts use.
+	if err := os.WriteFile(*outPath, body, 0o600); err != nil {
+		return err
+	}
+	fmt.Fprintf(os.Stderr, "wrote %s\n", *outPath)
+	return nil
 }
 
 func runScan(argv []string) error {

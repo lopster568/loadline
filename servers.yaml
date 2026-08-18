@@ -2,7 +2,11 @@
 #
 # The 15 servers ratified in docs/server-selection.md Part B, as amended
 # 2026-08-17 (Grafana and Atlassian/Jira excluded under the partial-surface
-# rule, B.2.1; Figma and Context7 promoted from the reserve bench, B.5).
+# rule, B.2.1; Figma and Context7 promoted from the reserve bench, B.5) and
+# 2026-08-18 (Figma excluded under the same rule once its only credential
+# resolved to an OAuth 2.1 browser-flow-only remote server, no static-token
+# convention this harness's non-interactive dialer can exercise; Chrome
+# DevTools MCP, reserve #3, promoted to backfill the vacated slot).
 #
 # Fields left unresolved by docs/server-selection.md are marked with a
 # "TODO verify at onboarding" comment rather than guessed.
@@ -159,7 +163,7 @@ servers:
       - note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above
       - note: "keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
 
-  # --- Productivity / SaaS (5) ---
+  # --- Productivity / SaaS (4) ---
 
   - id: notion
     name: Notion MCP server
@@ -282,41 +286,6 @@ servers:
           keyless probe 2026-08-18: HTTP 401 {"error":"Unauthorized. See
           https://docs.stripe.com/mcp for usage instructions."}. Confirms
           auth is genuinely required.
-
-  - id: figma
-    name: Figma MCP server
-    category: productivity-saas
-    maintainer_type: official
-    # RESOLVED 2026-08-18 via https://developers.figma.com/docs/figma-mcp-server/
-    # and https://help.figma.com/hc/en-us/articles/32132100833559 (checked
-    # live): the primary candidate is neither of the two repos this corpus
-    # weighed at B.2 item 10. Figma ships an official remote-hosted server at
-    # https://mcp.figma.com/mcp (recommended, broadest tool set) and a
-    # desktop-app-local variant serving the same surface one selection at a
-    # time; figma/mcp-server-guide is a docs/guide repo, not the server
-    # implementation. repo kept pointing at the guide repo since there is no
-    # separate first-party server source repo to cite.
-    repo: https://github.com/figma/mcp-server-guide
-    endpoint: https://mcp.figma.com/mcp
-    transport: [remote]
-    auth:
-      required: true
-      # OAuth 2.1 only for the remote server (browser sign-in on first
-      # connect, per Figma's docs), not a static API-token env var this
-      # harness's remote dialer can pass as a Bearer header out of the box.
-      # A community forum thread requests PAT-based auth support but it is
-      # not shipped as of 2026-08-18. token_env left null: there is no env
-      # var convention to declare, and the credential() resolver treats that
-      # as "spec unresolved" rather than guessing one.
-      token_env: null
-    package: {}
-    flags:
-      - note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass
-      - note: >-
-          keyless probe 2026-08-18: HTTP 401 Unauthorized from
-          https://mcp.figma.com/mcp. Confirms the endpoint is live and
-          reachable and that auth is genuinely required; the OAuth-only gap
-          above is the remaining blocker, not endpoint resolution.
 
   # --- Observability (2) ---
 
@@ -443,7 +412,7 @@ servers:
           @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no
           auth).
 
-  # --- Browser automation (1) ---
+  # --- Browser automation (2) ---
 
   - id: playwright
     name: Playwright MCP server
@@ -465,6 +434,68 @@ servers:
         version: "0.0.79"
     flags: []
 
+  - id: chrome-devtools
+    name: Chrome DevTools MCP server
+    category: browser-automation
+    maintainer_type: official
+    repo: https://github.com/ChromeDevTools/chrome-devtools-mcp
+    transport: [stdio]
+    auth:
+      # RESOLVED 2026-08-18: no credential of any kind. The server automates
+      # a locally-launched Chrome/Chromium instance over CDP; no account, API
+      # key, or OAuth grant gates tools/list or tool execution. Verified live
+      # 2026-08-18 with a raw JSON-RPC probe against `npx -y
+      # chrome-devtools-mcp@1.7.0`, no credential set: tools/list answered
+      # cleanly. Promoted from the reserve bench (B.5 item 3,
+      # docs/server-selection.md B.2 item 15) to backfill the slot vacated by
+      # Figma's exclusion (see the excluded block below).
+      required: false
+      token_env: null
+    package:
+      stdio:
+        type: npm
+        name: chrome-devtools-mcp
+        # RESOLVED 2026-08-18 via https://registry.npmjs.org/chrome-devtools-mcp
+        # (dist-tags.latest 1.7.0, published 2026-08-10) and
+        # https://github.com/ChromeDevTools/chrome-devtools-mcp README
+        # (checked live): npx is the primary documented launch method.
+        # --headless avoids a GUI/display dependency on a CI-style machine;
+        # --isolated uses a throwaway user-data-dir so the scan never touches
+        # a real Chrome profile. The remaining flags are the free
+        # category/experimental toggles documented in the README's
+        # "Configuration" section; enabling them is what reaches this
+        # server's maximal free tool surface, the same kind of operator-set
+        # launch choice as postgres's --access-mode=unrestricted, not a
+        # credential or paid-tier gate, so it does not implicate Gate 2.
+        version: "1.7.0"
+        args:
+          - "--headless"
+          - "--isolated"
+          - "--experimentalVision"
+          - "--memoryDebugging"
+          - "--categoryExtensions"
+          - "--categoryExperimentalThirdParty"
+          - "--categoryPwa"
+          - "--categoryExperimentalWebmcp"
+          - "--experimentalScreencast"
+    flags:
+      - note: >-
+          promoted from reserve bench 2026-08-18, backfilling the slot
+          vacated by Figma's exclusion under the partial-surface rule (see
+          docs/server-selection.md B.2 item 15 and B.2.1).
+      - note: >-
+          keyless probe 2026-08-18 (npx -y chrome-devtools-mcp@1.7.0 with the
+          args above, raw JSON-RPC initialize + tools/list, no browser
+          launched): 52 tools returned. The README at HEAD documents 57
+          tools across 11 categories, including a Progressive Web Apps
+          category (4 tools) and a 13th Memory tool
+          (query_heapsnapshot_objects); none of those 5 appeared live even
+          with --categoryPwa and --memoryDebugging both set, and the 1.7.0
+          CHANGELOG does not mention shipping either, so this corpus treats
+          them as documented-but-unreleased-at-1.7.0 rather than a
+          credential or plan-tier gate. 52 is the live-verified figure this
+          entry expects a real scan to reproduce.
+
 excluded:
   # Excluded under the partial-surface rule, ratified 2026-08-17.
   # See docs/server-selection.md B.2.1 for full rationale and evidence.
@@ -484,3 +515,25 @@ excluded:
       org-admin-provisioned licensed access, and Teamwork Graph is a paid
       Rovo-credits feature; a non-admin, unlicensed free-tier credential
       cannot reach the full tool surface.
+
+  # Excluded under the partial-surface rule, ratified 2026-08-18. Unlike
+  # grafana/atlassian above (a credential exists but is scope- or
+  # plan-truncated), figma has no acquirable free-tier credential at all for
+  # this harness: its only auth path is an interactive OAuth 2.1 browser
+  # sign-in, with no static-token convention a non-interactive harness (this
+  # one, or a third party re-running it) can exercise. Re-eligible per
+  # docs/server-selection.md rule A.5 the day the harness gains OAuth support
+  # or Figma ships a static-token convention. See B.2.1 for full rationale
+  # and evidence; the previously-resolved auth/transport/endpoint research
+  # from this entry's time in the 15 is kept there per rule A.6.
+  - id: figma
+    name: Figma MCP server
+    reason: partial-surface-rule
+    rationale: >-
+      The only credential the remote server (mcp.figma.com/mcp) accepts is
+      an interactive OAuth 2.1 browser sign-in; there is no static
+      personal-access-token or API-key convention this harness's
+      non-interactive remote dialer can pass as a Bearer header, so no
+      free-tier credential can complete a reproducible tools/list
+      enumeration. Re-eligible when the harness gains OAuth support or Figma
+      ships a static-token convention.

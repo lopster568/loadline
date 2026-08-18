@@ -1,0 +1,2017 @@
+{
+  "server": "chrome-devtools",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "click",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "clicks provided element",
+          "terms": [
+            "clicks",
+            "provided",
+            "element"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "clicks provided",
+          "terms": [
+            "clicks",
+            "provided"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "click_at",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "clicks provided coordinates",
+          "terms": [
+            "clicks",
+            "provided",
+            "coordinates"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "provided coordinates",
+          "terms": [
+            "provided",
+            "coordinates"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "close_heapsnapshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "closes previously loaded",
+          "terms": [
+            "closes",
+            "previously",
+            "loaded"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "previously loaded",
+          "terms": [
+            "previously",
+            "loaded"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "closes previously loaded memory freeing",
+          "terms": [
+            "closes",
+            "previously",
+            "loaded",
+            "memory",
+            "freeing"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "close_page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "closes index last",
+          "terms": [
+            "closes",
+            "index",
+            "last"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "cannot closed",
+          "terms": [
+            "cannot",
+            "closed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "closes index last open cannot closed",
+          "terms": [
+            "closes",
+            "index",
+            "last",
+            "open",
+            "cannot",
+            "closed"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "compare_heapsnapshots",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads two memory",
+          "terms": [
+            "loads",
+            "two",
+            "memory"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "comparison class",
+          "terms": [
+            "comparison",
+            "class"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads two memory returns comparison class index provided detailed diff otherwise summary",
+          "terms": [
+            "loads",
+            "two",
+            "memory",
+            "returns",
+            "comparison",
+            "class",
+            "index",
+            "provided",
+            "detailed",
+            "diff",
+            "otherwise",
+            "summary"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "drag",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "element onto another",
+          "terms": [
+            "element",
+            "onto",
+            "another"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "onto another",
+          "terms": [
+            "onto",
+            "another"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "emulate",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "emulates various features",
+          "terms": [
+            "emulates",
+            "various",
+            "features"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "emulates various",
+          "terms": [
+            "emulates",
+            "various"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "emulates various features selected page",
+          "terms": [
+            "emulates",
+            "various",
+            "features",
+            "selected",
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "evaluate_script",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "java function inside",
+          "terms": [
+            "java",
+            "function",
+            "inside"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "function inside",
+          "terms": [
+            "function",
+            "inside"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "java function inside currently selected page service worker returns response json returned",
+          "terms": [
+            "java",
+            "function",
+            "inside",
+            "currently",
+            "selected",
+            "page",
+            "service",
+            "worker",
+            "returns",
+            "response",
+            "json",
+            "returned"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "execute_3p_developer_tool",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "executes exposed page",
+          "terms": [
+            "executes",
+            "exposed",
+            "page"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "executes exposed",
+          "terms": [
+            "executes",
+            "exposed"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "execute_webmcp_tool",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "executes web mcp",
+          "terms": [
+            "executes",
+            "web",
+            "mcp"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "executes web",
+          "terms": [
+            "executes",
+            "web"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "executes web mcp exposed page",
+          "terms": [
+            "executes",
+            "web",
+            "mcp",
+            "exposed",
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "fill",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "type text input",
+          "terms": [
+            "type",
+            "text",
+            "input"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "area select",
+          "terms": [
+            "area",
+            "select"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "type text input area select option element",
+          "terms": [
+            "type",
+            "text",
+            "input",
+            "area",
+            "select",
+            "option",
+            "element"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "fill_form",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "multiple elements inputs",
+          "terms": [
+            "multiple",
+            "elements",
+            "inputs"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "inputs selects",
+          "terms": [
+            "inputs",
+            "selects"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "multiple elements inputs selects checkboxes radios always prefer tool individual click calls",
+          "terms": [
+            "multiple",
+            "elements",
+            "inputs",
+            "selects",
+            "checkboxes",
+            "radios",
+            "always",
+            "prefer",
+            "tool",
+            "individual",
+            "click",
+            "calls"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_console_message",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "gets id messages",
+          "terms": [
+            "gets",
+            "id",
+            "messages"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "messages calling",
+          "terms": [
+            "messages",
+            "calling"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "gets id messages calling list",
+          "terms": [
+            "gets",
+            "id",
+            "messages",
+            "calling",
+            "list"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_class_nodes",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "instances specific",
+          "terms": [
+            "instances",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns instances specific ds",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "instances",
+            "specific",
+            "ds"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_details",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "statistics static",
+          "terms": [
+            "statistics",
+            "static"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns available information including statistics static data aggregated node supports",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "available",
+            "information",
+            "including",
+            "statistics",
+            "static",
+            "data",
+            "aggregated",
+            "node",
+            "supports"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_dominators",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 10
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "dominator chain",
+          "terms": [
+            "dominator",
+            "chain"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns dominator chain specific node id helps identify objects keeping",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "dominator",
+            "chain",
+            "specific",
+            "node",
+            "id",
+            "helps",
+            "identify",
+            "objects",
+            "keeping"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_duplicate_strings",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "grouped value",
+          "terms": [
+            "grouped",
+            "value"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns grouped value",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "grouped",
+            "value"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_edges",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "outgoing references",
+          "terms": [
+            "outgoing",
+            "references"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns outgoing references specific node id",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "outgoing",
+            "references",
+            "specific",
+            "node",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_object_details",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 8
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "distance dom",
+          "terms": [
+            "distance",
+            "dom"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns detailed information specific node id including size type distance",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "detailed",
+            "information",
+            "specific",
+            "node",
+            "id",
+            "including",
+            "size",
+            "type",
+            "distance"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_retainers",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "specific node",
+          "terms": [
+            "specific",
+            "node"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns specific node id",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "specific",
+            "node",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_retaining_paths",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 9
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "understand why",
+          "terms": [
+            "understand",
+            "why"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns specific node id helps understand why garbage collected",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "specific",
+            "node",
+            "id",
+            "helps",
+            "understand",
+            "why",
+            "garbage",
+            "collected"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_heapsnapshot_summary",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "loads memory returns",
+          "terms": [
+            "loads",
+            "memory",
+            "returns"
+          ],
+          "rank": 6
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "native contexts",
+          "terms": [
+            "native",
+            "contexts"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "loads memory returns snapshot stats including native contexts sizes",
+          "terms": [
+            "loads",
+            "memory",
+            "returns",
+            "snapshot",
+            "stats",
+            "including",
+            "native",
+            "contexts",
+            "sizes"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_network_request",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "gets optional reqid",
+          "terms": [
+            "gets",
+            "optional",
+            "reqid"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "optional reqid",
+          "terms": [
+            "optional",
+            "reqid"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "gets optional reqid omitted returns currently selected dev tools panel",
+          "terms": [
+            "gets",
+            "optional",
+            "reqid",
+            "omitted",
+            "returns",
+            "currently",
+            "selected",
+            "dev",
+            "tools",
+            "panel"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "handle_dialog",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "browser opened command",
+          "terms": [
+            "browser",
+            "opened",
+            "command"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "opened command",
+          "terms": [
+            "opened",
+            "command"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "hover",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "provided element",
+          "terms": [
+            "provided",
+            "element"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "install_extension",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "installs chrome given",
+          "terms": [
+            "installs",
+            "chrome",
+            "given"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "given path",
+          "terms": [
+            "given",
+            "path"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "installs chrome given path",
+          "terms": [
+            "installs",
+            "chrome",
+            "given",
+            "path"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "lighthouse_audit",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get score reports",
+          "terms": [
+            "get",
+            "score",
+            "reports"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "score reports",
+          "terms": [
+            "score",
+            "reports"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get score reports accessibility seo best practices agentic browsing excludes performance audits",
+          "terms": [
+            "get",
+            "score",
+            "reports",
+            "accessibility",
+            "seo",
+            "best",
+            "practices",
+            "agentic",
+            "browsing",
+            "excludes",
+            "performance",
+            "audits"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_3p_developer_tools",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "lists third party",
+          "terms": [
+            "lists",
+            "third",
+            "party"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "third party",
+          "terms": [
+            "third",
+            "party"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "lists third party page exposes providing runtime information called via execute tool",
+          "terms": [
+            "lists",
+            "third",
+            "party",
+            "page",
+            "exposes",
+            "providing",
+            "runtime",
+            "information",
+            "called",
+            "via",
+            "execute",
+            "tool"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_console_messages",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "currently selected page",
+          "terms": [
+            "currently",
+            "selected",
+            "page"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "content scripts",
+          "terms": [
+            "content",
+            "scripts"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "currently selected page since last navigation includes originating extensions content scripts",
+          "terms": [
+            "currently",
+            "selected",
+            "page",
+            "since",
+            "last",
+            "navigation",
+            "includes",
+            "originating",
+            "extensions",
+            "content",
+            "scripts"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_extensions",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "lists chrome installed",
+          "terms": [
+            "lists",
+            "chrome",
+            "installed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "version enabled",
+          "terms": [
+            "version",
+            "enabled"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "lists chrome installed browser includes name id version enabled status",
+          "terms": [
+            "lists",
+            "chrome",
+            "installed",
+            "browser",
+            "includes",
+            "name",
+            "id",
+            "version",
+            "enabled",
+            "status"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_network_requests",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "lists recent currently",
+          "terms": [
+            "lists",
+            "recent",
+            "currently"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "lists recent",
+          "terms": [
+            "lists",
+            "recent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "lists recent currently selected page since last navigation",
+          "terms": [
+            "lists",
+            "recent",
+            "currently",
+            "selected",
+            "page",
+            "since",
+            "last",
+            "navigation"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_pages",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get including extension",
+          "terms": [
+            "get",
+            "including",
+            "extension"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "service workers",
+          "terms": [
+            "service",
+            "workers"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get including extension service workers open browser",
+          "terms": [
+            "get",
+            "including",
+            "extension",
+            "service",
+            "workers",
+            "open",
+            "browser"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_webmcp_tools",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "lists web mcp",
+          "terms": [
+            "lists",
+            "web",
+            "mcp"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "web mcp",
+          "terms": [
+            "web",
+            "mcp"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "lists web mcp page exposes",
+          "terms": [
+            "lists",
+            "web",
+            "mcp",
+            "page",
+            "exposes"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "navigate_page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "go url back",
+          "terms": [
+            "go",
+            "url",
+            "back"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "back forward",
+          "terms": [
+            "back",
+            "forward"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "go url back forward reload project specified otherwise",
+          "terms": [
+            "go",
+            "url",
+            "back",
+            "forward",
+            "reload",
+            "project",
+            "specified",
+            "otherwise"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "new_page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "open tab load",
+          "terms": [
+            "open",
+            "tab",
+            "load"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "tab load",
+          "terms": [
+            "tab",
+            "load"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "open tab load url project specified otherwise",
+          "terms": [
+            "open",
+            "tab",
+            "load",
+            "url",
+            "project",
+            "specified",
+            "otherwise"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "performance_analyze_insight",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "provides detailed information",
+          "terms": [
+            "provides",
+            "detailed",
+            "information"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "set highlighted",
+          "terms": [
+            "set",
+            "highlighted"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "provides detailed information specific set highlighted results trace recording",
+          "terms": [
+            "provides",
+            "detailed",
+            "information",
+            "specific",
+            "set",
+            "highlighted",
+            "results",
+            "trace",
+            "recording"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "performance_start_trace",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "selected webpage find",
+          "terms": [
+            "selected",
+            "webpage",
+            "find"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "find frontend",
+          "terms": [
+            "find",
+            "frontend"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "selected webpage find frontend issues core web vitals lcp inp cls improve",
+          "terms": [
+            "selected",
+            "webpage",
+            "find",
+            "frontend",
+            "issues",
+            "core",
+            "web",
+            "vitals",
+            "lcp",
+            "inp",
+            "cls",
+            "improve"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "performance_stop_trace",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "active recording selected",
+          "terms": [
+            "active",
+            "recording",
+            "selected"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "active recording",
+          "terms": [
+            "active",
+            "recording"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "active recording selected webpage",
+          "terms": [
+            "active",
+            "recording",
+            "selected",
+            "webpage"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "press_key",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "combination input methods",
+          "terms": [
+            "combination",
+            "input",
+            "methods"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "methods like",
+          "terms": [
+            "methods",
+            "like"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "combination input methods like fill cannot keyboard shortcuts navigation keys special combinations",
+          "terms": [
+            "combination",
+            "input",
+            "methods",
+            "like",
+            "fill",
+            "cannot",
+            "keyboard",
+            "shortcuts",
+            "navigation",
+            "keys",
+            "special",
+            "combinations"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "reload_extension",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "reloads unpacked chrome",
+          "terms": [
+            "reloads",
+            "unpacked",
+            "chrome"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "reloads unpacked",
+          "terms": [
+            "reloads",
+            "unpacked"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "reloads unpacked chrome id",
+          "terms": [
+            "reloads",
+            "unpacked",
+            "chrome",
+            "id"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resize_page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "resizes selected window",
+          "terms": [
+            "resizes",
+            "selected",
+            "window"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "specified dimension",
+          "terms": [
+            "specified",
+            "dimension"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "resizes selected window specified dimension",
+          "terms": [
+            "resizes",
+            "selected",
+            "window",
+            "specified",
+            "dimension"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "screencast_start",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "starts recording video",
+          "terms": [
+            "starts",
+            "recording",
+            "video"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "starts recording",
+          "terms": [
+            "starts",
+            "recording"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "starts recording video selected page specified format",
+          "terms": [
+            "starts",
+            "recording",
+            "video",
+            "selected",
+            "page",
+            "specified",
+            "format"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "screencast_stop",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "stops active recording",
+          "terms": [
+            "stops",
+            "active",
+            "recording"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "stops active",
+          "terms": [
+            "stops",
+            "active"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "stops active recording selected page",
+          "terms": [
+            "stops",
+            "active",
+            "recording",
+            "selected",
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "select_page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "context future tool",
+          "terms": [
+            "context",
+            "future",
+            "tool"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "context future",
+          "terms": [
+            "context",
+            "future"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "context future tool calls",
+          "terms": [
+            "context",
+            "future",
+            "tool",
+            "calls"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "take_heapsnapshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "capture heap snapshot",
+          "terms": [
+            "capture",
+            "heap",
+            "snapshot"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "capture heap",
+          "terms": [
+            "capture",
+            "heap"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "capture heap snapshot currently selected page analyze memory distribution java script objects",
+          "terms": [
+            "capture",
+            "heap",
+            "snapshot",
+            "currently",
+            "selected",
+            "page",
+            "analyze",
+            "memory",
+            "distribution",
+            "java",
+            "script",
+            "objects"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "take_screenshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "page element",
+          "terms": [
+            "page",
+            "element"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "take_snapshot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "text currently selected",
+          "terms": [
+            "text",
+            "currently",
+            "selected"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "based a11y",
+          "terms": [
+            "based",
+            "a11y"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "text currently selected page based a11y tree lists elements along unique identifier",
+          "terms": [
+            "text",
+            "currently",
+            "selected",
+            "page",
+            "based",
+            "a11y",
+            "tree",
+            "lists",
+            "elements",
+            "along",
+            "unique",
+            "identifier"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "trigger_extension_action",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "triggers default id",
+          "terms": [
+            "triggers",
+            "default",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "triggers default",
+          "terms": [
+            "triggers",
+            "default"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "type_text",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "keyboard previously focused",
+          "terms": [
+            "keyboard",
+            "previously",
+            "focused"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "previously focused",
+          "terms": [
+            "previously",
+            "focused"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "keyboard previously focused input",
+          "terms": [
+            "keyboard",
+            "previously",
+            "focused",
+            "input"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "uninstall_extension",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "uninstalls chrome id",
+          "terms": [
+            "uninstalls",
+            "chrome",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "uninstalls chrome",
+          "terms": [
+            "uninstalls",
+            "chrome"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "upload_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "provided element",
+          "terms": [
+            "provided",
+            "element"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "wait_for",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "specified text appear",
+          "terms": [
+            "specified",
+            "text",
+            "appear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "text appear",
+          "terms": [
+            "text",
+            "appear"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "specified text appear selected page",
+          "terms": [
+            "specified",
+            "text",
+            "appear",
+            "selected",
+            "page"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

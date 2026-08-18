@@ -51,9 +51,9 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T15:10:42.482460979Z"
+        "acquired_at": "2026-08-18T15:38:17.315245364Z"
       },
-      "measured_at": "2026-08-18T15:10:42.482449298Z",
+      "measured_at": "2026-08-18T15:38:17.315230443Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

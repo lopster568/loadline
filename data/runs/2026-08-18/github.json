@@ -13,10 +13,10 @@
       "maintainer": "official",
       "status": "ok",
       "tool_count": 47,
-      "protocol_revision": "2025-03-26",
+      "protocol_revision": "2025-06-18",
       "provenance": {
         "server_version": "github-mcp-server/remote-af2d0ceb00287f99546c6bb5666c1a2462b8bec7",
-        "wire_sha256": "aef6e6fa25ac3a93ee0fccea5d1b07e0fb9d3bd244cf4169d737ee9bba208c9c",
+        "wire_sha256": "cced03f717b1923185a50eee3496d4a203b132d3cd2894994970aefea1140afc",
         "canonical_sha256": "cbbb3b2c924fb1a87a987ee71564902d95845e5f2e3cf0cbe71b3acfcedd02a5",
         "canonical_sorted_sha256": "8ebef38dc0fec2a8a323bf4b9bad505583dc461c392dd9f1235ea1bb323d55ee"
       },
@@ -74,20 +74,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T15:10:34Z"
+          "measured_at": "2026-08-18T15:38:07Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 86843,
           "native_tools_param_tokens": 19566,
-          "measured_at": "2026-08-18T15:10:35Z"
+          "measured_at": "2026-08-18T15:38:08Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 61790,
-          "measured_at": "2026-08-18T15:10:37Z"
+          "measured_at": "2026-08-18T15:38:11Z"
         }
       },
       "modes": {
@@ -190,7 +190,7 @@
           "GITHUB_PERSONAL_ACCESS_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T15:09:49.19112397Z"
+        "acquired_at": "2026-08-18T15:37:28.220647642Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -199,7 +199,7 @@
         "auth-verification: classic-PAT-scope-filtering",
         "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
       ],
-      "measured_at": "2026-08-18T15:09:49.191112217Z",
+      "measured_at": "2026-08-18T15:37:28.220606259Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

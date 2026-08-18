@@ -1,0 +1,187 @@
+{
+  "analyzer_version": "0.1.0",
+  "interposer_version": "0.1.0",
+  "source": "testdata/sample.jsonl",
+  "tokenizer": "o200k_base",
+  "sessions": 1,
+  "started_at": "2026-08-18T10:00:00.000000000Z",
+  "server_cmd": [
+    "npx",
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "/tmp/loadline-scratch"
+  ],
+  "wall": {
+    "first_frame": "2026-08-18T10:00:00.100000000Z",
+    "last_frame": "2026-08-18T10:00:01.000000000Z",
+    "duration_ms": 900
+  },
+  "totals": {
+    "frames": 14,
+    "frames_c2s": 7,
+    "frames_s2c": 7,
+    "bytes": 10847,
+    "bytes_c2s": 1007,
+    "bytes_s2c": 9840,
+    "batch_frames": 2,
+    "batch_messages": 4,
+    "requests": 7,
+    "notifications": 1,
+    "responses": 7,
+    "tool_calls": 5,
+    "tool_call_arg_bytes": 432,
+    "tool_call_arg_tokens": 123,
+    "tool_call_result_bytes": 864,
+    "tool_call_result_tokens": null,
+    "jsonrpc_errors": 1,
+    "tool_errors": 1,
+    "retries": 1,
+    "unmatched_requests": 1,
+    "unmatched_responses": 1,
+    "duplicate_request_ids": 0,
+    "unparseable_lines": 1,
+    "unparseable_frames": 1,
+    "unrecognized_lines": 0
+  },
+  "tool_calls": [
+    {
+      "seq": 1,
+      "id": "3",
+      "tool": "list_directory",
+      "ts": "2026-08-18T10:00:00.500000000Z",
+      "arg_bytes": 70,
+      "arg_tokens": 17,
+      "response": {
+        "ts": "2026-08-18T10:00:00.640000000Z",
+        "result_bytes": 312,
+        "content_blocks": 1,
+        "text_len": 268,
+        "result_tokens": null,
+        "latency_ms": 140
+      }
+    },
+    {
+      "seq": 2,
+      "id": "4",
+      "tool": "read_file",
+      "ts": "2026-08-18T10:00:00.500000000Z",
+      "arg_bytes": 81,
+      "arg_tokens": 20,
+      "response": {
+        "ts": "2026-08-18T10:00:00.640000000Z",
+        "result_bytes": 388,
+        "content_blocks": 1,
+        "text_len": 344,
+        "result_tokens": null,
+        "latency_ms": 140
+      }
+    },
+    {
+      "seq": 3,
+      "id": "5",
+      "tool": "read_file",
+      "ts": "2026-08-18T10:00:00.700000000Z",
+      "arg_bytes": 81,
+      "arg_tokens": 21,
+      "response": {
+        "ts": "2026-08-18T10:00:00.760000000Z",
+        "result_bytes": 0,
+        "rpc_error": {
+          "code": -32602,
+          "message": "Invalid arguments: path does not exist"
+        },
+        "result_tokens": null,
+        "latency_ms": 60
+      }
+    },
+    {
+      "seq": 4,
+      "id": "6",
+      "tool": "read_file",
+      "ts": "2026-08-18T10:00:00.820000000Z",
+      "arg_bytes": 81,
+      "arg_tokens": 22,
+      "retry": true,
+      "response": {
+        "ts": "2026-08-18T10:00:00.900000000Z",
+        "result_bytes": 164,
+        "content_blocks": 1,
+        "text_len": 120,
+        "is_tool_error": true,
+        "result_tokens": null,
+        "latency_ms": 80
+      }
+    },
+    {
+      "seq": 5,
+      "id": "\"call-7\"",
+      "tool": "write_file",
+      "ts": "2026-08-18T10:00:01.000000000Z",
+      "arg_bytes": 119,
+      "arg_tokens": 43,
+      "response": null
+    }
+  ],
+  "methods": [
+    {
+      "method": "(unmatched)",
+      "requests": 0,
+      "notifications": 0,
+      "responses": 1,
+      "errors": 0,
+      "tool_errors": 0,
+      "params_bytes": 0,
+      "params_tokens": 0,
+      "result_bytes": 64
+    },
+    {
+      "method": "initialize",
+      "requests": 1,
+      "notifications": 0,
+      "responses": 1,
+      "errors": 0,
+      "tool_errors": 0,
+      "params_bytes": 106,
+      "params_tokens": 33,
+      "result_bytes": 190
+    },
+    {
+      "method": "notifications/initialized",
+      "requests": 0,
+      "notifications": 1,
+      "responses": 0,
+      "errors": 0,
+      "tool_errors": 0,
+      "params_bytes": 2,
+      "params_tokens": 1,
+      "result_bytes": 0
+    },
+    {
+      "method": "tools/call",
+      "requests": 5,
+      "notifications": 0,
+      "responses": 4,
+      "errors": 1,
+      "tool_errors": 1,
+      "params_bytes": 432,
+      "params_tokens": 123,
+      "result_bytes": 864
+    },
+    {
+      "method": "tools/list",
+      "requests": 1,
+      "notifications": 0,
+      "responses": 1,
+      "errors": 0,
+      "tool_errors": 0,
+      "params_bytes": 2,
+      "params_tokens": 1,
+      "result_bytes": 8412
+    }
+  ],
+  "warnings": [
+    "line 7: not valid JSON, skipped",
+    "line 15: response id 99 has no logged request",
+    "result tokens unavailable: 0 of 4 tool-call responses carry result_full; rerun the interposer with --full-results to measure them"
+  ]
+}

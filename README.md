@@ -8,9 +8,10 @@ per `docs/pc-sweep-runbook.md`, across a curated set of servers, counts
 tool-schema tokens with three tokenizer adapters, and reports the result
 through a stack calculator: pick servers, a client mode, and a model, and
 get total context footprint, window share, per-server attribution, and a
-cold-write/cache-read dollar pair. Published rows carry OpenAI o200k counts
-today; the Claude and Gemini cells publish as `available: false` until the
-corresponding API keys are supplied (honest cells, never estimates). Costs
+cold-write/cache-read dollar pair. Published rows carry counts from all three
+tokenizers (OpenAI o200k locally, Claude and Gemini via their token-counting
+APIs); a cell whose count could not be obtained publishes as
+`available: false`, never as an estimate. Costs
 are always reported per client mode (naive full-load, tool search /
 progressive disclosure, code mode), never collapsed into one number,
 because the same stack costs a different amount depending on how the
@@ -44,8 +45,10 @@ go run ./cmd/loadline scan --servers servers.yaml --only filesystem --out data/
 ## Status
 
 The Tier 1 harness, interposer, and calculator site are built and tested.
-One sweep has run (2026-08-17, 4 servers: 3 measured, 1 unreachable
-published as data). The monthly sweep is run manually today, per
+The first full sweep ran 2026-08-18 across the 15-server corpus: 12 servers
+measured with all three tokenizer columns, 2 published as unreachable
+(genuine upstream breakage, kept as data), and 1 (slack) pending an operator
+credential. The monthly sweep is run manually today, per
 `docs/pc-sweep-runbook.md`; no data has been published publicly yet.
 `docs/server-selection.md` and `servers.yaml` carry the ratified initial
 server corpus; `docs/methodology-v0.md` carries the measurement
