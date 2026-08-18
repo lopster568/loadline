@@ -1,0 +1,1903 @@
+{
+  "server": "github",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "add_comment_to_pending_review",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "requester latest pull",
+          "terms": [
+            "requester",
+            "latest",
+            "pull"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "exist call",
+          "terms": [
+            "exist",
+            "call"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "requester latest pull request needs already exist call check user sure",
+          "terms": [
+            "requester",
+            "latest",
+            "pull",
+            "request",
+            "needs",
+            "already",
+            "exist",
+            "call",
+            "check",
+            "user",
+            "sure"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "add_issue_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "reaction specific git",
+          "terms": [
+            "reaction",
+            "specific",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "well case",
+          "terms": [
+            "well",
+            "case"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "reaction specific git hub repository tool pull requests well case pass request",
+          "terms": [
+            "reaction",
+            "specific",
+            "git",
+            "hub",
+            "repository",
+            "tool",
+            "pull",
+            "requests",
+            "well",
+            "case",
+            "pass",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "add_reply_to_pull_request_comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "reaction existing create",
+          "terms": [
+            "reaction",
+            "existing",
+            "create"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "emoji reaction",
+          "terms": [
+            "emoji",
+            "reaction"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "reaction existing create new linked specified emoji least one body required",
+          "terms": [
+            "reaction",
+            "existing",
+            "create",
+            "new",
+            "linked",
+            "specified",
+            "emoji",
+            "least",
+            "one",
+            "body",
+            "required"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "assign_copilot_to_issue",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "specific git hub",
+          "terms": [
+            "specific",
+            "git",
+            "hub"
+          ],
+          "rank": 10
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "found https",
+          "terms": [
+            "found",
+            "https"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "specific git hub repository tool help following outcomes pull request created source",
+          "terms": [
+            "specific",
+            "git",
+            "hub",
+            "repository",
+            "tool",
+            "help",
+            "following",
+            "outcomes",
+            "pull",
+            "request",
+            "created",
+            "source"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_branch",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "new git hub",
+          "terms": [
+            "new",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "new git",
+          "terms": [
+            "new",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "new git hub repository",
+          "terms": [
+            "new",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_or_update_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "single git hub",
+          "terms": [
+            "single",
+            "git",
+            "hub"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "remotely local",
+          "terms": [
+            "remotely",
+            "local"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "single git hub repository updating provide sha want tool remotely local operations",
+          "terms": [
+            "single",
+            "git",
+            "hub",
+            "repository",
+            "updating",
+            "provide",
+            "sha",
+            "want",
+            "tool",
+            "remotely",
+            "local",
+            "operations"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_pull_request",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "new git hub",
+          "terms": [
+            "new",
+            "git",
+            "hub"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "new git",
+          "terms": [
+            "new",
+            "git"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "new git hub repository",
+          "terms": [
+            "new",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "create_pull_request_with_copilot",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "delegate task git",
+          "terms": [
+            "delegate",
+            "task",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "perform background",
+          "terms": [
+            "perform",
+            "background"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "delegate task git hub coding agent perform background implementation tool user asks",
+          "terms": [
+            "delegate",
+            "task",
+            "git",
+            "hub",
+            "coding",
+            "agent",
+            "perform",
+            "background",
+            "implementation",
+            "tool",
+            "user",
+            "asks"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "create_repository",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "new git hub",
+          "terms": [
+            "new",
+            "git",
+            "hub"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "account specified",
+          "terms": [
+            "account",
+            "specified"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "new git hub account specified organization",
+          "terms": [
+            "new",
+            "git",
+            "hub",
+            "account",
+            "specified",
+            "organization"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "delete_file",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 4
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "fork_repository",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub account",
+          "terms": [
+            "git",
+            "hub",
+            "account"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "account specified",
+          "terms": [
+            "account",
+            "specified"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub account specified organization",
+          "terms": [
+            "git",
+            "hub",
+            "account",
+            "specified",
+            "organization"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_commit",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "details git hub",
+          "terms": [
+            "details",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details git",
+          "terms": [
+            "details",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "details git hub repository",
+          "terms": [
+            "details",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_copilot_job_status",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub coding",
+          "terms": [
+            "git",
+            "hub",
+            "coding"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "task completed",
+          "terms": [
+            "task",
+            "completed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub coding agent check previously submitted task completed pull request url",
+          "terms": [
+            "git",
+            "hub",
+            "coding",
+            "agent",
+            "check",
+            "previously",
+            "submitted",
+            "task",
+            "completed",
+            "pull",
+            "request",
+            "url"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_file_contents",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "directory git hub",
+          "terms": [
+            "directory",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "directory git",
+          "terms": [
+            "directory",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "directory git hub repository",
+          "terms": [
+            "directory",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_label",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "specific repository",
+          "terms": [
+            "specific",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_latest_release",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 12
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 11
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "get_me",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "details authenticated git",
+          "terms": [
+            "details",
+            "authenticated",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "missing build",
+          "terms": [
+            "missing",
+            "build"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "details authenticated git hub user request profile information missing build tool calls",
+          "terms": [
+            "details",
+            "authenticated",
+            "git",
+            "hub",
+            "user",
+            "request",
+            "profile",
+            "information",
+            "missing",
+            "build",
+            "tool",
+            "calls"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_release_by_tag",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "specific name git",
+          "terms": [
+            "specific",
+            "name",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "specific name",
+          "terms": [
+            "specific",
+            "name"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "specific name git hub repository",
+          "terms": [
+            "specific",
+            "name",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_tag",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "details specific git",
+          "terms": [
+            "details",
+            "specific",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "details specific",
+          "terms": [
+            "details",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "details specific git hub repository",
+          "terms": [
+            "details",
+            "specific",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_team_members",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "member usernames specific",
+          "terms": [
+            "member",
+            "usernames",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "member usernames",
+          "terms": [
+            "member",
+            "usernames"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "member usernames specific organization limited organizations accessible current credentials",
+          "terms": [
+            "member",
+            "usernames",
+            "specific",
+            "organization",
+            "limited",
+            "organizations",
+            "accessible",
+            "current",
+            "credentials"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_teams",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "details user member",
+          "terms": [
+            "details",
+            "user",
+            "member"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "member limited",
+          "terms": [
+            "member",
+            "limited"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "details user member limited organizations accessible current credentials",
+          "terms": [
+            "details",
+            "user",
+            "member",
+            "limited",
+            "organizations",
+            "accessible",
+            "current",
+            "credentials"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "issue_read",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get information specific",
+          "terms": [
+            "get",
+            "information",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "information specific",
+          "terms": [
+            "information",
+            "specific"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get information specific git hub repository",
+          "terms": [
+            "get",
+            "information",
+            "specific",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "issue_write",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create new update",
+          "terms": [
+            "create",
+            "new",
+            "update"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "update existing",
+          "terms": [
+            "update",
+            "existing"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "create new update existing git hub repository",
+          "terms": [
+            "create",
+            "new",
+            "update",
+            "existing",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_branches",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 4
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "list_commits",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get branch git",
+          "terms": [
+            "get",
+            "branch",
+            "git"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "30 results",
+          "terms": [
+            "30",
+            "results"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get branch git hub repository returns least 30 results page default return",
+          "terms": [
+            "get",
+            "branch",
+            "git",
+            "hub",
+            "repository",
+            "returns",
+            "least",
+            "30",
+            "results",
+            "page",
+            "default",
+            "return"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issue_fields",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "repository organization returns",
+          "terms": [
+            "repository",
+            "organization",
+            "returns"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "field definitions",
+          "terms": [
+            "field",
+            "definitions"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "repository organization returns field definitions including name type text number date single",
+          "terms": [
+            "repository",
+            "organization",
+            "returns",
+            "field",
+            "definitions",
+            "including",
+            "name",
+            "type",
+            "text",
+            "number",
+            "date",
+            "single"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issue_types",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "supported repository owner",
+          "terms": [
+            "supported",
+            "repository",
+            "owner"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "org level",
+          "terms": [
+            "org",
+            "level"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "supported repository owner organization repo omitted returns org level directly",
+          "terms": [
+            "supported",
+            "repository",
+            "owner",
+            "organization",
+            "repo",
+            "omitted",
+            "returns",
+            "org",
+            "level",
+            "directly"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_issues",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 21
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "pagination end",
+          "terms": [
+            "pagination",
+            "end"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub repository pagination end cursor previous response page info parameter",
+          "terms": [
+            "git",
+            "hub",
+            "repository",
+            "pagination",
+            "end",
+            "cursor",
+            "previous",
+            "response",
+            "page",
+            "info",
+            "parameter"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_pull_requests",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 24
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "specifies author",
+          "terms": [
+            "specifies",
+            "author"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub repository user specifies author tool search instead",
+          "terms": [
+            "git",
+            "hub",
+            "repository",
+            "user",
+            "specifies",
+            "author",
+            "tool",
+            "search",
+            "instead"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_releases",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 6
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 5
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "list_repository_collaborators",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub results",
+          "terms": [
+            "git",
+            "hub",
+            "results"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "includes next",
+          "terms": [
+            "includes",
+            "next"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub results paginated response includes next page prev first last fields",
+          "terms": [
+            "git",
+            "hub",
+            "results",
+            "paginated",
+            "response",
+            "includes",
+            "next",
+            "page",
+            "prev",
+            "first",
+            "last",
+            "fields"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_tags",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git git hub",
+          "terms": [
+            "git",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "content_words",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "merge_pull_request",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repository",
+          "terms": [
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 10
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "hub repository",
+          "terms": [
+            "hub",
+            "repository"
+          ],
+          "rank": 9
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "pull_request_read",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get information specific",
+          "terms": [
+            "get",
+            "information",
+            "specific"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "information specific",
+          "terms": [
+            "information",
+            "specific"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "get information specific git hub repository",
+          "terms": [
+            "get",
+            "information",
+            "specific",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "pull_request_review_write",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "create submit delete",
+          "terms": [
+            "create",
+            "submit",
+            "delete"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "event parameters",
+          "terms": [
+            "event",
+            "parameters"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "create submit delete available methods new event parameter provided submitted omitted pending",
+          "terms": [
+            "create",
+            "submit",
+            "delete",
+            "available",
+            "methods",
+            "new",
+            "event",
+            "parameter",
+            "provided",
+            "submitted",
+            "omitted",
+            "pending"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "push_files",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "multiple git hub",
+          "terms": [
+            "multiple",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "single commit",
+          "terms": [
+            "single",
+            "commit"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "multiple git hub repository single commit",
+          "terms": [
+            "multiple",
+            "git",
+            "hub",
+            "repository",
+            "single",
+            "commit"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "request_copilot_review",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub code",
+          "terms": [
+            "git",
+            "hub",
+            "code"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "automated feedback",
+          "terms": [
+            "automated",
+            "feedback"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub code pull automated feedback requests usually requesting human reviewer",
+          "terms": [
+            "git",
+            "hub",
+            "code",
+            "pull",
+            "automated",
+            "feedback",
+            "requests",
+            "usually",
+            "requesting",
+            "human",
+            "reviewer"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "run_secret_scanning",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "scan files content",
+          "terms": [
+            "scan",
+            "files",
+            "content"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "content recent",
+          "terms": [
+            "content",
+            "recent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "scan files content recent changes secrets api keys passwords tokens credentials tool",
+          "terms": [
+            "scan",
+            "files",
+            "content",
+            "recent",
+            "changes",
+            "secrets",
+            "api",
+            "keys",
+            "passwords",
+            "tokens",
+            "credentials",
+            "tool"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_code",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "fast precise across",
+          "terms": [
+            "fast",
+            "precise",
+            "across"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "fast precise",
+          "terms": [
+            "fast",
+            "precise"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "fast precise across git hub repositories native engine best finding exact symbols",
+          "terms": [
+            "fast",
+            "precise",
+            "across",
+            "git",
+            "hub",
+            "repositories",
+            "native",
+            "engine",
+            "best",
+            "finding",
+            "exact",
+            "symbols"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_commits",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "across git hub",
+          "terms": [
+            "across",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "authors messages",
+          "terms": [
+            "authors",
+            "messages"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "across git hub repositories commit syntax useful finding specific changes authors messages",
+          "terms": [
+            "across",
+            "git",
+            "hub",
+            "repositories",
+            "commit",
+            "syntax",
+            "useful",
+            "finding",
+            "specific",
+            "changes",
+            "authors",
+            "messages"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_issues",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "natural language semantic",
+          "terms": [
+            "natural",
+            "language",
+            "semantic"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "natural language",
+          "terms": [
+            "natural",
+            "language"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "natural language semantic matching best conceptual paraphrased queries login fails password reset",
+          "terms": [
+            "natural",
+            "language",
+            "semantic",
+            "matching",
+            "best",
+            "conceptual",
+            "paraphrased",
+            "queries",
+            "login",
+            "fails",
+            "password",
+            "reset"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_pull_requests",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "git hub repositories",
+          "terms": [
+            "git",
+            "hub",
+            "repositories"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "scoped pr",
+          "terms": [
+            "scoped",
+            "pr"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "git hub repositories issues syntax already scoped pr",
+          "terms": [
+            "git",
+            "hub",
+            "repositories",
+            "issues",
+            "syntax",
+            "already",
+            "scoped",
+            "pr"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_repositories",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "find git hub",
+          "terms": [
+            "find",
+            "git",
+            "hub"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "description readme",
+          "terms": [
+            "description",
+            "readme"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "find git hub name description readme topics metadata perfect discovering projects finding",
+          "terms": [
+            "find",
+            "git",
+            "hub",
+            "name",
+            "description",
+            "readme",
+            "topics",
+            "metadata",
+            "perfect",
+            "discovering",
+            "projects",
+            "finding"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_users",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "find git hub",
+          "terms": [
+            "find",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "username real",
+          "terms": [
+            "username",
+            "real"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "find git hub username real name profile information useful locating developers contributors",
+          "terms": [
+            "find",
+            "git",
+            "hub",
+            "username",
+            "real",
+            "name",
+            "profile",
+            "information",
+            "useful",
+            "locating",
+            "developers",
+            "contributors"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "sub_issue_write",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "add parent git",
+          "terms": [
+            "add",
+            "parent",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "add parent",
+          "terms": [
+            "add",
+            "parent"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "add parent git hub repository",
+          "terms": [
+            "add",
+            "parent",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "update_pull_request",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "existing git hub",
+          "terms": [
+            "existing",
+            "git",
+            "hub"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "existing git",
+          "terms": [
+            "existing",
+            "git"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "existing git hub repository",
+          "terms": [
+            "existing",
+            "git",
+            "hub",
+            "repository"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "update_pull_request_branch",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "latest changes base",
+          "terms": [
+            "latest",
+            "changes",
+            "base"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "changes base",
+          "terms": [
+            "changes",
+            "base"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

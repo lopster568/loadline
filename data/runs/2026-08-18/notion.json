@@ -1,0 +1,499 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "notion",
+      "name": "Notion MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 24,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "b75ade4478365fc479a68cb22ce24cec7c06f41425da10f7b79f364acd956053",
+        "canonical_sha256": "fa930e30ef6dbc1256c21e0fa5b6fb629decab84c09c63594129ad5fc1ddfa7a",
+        "canonical_sorted_sha256": "6248c92a59a6efa8fbbfad829e436b9ccd63a252449efefe6f193adb535f42c1"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 5180,
+          "per_tool": {
+            "API-create-a-comment": 186,
+            "API-create-a-data-source": 219,
+            "API-delete-a-block": 72,
+            "API-get-block-children": 154,
+            "API-get-self": 56,
+            "API-get-user": 65,
+            "API-get-users": 124,
+            "API-list-data-source-templates": 101,
+            "API-move-page": 196,
+            "API-patch-block-children": 405,
+            "API-patch-page": 350,
+            "API-post-page": 368,
+            "API-post-search": 558,
+            "API-query-data-source": 260,
+            "API-retrieve-a-block": 73,
+            "API-retrieve-a-comment": 148,
+            "API-retrieve-a-data-source": 79,
+            "API-retrieve-a-database": 74,
+            "API-retrieve-a-page": 141,
+            "API-retrieve-a-page-property": 165,
+            "API-retrieve-page-markdown": 167,
+            "API-update-a-block": 188,
+            "API-update-a-data-source": 286,
+            "API-update-page-markdown": 743
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T07:13:44Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 5180,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 215,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.5417,
+        "mrr": 0.4527,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "D",
+        "score": 54.79,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 44.03,
+          "enum_documentation": 100,
+          "naming_clarity": 84.72,
+          "disambiguation": 0
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-update-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-move-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-page-markdown",
+            "b": "API-update-page-markdown",
+            "similarity": 0.7931
+          },
+          {
+            "a": "API-create-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-create-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-move-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-post-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-update-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-patch-block-children",
+            "similarity": 0.6923
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-search",
+            "b": "API-post-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-database",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-self",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-post-page",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-update-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-self",
+            "b": "API-get-block-children",
+            "similarity": 0.6
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-users",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@notionhq/notion-mcp-server@2.5.1",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@notionhq/notion-mcp-server@2.5.1"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T07:13:40.143376996Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
+      ],
+      "measured_at": "2026-08-18T07:13:40.143297951Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}

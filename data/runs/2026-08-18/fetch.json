@@ -42,7 +42,7 @@
       "retrievability": null,
       "hygiene": null,
       "category": "dev-tools",
-      "error": "write to server stdin: write |1: broken pipe | server stderr: Installed 45 packages in 69ms | Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
         "transport": "stdio",
         "source": "pypi:mcp-server-fetch",
@@ -51,9 +51,9 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T05:54:08.146507934Z"
+        "acquired_at": "2026-08-18T07:13:38.703098741Z"
       },
-      "measured_at": "2026-08-18T05:54:08.146495074Z",
+      "measured_at": "2026-08-18T07:13:38.703083485Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

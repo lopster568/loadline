@@ -51,7 +51,7 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T05:54:17Z"
+          "measured_at": "2026-08-18T07:13:54Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -116,12 +116,12 @@
           "@playwright/mcp@0.0.79"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T05:54:13.989887283Z"
+        "acquired_at": "2026-08-18T07:13:49.628289363Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T05:54:13.98988006Z",
+      "measured_at": "2026-08-18T07:13:49.628271493Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

@@ -676,9 +676,16 @@ func TestResolveLaunchFromCorpus(t *testing.T) {
 		}
 	})
 
-	t.Run("no_endpoint_and_no_package_is_unresolved", func(t *testing.T) {
-		if _, err := resolveLaunch(byID["cloudflare"], "/scratch"); err == nil {
-			t.Error("cloudflare resolved despite having no single endpoint")
+	// Cloudflare's endpoint TODO was resolved 2026-08-18 to the documented
+	// aggregate endpoint (docs/pc-sweep-runbook.md item 6); this corpus entry
+	// now resolves like linear's, not like the still-open kubernetes stub.
+	t.Run("cloudflare_uses_the_resolved_aggregate_endpoint", func(t *testing.T) {
+		l, err := resolveLaunch(byID["cloudflare"], "/scratch")
+		if err != nil {
+			t.Fatalf("resolve: %v", err)
+		}
+		if l.transport != "remote" || l.endpoint != "https://mcp.cloudflare.com/mcp" {
+			t.Errorf("launch = %+v", l)
 		}
 	})
 

@@ -1,0 +1,992 @@
+{
+  "server": "notion",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "API-get-user",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion retrieve error",
+          "terms": [
+            "notion",
+            "retrieve",
+            "error"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion retrieve",
+          "terms": [
+            "notion",
+            "retrieve"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "content_words",
+          "text": "notion retrieve error responses 400",
+          "terms": [
+            "notion",
+            "retrieve",
+            "error",
+            "responses",
+            "400"
+          ],
+          "rank": 7
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-get-users",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion list error",
+          "terms": [
+            "notion",
+            "list",
+            "error"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion list",
+          "terms": [
+            "notion",
+            "list"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "notion list error responses 400",
+          "terms": [
+            "notion",
+            "list",
+            "error",
+            "responses",
+            "400"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "API-get-self",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion retrieve token",
+          "terms": [
+            "notion",
+            "retrieve",
+            "token"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "token bot",
+          "terms": [
+            "token",
+            "bot"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion retrieve token bot user error responses 400 bad request",
+          "terms": [
+            "notion",
+            "retrieve",
+            "token",
+            "bot",
+            "user",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-post-search",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion title error",
+          "terms": [
+            "notion",
+            "title",
+            "error"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion title",
+          "terms": [
+            "notion",
+            "title"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion title error responses 400 bad request",
+          "terms": [
+            "notion",
+            "title",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-get-block-children",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion retrieve error",
+          "terms": [
+            "notion",
+            "retrieve",
+            "error"
+          ],
+          "rank": 8
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion retrieve",
+          "terms": [
+            "notion",
+            "retrieve"
+          ],
+          "rank": 8
+        },
+        {
+          "form": "content_words",
+          "text": "notion retrieve error responses 400 bad request",
+          "terms": [
+            "notion",
+            "retrieve",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 7
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-patch-block-children",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion append error",
+          "terms": [
+            "notion",
+            "append",
+            "error"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion append",
+          "terms": [
+            "notion",
+            "append"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion append error responses 400 bad request",
+          "terms": [
+            "notion",
+            "append",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-retrieve-a-block",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 5
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-update-a-block",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 11
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 9
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 9
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-delete-a-block",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "API-retrieve-a-page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 10
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 8
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 8
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-patch-page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion update properties",
+          "terms": [
+            "notion",
+            "update",
+            "properties"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "update properties",
+          "terms": [
+            "update",
+            "properties"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion update properties error responses 400 bad request",
+          "terms": [
+            "notion",
+            "update",
+            "properties",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-post-page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion create error",
+          "terms": [
+            "notion",
+            "create",
+            "error"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion create",
+          "terms": [
+            "notion",
+            "create"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "content_words",
+          "text": "notion create error responses 400 bad request",
+          "terms": [
+            "notion",
+            "create",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "API-retrieve-a-page-property",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion item error",
+          "terms": [
+            "notion",
+            "item",
+            "error"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion item",
+          "terms": [
+            "notion",
+            "item"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion item error responses 400 bad request",
+          "terms": [
+            "notion",
+            "item",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-retrieve-a-comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion comments error",
+          "terms": [
+            "notion",
+            "comments",
+            "error"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "notion comments",
+          "terms": [
+            "notion",
+            "comments"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion comments error responses 400 bad request",
+          "terms": [
+            "notion",
+            "comments",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-create-a-comment",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-query-data-source",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 17
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 15
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 15
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-retrieve-a-data-source",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 18
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 16
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 16
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-update-a-data-source",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 19
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 17
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 17
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-create-a-data-source",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 14
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 12
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 12
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-list-data-source-templates",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 22
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 20
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 20
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-retrieve-a-database",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 9
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 7
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 7
+        }
+      ],
+      "top1": false,
+      "top3": false
+    },
+    {
+      "tool": "API-move-page",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "bad request",
+          "terms": [
+            "bad",
+            "request"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request"
+          ],
+          "rank": 3
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "API-retrieve-page-markdown",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion error responses",
+          "terms": [
+            "notion",
+            "error",
+            "responses"
+          ],
+          "rank": 23
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "403 integration",
+          "terms": [
+            "403",
+            "integration"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion error responses 400 bad request 403 integration lacks read update content",
+          "terms": [
+            "notion",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request",
+            "403",
+            "integration",
+            "lacks",
+            "read",
+            "update",
+            "content"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "API-update-page-markdown",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "notion content error",
+          "terms": [
+            "notion",
+            "content",
+            "error"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "409 conflict",
+          "terms": [
+            "409",
+            "conflict"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "notion content error responses 400 bad request 403 integration lacks read capability",
+          "terms": [
+            "notion",
+            "content",
+            "error",
+            "responses",
+            "400",
+            "bad",
+            "request",
+            "403",
+            "integration",
+            "lacks",
+            "read",
+            "capability"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

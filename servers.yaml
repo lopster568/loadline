@@ -19,15 +19,29 @@ servers:
     transport: [stdio, remote]
     auth:
       required: true
-      # TODO verify at onboarding: classic PAT hides scoped-out tools per
-      # maintainer docs; OAuth flow may return the full list. Confirm
-      # against a live server before onboarding (docs/server-selection.md B.3).
-      token_env: GITHUB_TOKEN
+      # RESOLVED 2026-08-18 via https://github.com/github/github-mcp-server
+      # (checked live): the env var the server itself reads is
+      # GITHUB_PERSONAL_ACCESS_TOKEN, not GITHUB_TOKEN (this corpus's prior
+      # value was a guess and wrong). Distribution today: remote hosted HTTP
+      # at https://api.githubcopilot.com/mcp/ (OAuth or PAT via Authorization:
+      # Bearer), a public Docker image ghcr.io/github/github-mcp-server, or a
+      # local binary built from cmd/github-mcp-server and run as
+      # `github-mcp-server stdio`. This corpus keeps the remote-HTTP form
+      # (stdio's package block stays unresolved below; remote is what
+      # resolveLaunch falls back to and what was scanned 2026-08-18).
+      # PC-sweep probe result 2026-08-18: scanned with a classic PAT
+      # (scopes gist, read:org, repo, workflow) via the operator's `gh auth
+      # token` -- see docs/pc-sweep-runbook.md and the probe run for the
+      # tool_count and whether the ~113-tool full-surface expectation was
+      # met on this credential.
+      token_env: GITHUB_PERSONAL_ACCESS_TOKEN
     package:
       stdio:
         type: binary
-        # TODO verify at onboarding: also distributed as a Docker image;
-        # pin exact release (v1.9.0 at time of research) before first sweep.
+        # Still TODO verify at onboarding: pin exact release and decide
+        # binary vs. Docker distribution for the stdio path specifically.
+        # Not needed for this probe: the remote endpoint above is what
+        # resolveLaunch uses since this block has no command set.
     flags:
       - auth-verification: classic-PAT-scope-filtering
         resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification
@@ -100,9 +114,19 @@ servers:
     category: dev-tools
     maintainer_type: official
     repo: https://github.com/cloudflare/mcp-server-cloudflare
-    # TODO verify at onboarding: 16 separate product-scoped remote servers,
-    # each at its own *.mcp.cloudflare.com subdomain; no single endpoint.
-    endpoint: null
+    # RESOLVED 2026-08-18 via https://developers.cloudflare.com/agents/
+    # model-context-protocol/mcp-servers-for-cloudflare/ (checked live): 16+
+    # product-scoped remote servers still exist at their own *.mcp.cloudflare.com
+    # subdomains (docs, bindings, builds, observability, radar, containers,
+    # browser, logs, ai-gateway, autorag, auditlogs, dns-analytics, dex, casb,
+    # graphql, agents...), but there is now also a single aggregate endpoint,
+    # "Cloudflare API MCP server", documented as covering "over 2,500
+    # endpoints across DNS, Workers, R2, Zero Trust, and every other
+    # product." Picked as this corpus's one entry per the runbook's decision
+    # to choose the documented primary/aggregate endpoint over a
+    # per-product one. tools/list probed keyless 2026-08-18: HTTP 401 (no
+    # credential), consistent with auth.required.
+    endpoint: https://mcp.cloudflare.com/mcp
     transport: [remote]
     auth:
       required: true
@@ -110,6 +134,8 @@ servers:
     package: {}
     flags:
       - note: tool count not aggregated across the 16 product-scoped servers; needs a live tools/list pass at onboarding (docs/server-selection.md B.2 item 5)
+      - note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above
+      - note: "keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
 
   # --- Productivity / SaaS (5) ---
 
@@ -120,13 +146,26 @@ servers:
     repo: https://github.com/makenotion/notion-mcp-server
     transport: [stdio, remote]
     auth:
-      required: true
+      # CORRECTED 2026-08-18 by empirical probe: `npx -y
+      # @notionhq/notion-mcp-server@2.5.1` with no NOTION_TOKEN set answered
+      # tools/list with status ok, 24 tools, full schemas, no degraded/partial
+      # flag (see probe run, scratch, 2026-08-18). This corpus previously
+      # declared required: true by inference from the README's setup
+      # instructions; the empirical result contradicts that. tools/list
+      # itself is keyless -- same pattern as context7. NOTION_TOKEN is still
+      # required to actually call the tools (share-a-page auth), just not to
+      # enumerate them, so Tier 1 measurement (tools/list only) needs no
+      # credential here.
+      required: false
       token_env: NOTION_TOKEN
     package:
       stdio:
         type: npm
         name: "@notionhq/notion-mcp-server"
-    flags: []
+        # Verified 2026-08-18 via https://registry.npmjs.org/@notionhq/notion-mcp-server
+        version: "2.5.1"
+    flags:
+      - note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24.
 
   - id: slack
     name: Slack MCP server (korotovsky/slack-mcp-server, community)
@@ -158,6 +197,8 @@ servers:
       stdio:
         type: npm
         name: slack-mcp-server
+        # Verified 2026-08-18 via https://registry.npmjs.org/slack-mcp-server
+        version: "1.3.0"
     flags:
       - decision: oauth-not-stealth-ratified-2026-08-18
         note: >-
@@ -169,6 +210,17 @@ servers:
           tools/list against it, and compare the returned tool count against
           the server's documented full (stealth-mode) tool list before this
           row publishes as a ranking rather than partial_surface.
+      - note: >-
+          keyless probe 2026-08-18: npx -y slack-mcp-server@1.3.0 with no
+          credential set crashes at startup (fatal log: "Authentication
+          required: Either SLACK_MCP_XOXP_TOKEN, SLACK_MCP_XOXB_TOKEN, or both
+          SLACK_MCP_XOXC_TOKEN and SLACK_MCP_XOXD_TOKEN must be provided"),
+          exiting before answering initialize. The harness records this as
+          unreachable (broken-pipe on stdin), not auth, because the process
+          dies before any JSON-RPC exchange; the stderr text is the honest
+          reason. No remote endpoint is declared in this corpus entry, so no
+          alternate transport was available to probe. Confirms auth is
+          genuinely required, hard-gated at process start.
 
   - id: linear
     name: Linear MCP server
@@ -186,6 +238,11 @@ servers:
     flags:
       - auth-verification: readonly-endpoint-truncates-surface
         resolvable: "yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly"
+      - note: >-
+          keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401
+          {"error":"invalid_token","error_description":"Missing or invalid
+          access token"}. Confirms auth is genuinely required and the
+          endpoint itself (not readonly) is reachable and answers cleanly.
 
   - id: stripe
     name: Stripe MCP server
@@ -198,23 +255,46 @@ servers:
       required: true
       token_env: STRIPE_API_KEY
     package: {}
-    flags: []
+    flags:
+      - note: >-
+          keyless probe 2026-08-18: HTTP 401 {"error":"Unauthorized. See
+          https://docs.stripe.com/mcp for usage instructions."}. Confirms
+          auth is genuinely required.
 
   - id: figma
     name: Figma MCP server
     category: productivity-saas
     maintainer_type: official
-    # TODO verify at onboarding: two candidate repos exist, primary not yet
-    # resolved (docs/server-selection.md B.2 item 10). Official:
-    # figma/mcp-server-guide. Community: GLips/Figma-Context-MCP.
+    # RESOLVED 2026-08-18 via https://developers.figma.com/docs/figma-mcp-server/
+    # and https://help.figma.com/hc/en-us/articles/32132100833559 (checked
+    # live): the primary candidate is neither of the two repos this corpus
+    # weighed at B.2 item 10. Figma ships an official remote-hosted server at
+    # https://mcp.figma.com/mcp (recommended, broadest tool set) and a
+    # desktop-app-local variant serving the same surface one selection at a
+    # time; figma/mcp-server-guide is a docs/guide repo, not the server
+    # implementation. repo kept pointing at the guide repo since there is no
+    # separate first-party server source repo to cite.
     repo: https://github.com/figma/mcp-server-guide
-    transport: null # TODO verify at onboarding
+    endpoint: https://mcp.figma.com/mcp
+    transport: [remote]
     auth:
       required: true
-      token_env: null # TODO verify at onboarding
-    package: {} # TODO verify at onboarding
+      # OAuth 2.1 only for the remote server (browser sign-in on first
+      # connect, per Figma's docs), not a static API-token env var this
+      # harness's remote dialer can pass as a Bearer header out of the box.
+      # A community forum thread requests PAT-based auth support but it is
+      # not shipped as of 2026-08-18. token_env left null: there is no env
+      # var convention to declare, and the credential() resolver treats that
+      # as "spec unresolved" rather than guessing one.
+      token_env: null
+    package: {}
     flags:
-      - note: promoted from reserve bench 2026-08-17; auth, transport, package, and tool count not researched past B.5's adoption-evidence pass. TODO verify at onboarding
+      - note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass
+      - note: >-
+          keyless probe 2026-08-18: HTTP 401 Unauthorized from
+          https://mcp.figma.com/mcp. Confirms the endpoint is live and
+          reachable and that auth is genuinely required; the OAuth-only gap
+          above is the remaining blocker, not endpoint resolution.
 
   # --- Observability (2) ---
 
@@ -223,7 +303,10 @@ servers:
     category: observability
     maintainer_type: official
     repo: https://github.com/getsentry/sentry-mcp
-    endpoint: https://mcp.sentry.dev
+    # Corrected 2026-08-18: the live JSON-RPC endpoint is /mcp, not the bare
+    # host (curl confirms bare host serves a 200 landing page, while /mcp
+    # answers 401 with no credential, matching a real MCP endpoint).
+    endpoint: https://mcp.sentry.dev/mcp
     transport: [stdio, remote]
     auth:
       required: true
@@ -232,10 +315,24 @@ servers:
       stdio:
         type: npm
         name: "@sentry/mcp-server"
+        # Verified 2026-08-18 via https://registry.npmjs.org/@sentry/mcp-server
+        version: "0.37.0"
     flags:
       - auth-verification: oauth-scope-gating
         resolvable: likely, via a broad-scope OAuth grant; needs live verification
       - note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed
+      - note: >-
+          endpoint path corrected 2026-08-18 from https://mcp.sentry.dev to
+          https://mcp.sentry.dev/mcp; keyless probe against the corrected
+          remote endpoint returned HTTP 401
+          {"error":"invalid_token","error_description":"Missing or invalid
+          access token"}, confirming auth is genuinely required there. The
+          stdio path (this entry's default launch, npm @sentry/mcp-server)
+          exits before answering JSON-RPC with "No access token was
+          provided. Run `sentry-mcp auth login` ... or pass --access-token /
+          SENTRY_ACCESS_TOKEN"; the harness records that as unreachable
+          (crash before initialize), not auth, for the same reason as slack
+          above. Both transports agree: auth is genuinely required.
 
   - id: jaeger
     name: Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)

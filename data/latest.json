@@ -8,6 +8,202 @@
   },
   "servers": [
     {
+      "id": "github",
+      "name": "GitHub MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 47,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "github-mcp-server/remote-af2d0ceb00287f99546c6bb5666c1a2462b8bec7",
+        "wire_sha256": "cced03f717b1923185a50eee3496d4a203b132d3cd2894994970aefea1140afc",
+        "canonical_sha256": "cbbb3b2c924fb1a87a987ee71564902d95845e5f2e3cf0cbe71b3acfcedd02a5",
+        "canonical_sorted_sha256": "8ebef38dc0fec2a8a323bf4b9bad505583dc461c392dd9f1235ea1bb323d55ee"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 59084,
+          "per_tool": {
+            "add_comment_to_pending_review": 1534,
+            "add_issue_comment": 1513,
+            "add_reply_to_pull_request_comment": 1454,
+            "assign_copilot_to_issue": 1549,
+            "create_branch": 801,
+            "create_or_update_file": 987,
+            "create_pull_request": 1391,
+            "create_pull_request_with_copilot": 1583,
+            "create_repository": 821,
+            "delete_file": 826,
+            "fork_repository": 1242,
+            "get_commit": 937,
+            "get_copilot_job_status": 1480,
+            "get_file_contents": 966,
+            "get_label": 1337,
+            "get_latest_release": 768,
+            "get_me": 1096,
+            "get_release_by_tag": 802,
+            "get_tag": 784,
+            "get_team_members": 1117,
+            "get_teams": 1102,
+            "issue_read": 1575,
+            "issue_write": 1890,
+            "list_branches": 819,
+            "list_commits": 1092,
+            "list_issue_fields": 1394,
+            "list_issue_types": 1359,
+            "list_issues": 1783,
+            "list_pull_requests": 1569,
+            "list_releases": 904,
+            "list_repository_collaborators": 936,
+            "list_tags": 819,
+            "merge_pull_request": 1259,
+            "pull_request_read": 1737,
+            "pull_request_review_write": 1681,
+            "push_files": 878,
+            "request_copilot_review": 1426,
+            "run_secret_scanning": 1599,
+            "search_code": 1075,
+            "search_commits": 1069,
+            "search_issues": 1678,
+            "search_pull_requests": 1595,
+            "search_repositories": 938,
+            "search_users": 1566,
+            "sub_issue_write": 1617,
+            "update_pull_request": 1419,
+            "update_pull_request_branch": 1315
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T07:13:34Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 59084,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 1257,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.9149,
+        "mrr": 0.838,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "B",
+        "score": 78.42,
+        "dimensions": {
+          "description_adequacy": 99.29,
+          "when_to_use_signal": 12.77,
+          "parameter_descriptions": 100,
+          "enum_documentation": 88.24,
+          "naming_clarity": 100,
+          "disambiguation": 70.21
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "issue_read",
+            "b": "pull_request_read",
+            "similarity": 0.7
+          },
+          {
+            "a": "create_repository",
+            "b": "fork_repository",
+            "similarity": 0.6667
+          },
+          {
+            "a": "get_release_by_tag",
+            "b": "get_tag",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_branches",
+            "b": "list_releases",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_branches",
+            "b": "list_tags",
+            "similarity": 0.6667
+          },
+          {
+            "a": "list_releases",
+            "b": "list_tags",
+            "similarity": 0.6667
+          },
+          {
+            "a": "create_branch",
+            "b": "create_pull_request",
+            "similarity": 0.625
+          },
+          {
+            "a": "create_pull_request",
+            "b": "merge_pull_request",
+            "similarity": 0.625
+          },
+          {
+            "a": "get_commit",
+            "b": "get_tag",
+            "similarity": 0.625
+          },
+          {
+            "a": "merge_pull_request",
+            "b": "update_pull_request",
+            "similarity": 0.625
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "remote",
+        "source": "endpoint:https://api.githubcopilot.com/mcp/",
+        "endpoint": "https://api.githubcopilot.com/mcp/",
+        "env_passed": [
+          "GITHUB_PERSONAL_ACCESS_TOKEN"
+        ],
+        "pinned": false,
+        "acquired_at": "2026-08-18T07:13:30.613629637Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "auth-verification: classic-PAT-scope-filtering",
+        "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
+      ],
+      "measured_at": "2026-08-18T07:13:30.613608629Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
       "id": "filesystem",
       "name": "Filesystem MCP server (reference implementation)",
       "maintainer": "official",
@@ -41,7 +237,7 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T05:54:08Z"
+          "measured_at": "2026-08-18T07:13:38Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -114,12 +310,12 @@
           "{{SCRATCH}}"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T05:54:03.711726348Z"
+        "acquired_at": "2026-08-18T07:13:34.403518531Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T05:54:03.711705257Z",
+      "measured_at": "2026-08-18T07:13:34.403504708Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -158,7 +354,7 @@
       "retrievability": null,
       "hygiene": null,
       "category": "dev-tools",
-      "error": "write to server stdin: write |1: broken pipe | server stderr: Installed 45 packages in 69ms | Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Ge8rtB5DZaqEczLvX7VXJ/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
         "transport": "stdio",
         "source": "pypi:mcp-server-fetch",
@@ -167,9 +363,497 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T05:54:08.146507934Z"
+        "acquired_at": "2026-08-18T07:13:38.703098741Z"
       },
-      "measured_at": "2026-08-18T05:54:08.146495074Z",
+      "measured_at": "2026-08-18T07:13:38.703083485Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "notion",
+      "name": "Notion MCP server",
+      "maintainer": "official",
+      "status": "ok",
+      "tool_count": 24,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "1.0.0",
+        "wire_sha256": "b75ade4478365fc479a68cb22ce24cec7c06f41425da10f7b79f364acd956053",
+        "canonical_sha256": "fa930e30ef6dbc1256c21e0fa5b6fb629decab84c09c63594129ad5fc1ddfa7a",
+        "canonical_sorted_sha256": "6248c92a59a6efa8fbbfad829e436b9ccd63a252449efefe6f193adb535f42c1"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 5180,
+          "per_tool": {
+            "API-create-a-comment": 186,
+            "API-create-a-data-source": 219,
+            "API-delete-a-block": 72,
+            "API-get-block-children": 154,
+            "API-get-self": 56,
+            "API-get-user": 65,
+            "API-get-users": 124,
+            "API-list-data-source-templates": 101,
+            "API-move-page": 196,
+            "API-patch-block-children": 405,
+            "API-patch-page": 350,
+            "API-post-page": 368,
+            "API-post-search": 558,
+            "API-query-data-source": 260,
+            "API-retrieve-a-block": 73,
+            "API-retrieve-a-comment": 148,
+            "API-retrieve-a-data-source": 79,
+            "API-retrieve-a-database": 74,
+            "API-retrieve-a-page": 141,
+            "API-retrieve-a-page-property": 165,
+            "API-retrieve-page-markdown": 167,
+            "API-update-a-block": 188,
+            "API-update-a-data-source": 286,
+            "API-update-page-markdown": 743
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T07:13:44Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0,
+          "error": "ANTHROPIC_API_KEY not set"
+        },
+        "gemini": {
+          "model": "gemini-2.5-pro",
+          "available": false,
+          "total_schema_tokens": 0,
+          "error": "GEMINI_API_KEY not set"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 5180,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 215,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 0.5417,
+        "mrr": 0.4527,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "D",
+        "score": 54.79,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 44.03,
+          "enum_documentation": 100,
+          "naming_clarity": 84.72,
+          "disambiguation": 0
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-update-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-create-a-data-source",
+            "similarity": 0.8182
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-update-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-move-page",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-delete-a-block",
+            "similarity": 0.8
+          },
+          {
+            "a": "API-retrieve-page-markdown",
+            "b": "API-update-page-markdown",
+            "similarity": 0.7931
+          },
+          {
+            "a": "API-create-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-query-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-update-a-data-source",
+            "b": "API-list-data-source-templates",
+            "similarity": 0.75
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-create-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-move-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-create-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-data-source",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-post-page",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-update-a-data-source",
+            "similarity": 0.7273
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-patch-block-children",
+            "similarity": 0.6923
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-delete-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-retrieve-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-block-children",
+            "b": "API-update-a-block",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-create-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-post-search",
+            "b": "API-post-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-comment",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-move-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-patch-page",
+            "similarity": 0.6667
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-create-a-comment",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-delete-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-database",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-retrieve-a-page",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-create-a-comment",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-move-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-database",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-update-a-block",
+            "b": "API-retrieve-a-page",
+            "similarity": 0.6364
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-block-children",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-self",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-post-page",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-patch-page",
+            "b": "API-update-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-post-page",
+            "b": "API-retrieve-a-page-property",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-comment",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-retrieve-a-page-property",
+            "b": "API-retrieve-a-data-source",
+            "similarity": 0.6154
+          },
+          {
+            "a": "API-get-self",
+            "b": "API-get-block-children",
+            "similarity": 0.6
+          },
+          {
+            "a": "API-get-user",
+            "b": "API-get-users",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "productivity-saas",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:@notionhq/notion-mcp-server@2.5.1",
+        "command": "npx",
+        "args": [
+          "-y",
+          "@notionhq/notion-mcp-server@2.5.1"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T07:13:40.143376996Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
+      ],
+      "measured_at": "2026-08-18T07:13:40.143297951Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -195,7 +879,7 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T05:54:13Z"
+          "measured_at": "2026-08-18T07:13:49Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -260,7 +944,7 @@
           "@upstash/context7-mcp@4.0.2"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T05:54:10.893888556Z"
+        "acquired_at": "2026-08-18T07:13:44.798958164Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -268,7 +952,7 @@
       "corpus_notes": [
         "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
       ],
-      "measured_at": "2026-08-18T05:54:10.893881038Z",
+      "measured_at": "2026-08-18T07:13:44.798913704Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -316,7 +1000,7 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T05:54:17Z"
+          "measured_at": "2026-08-18T07:13:54Z"
         },
         "claude": {
           "model": "claude-opus-5",
@@ -381,12 +1065,12 @@
           "@playwright/mcp@0.0.79"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T05:54:13.989887283Z"
+        "acquired_at": "2026-08-18T07:13:49.628289363Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T05:54:13.98988006Z",
+      "measured_at": "2026-08-18T07:13:49.628271493Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }
