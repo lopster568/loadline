@@ -51,20 +51,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:37Z"
+          "measured_at": "2026-08-18T15:10:57Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 8470,
           "native_tools_param_tokens": 8828,
-          "measured_at": "2026-08-18T14:48:37Z"
+          "measured_at": "2026-08-18T15:10:58Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 5494,
-          "measured_at": "2026-08-18T14:48:40Z"
+          "measured_at": "2026-08-18T15:11:00Z"
         }
       },
       "modes": {
@@ -486,7 +486,7 @@
           "NOTION_TOKEN"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T14:48:34.713670052Z"
+        "acquired_at": "2026-08-18T15:10:52.072254124Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -494,7 +494,7 @@
       "corpus_notes": [
         "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
       ],
-      "measured_at": "2026-08-18T14:48:34.713659436Z",
+      "measured_at": "2026-08-18T15:10:52.072241421Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

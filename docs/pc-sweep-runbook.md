@@ -17,6 +17,33 @@ laptop, not the PC, ahead of the full 15-server run. This machine has `npx`
 `data/latest.json` as of this pass is a 4-server coherent run (filesystem,
 fetch, context7, playwright), not the full 15; the remaining 11 (including
 postgres and jaeger) stay on this runbook's list for the PC.
+
+**Docker Desktop WSL integration pass, 2026-08-18.** Docker Desktop's WSL
+integration was enabled on the dev machine, closing the docker/podman gap
+noted above without needing the PC. `docker ps` confirmed working (server
+28.3.2). This pass completed the three container-backed servers:
+- **postgres**: throwaway `postgres:alpine` container, scanned, publishes
+  `status: unreachable` -- genuine server rot (unbounded `mcp[cli]>=1.5.0`
+  dependency pulls incompatible `mcp` 2.0.0), not an infra failure. See
+  section 2 and section 4 item 13.
+- **jaeger**: throwaway `jaegertracing/all-in-one` container, scanned,
+  `status: ok`, 11 tools. See section 2 and section 4 item 14.
+- **kubernetes**: `token_env`/package TODOs resolved (KUBECONFIG env var,
+  npm `kubernetes-mcp-server@0.0.66`), scanned against a local `kind`
+  cluster, `status: ok`, 20 tools. See section 2 and section 4 items 4-5.
+
+A coherent combined run followed with `--only
+filesystem,fetch,playwright,context7,notion,github,stripe,linear,sentry,cloudflare,figma,postgres,jaeger,kubernetes`
+(slack excluded, its OAuth app/token still an open operator task per item 8)
+with all three containers/cluster up together and `GITHUB_PERSONAL_ACCESS_TOKEN`
+from `gh auth token`. `data/latest.json` now holds 14 servers: 11 `ok`, 2
+`unreachable` (fetch, postgres, both genuine upstream server rot, not
+setup mistakes), 1 `auth` (figma, OAuth-only, no static-token convention
+exists to declare). This does not close out the full 15-server run: slack
+is still pending its OAuth operator task (item 8), and this pass's `--only`
+list did not include it. All throwaway containers and the `kind` cluster
+were torn down after the combined run completed.
+
 Governs: `servers.yaml` as amended 2026-08-17 (15 ratified servers, `docs/server-selection.md`).
 Machine: run this on Roshan's PC, not the dev laptop. The dev machine is too
 light for a 15-server run with live containers, npm/uvx cold installs, and
@@ -94,17 +121,34 @@ publish it as a normal ranked row; the row publishes as `partial_surface`
 **fetch**: no auth, but broken upstream. See section 3 below before
 touching this row.
 
-**kubernetes**: no single env var; `servers.yaml` leaves the credential
-convention as a TODO. Use a local `kind` cluster, no cloud account needed:
+**kubernetes**: RESOLVED and scanned live, 2026-08-18. Verified via
+https://github.com/containers/kubernetes-mcp-server README (checked live):
+kubeconfig resolution is either the `--kubeconfig` CLI flag or, when not
+provided, automatic resolution ("in-cluster, default location, etc."). That
+automatic path is client-go's standard clientcmd loading rules, which honor
+the `KUBECONFIG` environment variable ahead of the default `~/.kube/config`
+path -- the same convention every kubectl-family tool uses, not something
+specific to this server. `internal/sweep/acquire.go`'s `credential()` helper
+only passes one env var through to the launched subprocess, so `KUBECONFIG`
+is the convention that fits it cleanly; no `--kubeconfig` flag needed.
+`servers.yaml` filled in accordingly: `auth.required: true`, `token_env:
+KUBECONFIG`, package npm `kubernetes-mcp-server` version `0.0.66` (verified
+via https://registry.npmjs.org/kubernetes-mcp-server, matches the GitHub
+release tag), launched via `npx`. This closes items 4 and 5 in section 4.
+
+Local `kind` cluster, no cloud account needed:
 ```
 kind create cluster --name loadline
 kind get kubeconfig --name loadline > ~/.kube/loadline-config
 export KUBECONFIG=~/.kube/loadline-config
 ```
-Confirm the harness's actual credential-passing convention (env var vs
-mounted kubeconfig path vs in-cluster service account) against
-`internal/sweep/acquire.go` before the run; it is not yet resolved there
-either (see section 4).
+Live scan (`npx -y kubernetes-mcp-server@0.0.66`, KUBECONFIG pointed at a
+fresh single-node `kind` cluster): `status: ok`, 20 tools, naive 4430 tokens
+`o200k_base`, Claude 7552 total / 6734 native tools-param tokens, Gemini
+4590 tokens, hygiene grade C (74.17), retrievability top3 1.00 / MRR 0.8325,
+`serverInfo.version` matches the pinned `v0.0.66`. Confirms `KUBECONFIG` is
+the correct credential-passing convention end to end; nothing further open
+here for Tier 1.
 
 **cloudflare**: env var `CLOUDFLARE_API_TOKEN`.
 - Create a free Cloudflare account, then an API token (dashboard, My
@@ -236,9 +280,26 @@ http://localhost:16686` (backend selection is a CLI flag pair, not env vars).
 `servers.yaml`'s jaeger package block is filled in accordingly (type `pypi`,
 name `opentelemetry-mcp`, version `0.2.2`, `args: ["--backend", "jaeger",
 "--url", "http://localhost:16686"]`); this closes item 14 in section 4 on the
-package-spec side. NOT scanned in this pass: this machine has no
-docker/podman to run the local Jaeger all-in-one container, so no attempt was
-made against this row; it stays on the PC-sweep list.
+package-spec side.
+
+**Scanned live, 2026-08-18** (Docker Desktop WSL integration enabled this
+run): `docker run -d --name loadline-jaeger -p 127.0.0.1:16686:16686
+jaegertracing/all-in-one:latest`, then `uvx opentelemetry-mcp==0.2.2
+--backend jaeger --url http://localhost:16686`. Result: `status: ok`, 11
+tools, naive 4063 tokens `o200k_base`, Claude 6883 total / 6535 native
+tools-param tokens, Gemini 4500 tokens, hygiene grade C (61.11),
+retrievability top3 1.00 / MRR 0.9798, `serverInfo.version` `2.14.7`. This
+closes the tool-count-inflation question from item 14 below: the live
+surface is 11 tools, not the ~5 previously assumed, and includes both
+Jaeger-native tools (`get_trace`, `list_services`, `search_traces`,
+`find_errors`, `search_spans_tool`) and Traceloop's own LLM-observability
+tools (`get_llm_expensive_traces`, `get_llm_model_stats`,
+`get_llm_slow_traces`, `get_llm_usage`, `list_llm_models`,
+`list_llm_tools_tool`) that are not Jaeger-specific, confirming the corpus
+note that non-Jaeger tools inflate the apparent count. The published row
+should call this out rather than presenting all 11 as Jaeger capability.
+Container torn down after the individual scan; brought back up for the
+combined coherent run and torn down again afterward.
 
 ### Data
 
@@ -262,10 +323,31 @@ crystaldba/postgres-mcp README: `uvx postgres-mcp --access-mode=unrestricted`
 (access mode is a CLI flag, `DATABASE_URI` stays an env var).
 `servers.yaml`'s postgres package block is filled in accordingly (type
 `pypi`, name `postgres-mcp`, version `0.3.0`, `args:
-["--access-mode=unrestricted"]`); this closes item 13 in section 4. NOT
-scanned in this pass: this machine has no docker/podman to run the local
-postgres container, so no attempt was made against this row; it stays on the
-PC-sweep list.
+["--access-mode=unrestricted"]`); this closes item 13 in section 4.
+
+**Scanned live, 2026-08-18** (Docker Desktop WSL integration enabled this
+run): `docker run -d --name loadline-pg -e POSTGRES_PASSWORD=<random> -p
+127.0.0.1:5433:5432 postgres:alpine`, confirmed ready via `pg_isready`, then
+`DATABASE_URI=postgresql://postgres:<pw>@127.0.0.1:5433/postgres uvx
+postgres-mcp==0.3.0 --access-mode=unrestricted`. Result: **`status:
+unreachable`**, not a container/credential problem -- the container was
+healthy and reachable throughout. `postgres-mcp` 0.3.0 declares `mcp[cli]
+>=1.5.0` with no upper bound
+(https://pypi.org/pypi/postgres-mcp/0.3.0/json); a clean `uvx` resolve pulls
+`mcp` 2.0.0, whose package layout postgres-mcp's own code doesn't match
+(`ModuleNotFoundError: No module named 'mcp.server.fastmcp'`, confirmed by
+running the same resolve directly outside the harness). This is the same
+class of server rot as the fetch server in section 3 below: an unbounded
+dependency pin resolving to a breaking major version. As a diagnostic check
+only (not applied to `servers.yaml`), `uvx --with "mcp<2" postgres-mcp==0.3.0
+--access-mode=unrestricted --help` was confirmed to start and print its
+help text cleanly, mirroring fetch's rejected Option B. Per this runbook's
+Option-A precedent for fetch (no pin; the unreachable row is honest data
+about the published default, and the row heals itself once postgres-mcp
+ships a compatible `mcp` bound), `servers.yaml`'s postgres args are left
+unpinned. Row publishes `unreachable`. Container torn down after the
+individual scan; brought back up for the combined coherent run (still
+`unreachable`, same reason) and torn down again afterward.
 
 **context7**: RESOLVED and scanned live, 2026-08-17. Verdict: keyless. The
 README (https://github.com/upstash/context7, checked 2026-08-17) says only
@@ -344,13 +426,19 @@ tasks; listed again here so this is a complete checklist on its own.
    (`mcp-server-fetch`). No version pin: section 3's decision, ratified
    2026-08-18, is Option A (unpinned). `servers.yaml`'s fetch package block
    carries a comment recording this instead of a version.
-4. **kubernetes, auth.token_env.** Not a single env var; document the
-   harness's actual convention (kubeconfig path vs. in-cluster service
-   account) here and in `internal/sweep/acquire.go` if the harness doesn't
-   already handle it. Verification: a `--dry-run` scan resolves the
-   kubernetes row without error.
-5. **kubernetes, package.** Pin the exact release (v0.0.66 at time of
-   research) and image reference. Verification: record in `servers.yaml`.
+4. **kubernetes, auth.token_env. RESOLVED 2026-08-18.** `token_env: KUBECONFIG`.
+   client-go's clientcmd honors the `KUBECONFIG` env var for automatic
+   kubeconfig resolution when no `--kubeconfig` flag is passed, and
+   `internal/sweep/acquire.go`'s `credential()` already handles a plain
+   env-var-name/value pair with no code change needed. Verified with a live
+   scan against a `kind` cluster, not just `--dry-run`; see section 2's
+   kubernetes entry.
+5. **kubernetes, package. RESOLVED 2026-08-18.** npm package
+   `kubernetes-mcp-server` v0.0.66 (matches the GitHub release tag),
+   launched via `npx`, per the README's primary documented method. No
+   separate docker image reference was needed or used. Recorded in
+   `servers.yaml` and confirmed live: `serverInfo.version` on the wire
+   matches the pinned `0.0.66`.
 6. **cloudflare, endpoint.** 16 product-scoped remote servers, no single
    endpoint. Decide which product server(s) this corpus entry actually
    measures, or how multiple are aggregated. Verification: a live
@@ -377,22 +465,28 @@ tasks; listed again here so this is a complete checklist on its own.
     mcp.context7.com/mcp, not used here), 2 tools live-confirmed. See section
     2's context7 entry for the empirical verification. Scanned into
     `data/latest.json`.
-13. **postgres, package. Spec RESOLVED 2026-08-17, not yet scanned.**
+13. **postgres, package. Spec resolved 2026-08-17, SCANNED 2026-08-18.**
     Confirmed PyPI package `postgres-mcp` v0.3.0
     (https://pypi.org/pypi/postgres-mcp/json); install/run via `uvx
-    postgres-mcp --access-mode=unrestricted`. Recorded in `servers.yaml`. Not
-    scanned: this machine (dev laptop) has no docker/podman to start the
-    local postgres container this row needs; remains open for the PC run.
-14. **jaeger, package. Spec RESOLVED 2026-08-17, not yet scanned.** Confirmed
-    PyPI package `opentelemetry-mcp` v0.2.2
+    postgres-mcp --access-mode=unrestricted`. Recorded in `servers.yaml`.
+    Scanned live against a throwaway `postgres:alpine` container: publishes
+    `status: unreachable`. Not a container or credential problem -- the
+    server itself fails to import because its unbounded `mcp[cli]>=1.5.0`
+    dependency resolves to an incompatible `mcp` 2.0.0. Same server-rot
+    pattern as fetch (section 3); no pin applied, by the same Option-A
+    reasoning. See section 2's postgres entry for the full finding.
+14. **jaeger, package. Spec resolved 2026-08-17, SCANNED 2026-08-18.**
+    Confirmed PyPI package `opentelemetry-mcp` v0.2.2
     (https://pypi.org/pypi/opentelemetry-mcp/json), install/run via `uvx
     opentelemetry-mcp --backend jaeger --url http://localhost:16686`
     (correcting this runbook's original `BACKEND_TYPE`/`BACKEND_URL` env-var
     assumption, which does not match the live package; backend selection is
-    a CLI flag pair). Recorded in `servers.yaml`. Not scanned: this machine
-    has no docker/podman to start the local Jaeger container; the
-    tool-count-inflation question (5 Jaeger tools vs. Traceloop's extras)
-    remains open for the PC run.
+    a CLI flag pair). Recorded in `servers.yaml`. Scanned live against a
+    `jaegertracing/all-in-one` container: `status: ok`, 11 tools. The
+    tool-count-inflation question is resolved: 11, not ~5, with 5 tools
+    Jaeger-native and 6 Traceloop LLM-observability tools that are not
+    Jaeger-specific (named in section 2's jaeger entry); the published row
+    should call this split out.
 15. **fetch pin decision. RESOLVED 2026-08-18.** Section 3, Option A (no
     pin). Monitor upstream each monthly run; the row heals itself once
     `mcp-server-fetch` ships a fix, no `servers.yaml` edit needed.

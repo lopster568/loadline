@@ -660,9 +660,29 @@ func TestResolveLaunchFromCorpus(t *testing.T) {
 		}
 	})
 
-	t.Run("todo_stub_is_unresolved", func(t *testing.T) {
-		if _, err := resolveLaunch(byID["kubernetes"], "/scratch"); err == nil {
-			t.Error("a docker spec with no image resolved anyway")
+	// Kubernetes' package/credential TODOs were resolved 2026-08-18 (PC sweep
+	// prep, docs/pc-sweep-runbook.md item 4/5): npm package
+	// kubernetes-mcp-server@0.0.66 launched via npx, credential passed as the
+	// KUBECONFIG env var (client-go's standard kubeconfig-resolution
+	// convention), not a docker spec. This corpus entry no longer resolves
+	// like a TODO stub.
+	t.Run("kubernetes_resolves_via_npm_with_kubeconfig_env", func(t *testing.T) {
+		l, err := resolveLaunch(byID["kubernetes"], "/scratch")
+		if err != nil {
+			t.Fatalf("resolve: %v", err)
+		}
+		if l.command != "npx" {
+			t.Errorf("command = %q", l.command)
+		}
+		want := []string{"-y", "kubernetes-mcp-server@0.0.66"}
+		if fmt.Sprint(l.args) != fmt.Sprint(want) {
+			t.Errorf("args = %v, want %v", l.args, want)
+		}
+		if !l.pinned {
+			t.Error("a versioned npm spec must report as pinned")
+		}
+		if byID["kubernetes"].Auth.TokenEnv == nil || *byID["kubernetes"].Auth.TokenEnv != "KUBECONFIG" {
+			t.Errorf("token_env = %v, want KUBECONFIG", byID["kubernetes"].Auth.TokenEnv)
 		}
 	})
 

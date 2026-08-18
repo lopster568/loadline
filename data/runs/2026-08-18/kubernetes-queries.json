@@ -1,0 +1,857 @@
+{
+  "server": "kubernetes",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "configuration_view",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get current kubernetes",
+          "terms": [
+            "get",
+            "current",
+            "kubernetes"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "content kubeconfig",
+          "terms": [
+            "content",
+            "kubeconfig"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get current kubernetes content kubeconfig yaml",
+          "terms": [
+            "get",
+            "current",
+            "kubernetes",
+            "content",
+            "kubeconfig",
+            "yaml"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "events_list",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes warnings errors",
+          "terms": [
+            "kubernetes",
+            "warnings",
+            "errors"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "warnings errors",
+          "terms": [
+            "warnings",
+            "errors"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes warnings errors state changes debugging troubleshooting current cluster namespaces",
+          "terms": [
+            "kubernetes",
+            "warnings",
+            "errors",
+            "state",
+            "changes",
+            "debugging",
+            "troubleshooting",
+            "current",
+            "cluster",
+            "namespaces"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "namespaces_list",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes current cluster",
+          "terms": [
+            "kubernetes",
+            "current",
+            "cluster"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "current cluster",
+          "terms": [
+            "current",
+            "cluster"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "nodes_log",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get logs kubernetes",
+          "terms": [
+            "get",
+            "logs",
+            "kubernetes"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "kube proxy",
+          "terms": [
+            "kube",
+            "proxy"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get logs kubernetes node kubelet kube proxy system accesses api",
+          "terms": [
+            "get",
+            "logs",
+            "kubernetes",
+            "node",
+            "kubelet",
+            "kube",
+            "proxy",
+            "system",
+            "accesses",
+            "api"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "nodes_stats_summary",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get detailed resource",
+          "terms": [
+            "get",
+            "detailed",
+            "resource"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "usage statistics",
+          "terms": [
+            "usage",
+            "statistics"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get detailed resource usage statistics kubernetes node via kubelet api provides comprehensive",
+          "terms": [
+            "get",
+            "detailed",
+            "resource",
+            "usage",
+            "statistics",
+            "kubernetes",
+            "node",
+            "via",
+            "kubelet",
+            "api",
+            "provides",
+            "comprehensive"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "nodes_top",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "list resource consumption",
+          "terms": [
+            "list",
+            "resource",
+            "consumption"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "consumption cpu",
+          "terms": [
+            "consumption",
+            "cpu"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "list resource consumption cpu memory recorded kubernetes metrics server specified cluster",
+          "terms": [
+            "list",
+            "resource",
+            "consumption",
+            "cpu",
+            "memory",
+            "recorded",
+            "kubernetes",
+            "metrics",
+            "server",
+            "specified",
+            "cluster"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_delete",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes pod current",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "provided name",
+          "terms": [
+            "provided",
+            "name"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes pod current provided namespace name",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current",
+            "provided",
+            "namespace",
+            "name"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_exec",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "execute command kubernetes",
+          "terms": [
+            "execute",
+            "command",
+            "kubernetes"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "execute command",
+          "terms": [
+            "execute",
+            "command"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "execute command kubernetes pod shell access run commands container current provided namespace",
+          "terms": [
+            "execute",
+            "command",
+            "kubernetes",
+            "pod",
+            "shell",
+            "access",
+            "run",
+            "commands",
+            "container",
+            "current",
+            "provided",
+            "namespace"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_get",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes pod current",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "provided name",
+          "terms": [
+            "provided",
+            "name"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes pod current provided namespace name",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current",
+            "provided",
+            "namespace",
+            "name"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "pods_list",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes current cluster",
+          "terms": [
+            "kubernetes",
+            "current",
+            "cluster"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "cluster namespaces",
+          "terms": [
+            "cluster",
+            "namespaces"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes current cluster namespaces",
+          "terms": [
+            "kubernetes",
+            "current",
+            "cluster",
+            "namespaces"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "pods_list_in_namespace",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes specified current",
+          "terms": [
+            "kubernetes",
+            "specified",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "specified current",
+          "terms": [
+            "specified",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes specified current cluster",
+          "terms": [
+            "kubernetes",
+            "specified",
+            "current",
+            "cluster"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_log",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get logs kubernetes",
+          "terms": [
+            "get",
+            "logs",
+            "kubernetes"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "get logs",
+          "terms": [
+            "get",
+            "logs"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "get logs kubernetes pod current provided namespace name",
+          "terms": [
+            "get",
+            "logs",
+            "kubernetes",
+            "pod",
+            "current",
+            "provided",
+            "namespace",
+            "name"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_run",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes pod current",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current"
+          ],
+          "rank": 4
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "image optional",
+          "terms": [
+            "image",
+            "optional"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes pod current provided namespace container image optional name",
+          "terms": [
+            "kubernetes",
+            "pod",
+            "current",
+            "provided",
+            "namespace",
+            "container",
+            "image",
+            "optional",
+            "name"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "pods_top",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "list resource consumption",
+          "terms": [
+            "list",
+            "resource",
+            "consumption"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "consumption cpu",
+          "terms": [
+            "consumption",
+            "cpu"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "list resource consumption cpu memory recorded kubernetes metrics server specified namespaces provided",
+          "terms": [
+            "list",
+            "resource",
+            "consumption",
+            "cpu",
+            "memory",
+            "recorded",
+            "kubernetes",
+            "metrics",
+            "server",
+            "specified",
+            "namespaces",
+            "provided"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "projects_list",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "open shift current",
+          "terms": [
+            "open",
+            "shift",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "open shift",
+          "terms": [
+            "open",
+            "shift"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "open shift current cluster",
+          "terms": [
+            "open",
+            "shift",
+            "current",
+            "cluster"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resources_create_or_update",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes resource via",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "via"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "side apply",
+          "terms": [
+            "side",
+            "apply"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes resource via server side apply manifest complete desired state field tool",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "via",
+            "server",
+            "side",
+            "apply",
+            "manifest",
+            "complete",
+            "desired",
+            "state",
+            "field",
+            "tool"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resources_delete",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes resource current",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "current"
+          ],
+          "rank": 5
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "include v1",
+          "terms": [
+            "include",
+            "v1"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes resource current cluster providing api version kind optionally namespace name common",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "current",
+            "cluster",
+            "providing",
+            "api",
+            "version",
+            "kind",
+            "optionally",
+            "namespace",
+            "name",
+            "common"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resources_get",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes resource current",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "current"
+          ],
+          "rank": 6
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "include v1",
+          "terms": [
+            "include",
+            "v1"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes resource current cluster providing api version kind optionally namespace name common",
+          "terms": [
+            "kubernetes",
+            "resource",
+            "current",
+            "cluster",
+            "providing",
+            "api",
+            "version",
+            "kind",
+            "optionally",
+            "namespace",
+            "name",
+            "common"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": false,
+      "top3": true
+    },
+    {
+      "tool": "resources_list",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "kubernetes objects current",
+          "terms": [
+            "kubernetes",
+            "objects",
+            "current"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "label selector",
+          "terms": [
+            "label",
+            "selector"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "kubernetes objects current cluster providing api version kind optionally namespace label selector",
+          "terms": [
+            "kubernetes",
+            "objects",
+            "current",
+            "cluster",
+            "providing",
+            "api",
+            "version",
+            "kind",
+            "optionally",
+            "namespace",
+            "label",
+            "selector"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "resources_scale",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "get update kubernetes",
+          "terms": [
+            "get",
+            "update",
+            "kubernetes"
+          ],
+          "rank": 2
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "call updated",
+          "terms": [
+            "call",
+            "updated"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "get update kubernetes resource current cluster providing api version kind name optionally",
+          "terms": [
+            "get",
+            "update",
+            "kubernetes",
+            "resource",
+            "current",
+            "cluster",
+            "providing",
+            "api",
+            "version",
+            "kind",
+            "name",
+            "optionally"
+          ],
+          "rank": 2
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

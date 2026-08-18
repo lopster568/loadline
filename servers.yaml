@@ -97,16 +97,38 @@ servers:
     repo: https://github.com/containers/kubernetes-mcp-server
     transport: [stdio, remote]
     auth:
+      # RESOLVED 2026-08-18 via https://github.com/containers/kubernetes-mcp-server
+      # README (checked live), "Configuration Options" table: kubeconfig
+      # resolution is either the `--kubeconfig` CLI flag or, when not
+      # provided, automatic resolution ("in-cluster, default location,
+      # etc."). That automatic path is client-go's clientcmd loading rules,
+      # which honor the standard KUBECONFIG environment variable ahead of
+      # the default ~/.kube/config path -- the same convention every
+      # kubectl-family tool uses, not something specific to this server.
+      # This harness's credential() helper (internal/sweep/acquire.go) only
+      # knows how to pass one env var through to the launched subprocess, so
+      # KUBECONFIG is the convention that fits it: no --kubeconfig CLI flag
+      # needed, just export KUBECONFIG to the kind cluster's kubeconfig path
+      # before the scan.
       required: true
-      token_env: null
-      # TODO verify at onboarding: kubeconfig path or in-cluster service
-      # account, not a single env var; document the harness's credential
-      # convention before onboarding.
+      token_env: KUBECONFIG
     package:
       stdio:
-        type: docker
-        # TODO verify at onboarding: pin exact release (v0.0.66 at time of
-        # research) and image reference.
+        type: npm
+        # RESOLVED 2026-08-18 via https://registry.npmjs.org/kubernetes-mcp-server
+        # (latest dist-tag 0.0.66, matches the GitHub release
+        # containers/kubernetes-mcp-server v0.0.66) and the README's
+        # "Getting Started" / "Configuration" sections (checked live): npx is
+        # the primary documented launch method ("If you have npm installed,
+        # this is the fastest way to get started"), alongside uvx, a native
+        # binary, and a Helm-chart-deployed container image
+        # (oci://ghcr.io/containers/charts/kubernetes-mcp-server) with no
+        # plain `docker run`-able image reference documented. npm chosen to
+        # match this harness's existing npm/npx convention and because it
+        # needs no separate image pull or container networking to reach the
+        # kind cluster's API server.
+        name: kubernetes-mcp-server
+        version: "0.0.66"
     flags: []
 
   - id: cloudflare

@@ -30,20 +30,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:27Z"
+          "measured_at": "2026-08-18T15:10:50Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 2641,
           "native_tools_param_tokens": 2597,
-          "measured_at": "2026-08-18T14:48:28Z"
+          "measured_at": "2026-08-18T15:10:51Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 1707,
-          "measured_at": "2026-08-18T14:48:34Z"
+          "measured_at": "2026-08-18T15:10:52Z"
         }
       },
       "modes": {
@@ -94,7 +94,7 @@
           "CLOUDFLARE_API_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:48:25.916504192Z"
+        "acquired_at": "2026-08-18T15:10:49.893360398Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -104,7 +104,7 @@
         "note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above",
         "note: keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T14:48:25.916496941Z",
+      "measured_at": "2026-08-18T15:10:49.893350457Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

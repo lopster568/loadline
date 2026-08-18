@@ -13,10 +13,10 @@
       "maintainer": "official",
       "status": "ok",
       "tool_count": 47,
-      "protocol_revision": "2025-06-18",
+      "protocol_revision": "2025-03-26",
       "provenance": {
         "server_version": "github-mcp-server/remote-af2d0ceb00287f99546c6bb5666c1a2462b8bec7",
-        "wire_sha256": "cced03f717b1923185a50eee3496d4a203b132d3cd2894994970aefea1140afc",
+        "wire_sha256": "aef6e6fa25ac3a93ee0fccea5d1b07e0fb9d3bd244cf4169d737ee9bba208c9c",
         "canonical_sha256": "cbbb3b2c924fb1a87a987ee71564902d95845e5f2e3cf0cbe71b3acfcedd02a5",
         "canonical_sorted_sha256": "8ebef38dc0fec2a8a323bf4b9bad505583dc461c392dd9f1235ea1bb323d55ee"
       },
@@ -74,20 +74,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:47:45Z"
+          "measured_at": "2026-08-18T15:10:34Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 86843,
           "native_tools_param_tokens": 19566,
-          "measured_at": "2026-08-18T14:47:47Z"
+          "measured_at": "2026-08-18T15:10:35Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 61790,
-          "measured_at": "2026-08-18T14:47:50Z"
+          "measured_at": "2026-08-18T15:10:37Z"
         }
       },
       "modes": {
@@ -190,7 +190,7 @@
           "GITHUB_PERSONAL_ACCESS_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:47:14.146766613Z"
+        "acquired_at": "2026-08-18T15:09:49.19112397Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -199,7 +199,7 @@
         "auth-verification: classic-PAT-scope-filtering",
         "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
       ],
-      "measured_at": "2026-08-18T14:47:14.146753311Z",
+      "measured_at": "2026-08-18T15:09:49.191112217Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -237,20 +237,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:47:57Z"
+          "measured_at": "2026-08-18T15:10:40Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 4432,
           "native_tools_param_tokens": 3122,
-          "measured_at": "2026-08-18T14:47:58Z"
+          "measured_at": "2026-08-18T15:10:41Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 2860,
-          "measured_at": "2026-08-18T14:47:59Z"
+          "measured_at": "2026-08-18T15:10:42Z"
         }
       },
       "modes": {
@@ -310,12 +310,12 @@
           "{{SCRATCH}}"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:47:50.079393159Z"
+        "acquired_at": "2026-08-18T15:10:37.068734852Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T14:47:50.079382591Z",
+      "measured_at": "2026-08-18T15:10:37.068728199Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -354,7 +354,7 @@
       "retrievability": null,
       "hygiene": null,
       "category": "dev-tools",
-      "error": "write to server stdin: write |1: broken pipe | server stderr: Installed 45 packages in 70ms | Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/bin/mcp-server-fetch\", line 6, in \u003cmodule\u003e |     from mcp_server_fetch import main |   File \"/home/oni/.cache/uv/archive-v0/Wr6jc2J6j6hbaBheF79RV/lib/python3.13/site-packages/mcp_server_fetch/__init__.py\", line 1, in \u003cmodule\u003e |     from .server import serve",
       "acquisition": {
         "transport": "stdio",
         "source": "pypi:mcp-server-fetch",
@@ -363,9 +363,173 @@
           "mcp-server-fetch"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:47:59.424726673Z"
+        "acquired_at": "2026-08-18T15:10:42.482460979Z"
       },
-      "measured_at": "2026-08-18T14:47:59.424703276Z",
+      "measured_at": "2026-08-18T15:10:42.482449298Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes MCP server (containers/kubernetes-mcp-server)",
+      "maintainer": "community",
+      "status": "ok",
+      "tool_count": 20,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "v0.0.66",
+        "wire_sha256": "3d1decf36c2df6f7dfc1295e0f9831869c108bd2679165acded94a4bed368b1c",
+        "canonical_sha256": "a9c7140b51eef38cf3f196c623be4f3b0ad9b6d5a9ca009065934e784e2f7634",
+        "canonical_sorted_sha256": "8aca20da43cb7f69993a5005b4ee6ca4021ac433fbe73bf07cfdd4b0e4d098d6"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4430,
+          "per_tool": {
+            "configuration_view": 138,
+            "events_list": 245,
+            "namespaces_list": 169,
+            "nodes_log": 234,
+            "nodes_stats_summary": 184,
+            "nodes_top": 180,
+            "pods_delete": 109,
+            "pods_exec": 216,
+            "pods_get": 107,
+            "pods_list": 308,
+            "pods_list_in_namespace": 335,
+            "pods_log": 194,
+            "pods_run": 166,
+            "pods_top": 286,
+            "projects_list": 71,
+            "resources_create_or_update": 212,
+            "resources_delete": 310,
+            "resources_get": 255,
+            "resources_list": 460,
+            "resources_scale": 268
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:47Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 7552,
+          "native_tools_param_tokens": 6734,
+          "measured_at": "2026-08-18T15:10:48Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4590,
+          "measured_at": "2026-08-18T15:10:49Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4430,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 222,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.8325,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "C",
+        "score": 74.17,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 45
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "resources_delete",
+            "b": "resources_get",
+            "similarity": 0.9286
+          },
+          {
+            "a": "namespaces_list",
+            "b": "pods_list",
+            "similarity": 0.8333
+          },
+          {
+            "a": "pods_get",
+            "b": "pods_log",
+            "similarity": 0.8
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_get",
+            "similarity": 0.7778
+          },
+          {
+            "a": "resources_delete",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "resources_get",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_log",
+            "similarity": 0.6364
+          },
+          {
+            "a": "pods_list",
+            "b": "pods_list_in_namespace",
+            "similarity": 0.625
+          },
+          {
+            "a": "nodes_top",
+            "b": "pods_top",
+            "similarity": 0.6111
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:kubernetes-mcp-server@0.0.66",
+        "command": "npx",
+        "args": [
+          "-y",
+          "kubernetes-mcp-server@0.0.66"
+        ],
+        "env_passed": [
+          "KUBECONFIG"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:10:44.446177894Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T15:10:44.446168485Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -392,20 +556,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:27Z"
+          "measured_at": "2026-08-18T15:10:50Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 2641,
           "native_tools_param_tokens": 2597,
-          "measured_at": "2026-08-18T14:48:28Z"
+          "measured_at": "2026-08-18T15:10:51Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 1707,
-          "measured_at": "2026-08-18T14:48:34Z"
+          "measured_at": "2026-08-18T15:10:52Z"
         }
       },
       "modes": {
@@ -456,7 +620,7 @@
           "CLOUDFLARE_API_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:48:25.916504192Z"
+        "acquired_at": "2026-08-18T15:10:49.893360398Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -466,7 +630,7 @@
         "note: endpoint resolved 2026-08-18 to the aggregate https://mcp.cloudflare.com/mcp rather than one of the 16 product-scoped subdomains; see comment above",
         "note: keyless probe 2026-08-18: HTTP 401 from the aggregate endpoint. Confirms auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T14:48:25.916496941Z",
+      "measured_at": "2026-08-18T15:10:49.893350457Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -514,20 +678,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:37Z"
+          "measured_at": "2026-08-18T15:10:57Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 8470,
           "native_tools_param_tokens": 8828,
-          "measured_at": "2026-08-18T14:48:37Z"
+          "measured_at": "2026-08-18T15:10:58Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 5494,
-          "measured_at": "2026-08-18T14:48:40Z"
+          "measured_at": "2026-08-18T15:11:00Z"
         }
       },
       "modes": {
@@ -949,7 +1113,7 @@
           "NOTION_TOKEN"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T14:48:34.713670052Z"
+        "acquired_at": "2026-08-18T15:10:52.072254124Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -957,7 +1121,7 @@
       "corpus_notes": [
         "note: keyless tools/list probe 2026-08-18 confirmed full enumeration, 24 tools, npm @notionhq/notion-mcp-server@2.5.1, no NOTION_TOKEN set; auth.required corrected to false accordingly (see comment above). Prior runbook expectation of ~22 tools (v2.0.0) is superseded by the live v2.5.1 count of 24."
       ],
-      "measured_at": "2026-08-18T14:48:34.713659436Z",
+      "measured_at": "2026-08-18T15:10:52.072241421Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1034,20 +1198,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:45Z"
+          "measured_at": "2026-08-18T15:11:08Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 29026,
           "native_tools_param_tokens": 26316,
-          "measured_at": "2026-08-18T14:48:46Z"
+          "measured_at": "2026-08-18T15:11:09Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 18463,
-          "measured_at": "2026-08-18T14:48:46Z"
+          "measured_at": "2026-08-18T15:11:10Z"
         }
       },
       "modes": {
@@ -1150,7 +1314,7 @@
           "LINEAR_API_KEY"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:48:41.005687379Z"
+        "acquired_at": "2026-08-18T15:11:00.507578859Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -1160,7 +1324,7 @@
         "resolvable: yes: use the full /mcp endpoint with a write-scoped credential, not /mcp/readonly",
         "note: keyless probe 2026-08-18 against the full /mcp endpoint: HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}. Confirms auth is genuinely required and the endpoint itself (not readonly) is reachable and answers cleanly."
       ],
-      "measured_at": "2026-08-18T14:48:41.005680065Z",
+      "measured_at": "2026-08-18T15:11:00.507571829Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1173,7 +1337,7 @@
       "protocol_revision": "2025-03-26",
       "provenance": {
         "server_version": "1.0.0",
-        "wire_sha256": "6bcef55057f2ed910065caa88fc4f960703d7d141c6fcecfec045252a02e488e",
+        "wire_sha256": "663022ee377da27895b7790e5fe7f2108349c7491b3a46ec20eaa1e8ee6e0edf",
         "canonical_sha256": "1e6d78edee192497894c5328be2d69287b06c338185e1f04732f44700967308c",
         "canonical_sorted_sha256": "788e90cd57d59e84fe75eafd3ad87d76cd09792c5efd9d0e2023de7eb74b4129"
       },
@@ -1194,20 +1358,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:50Z"
+          "measured_at": "2026-08-18T15:11:13Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 6963,
           "native_tools_param_tokens": 6154,
-          "measured_at": "2026-08-18T14:48:51Z"
+          "measured_at": "2026-08-18T15:11:13Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 4527,
-          "measured_at": "2026-08-18T14:48:53Z"
+          "measured_at": "2026-08-18T15:11:14Z"
         }
       },
       "modes": {
@@ -1265,7 +1429,7 @@
           "STRIPE_API_KEY"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T14:48:46.865196652Z"
+        "acquired_at": "2026-08-18T15:11:10.532035811Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -1273,7 +1437,7 @@
       "corpus_notes": [
         "note: keyless probe 2026-08-18: HTTP 401 {\"error\":\"Unauthorized. See https://docs.stripe.com/mcp for usage instructions.\"}. Confirms auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T14:48:46.865188453Z",
+      "measured_at": "2026-08-18T15:11:10.532025717Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1318,13 +1482,13 @@
         "source": "endpoint:https://mcp.figma.com/mcp",
         "endpoint": "https://mcp.figma.com/mcp",
         "pinned": false,
-        "acquired_at": "2026-08-18T14:48:53.323431323Z"
+        "acquired_at": "2026-08-18T15:11:14.415687028Z"
       },
       "corpus_notes": [
         "note: promoted from reserve bench 2026-08-17; auth/transport/endpoint resolved 2026-08-18 (see comment above); tool count still unmeasured -- OAuth-only auth means this harness cannot complete a keyless or single-token probe against it, only an interactive browser flow, which is out of scope for this pass",
         "note: keyless probe 2026-08-18: HTTP 401 Unauthorized from https://mcp.figma.com/mcp. Confirms the endpoint is live and reachable and that auth is genuinely required; the OAuth-only gap above is the remaining blocker, not endpoint resolution."
       ],
-      "measured_at": "2026-08-18T14:48:53.323421442Z",
+      "measured_at": "2026-08-18T15:11:14.415678853Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1357,20 +1521,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:48:56Z"
+          "measured_at": "2026-08-18T15:11:20Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 10475,
           "native_tools_param_tokens": 10470,
-          "measured_at": "2026-08-18T14:48:58Z"
+          "measured_at": "2026-08-18T15:11:21Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 6825,
-          "measured_at": "2026-08-18T14:49:01Z"
+          "measured_at": "2026-08-18T15:11:22Z"
         }
       },
       "modes": {
@@ -1432,7 +1596,7 @@
           "SENTRY_ACCESS_TOKEN"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T14:48:53.323444054Z"
+        "acquired_at": "2026-08-18T15:11:14.415742143Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -1443,7 +1607,194 @@
         "note: one tool (analyze_issue_with_seer) may be gated to a paid Sentry plan, unconfirmed",
         "note: endpoint path corrected 2026-08-18 from https://mcp.sentry.dev to https://mcp.sentry.dev/mcp; keyless probe against the corrected remote endpoint returned HTTP 401 {\"error\":\"invalid_token\",\"error_description\":\"Missing or invalid access token\"}, confirming auth is genuinely required there. The stdio path (this entry's default launch, npm @sentry/mcp-server) exits before answering JSON-RPC with \"No access token was provided. Run `sentry-mcp auth login` ... or pass --access-token / SENTRY_ACCESS_TOKEN\"; the harness records that as unreachable (crash before initialize), not auth, for the same reason as slack above. Both transports agree: auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T14:48:53.323437727Z",
+      "measured_at": "2026-08-18T15:11:14.415737674Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "jaeger",
+      "name": "Jaeger, via traceloop/opentelemetry-mcp-server (no dedicated official server exists)",
+      "maintainer": "community",
+      "status": "ok",
+      "tool_count": 11,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "2.14.7",
+        "wire_sha256": "be7aeb6b0ee41ca1336fa24fc83d007dba2d18107c1ac0931604b46c3d6d17a4",
+        "canonical_sha256": "4af47281a9aba2b6e05116604894bc70ae3d27b94c2e27fab8c6151eeee79ae4",
+        "canonical_sorted_sha256": "74186d21e39f96833a630f4389b7562c6cb86bdec6dd490724072163b153538b"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4063,
+          "per_tool": {
+            "find_errors": 219,
+            "get_llm_expensive_traces": 380,
+            "get_llm_model_stats": 296,
+            "get_llm_slow_traces": 383,
+            "get_llm_usage": 325,
+            "get_trace": 125,
+            "list_llm_models": 308,
+            "list_llm_tools_tool": 316,
+            "list_services": 85,
+            "search_spans_tool": 751,
+            "search_traces": 884
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:11:25Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 6883,
+          "native_tools_param_tokens": 6535,
+          "measured_at": "2026-08-18T15:11:26Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4500,
+          "measured_at": "2026-08-18T15:11:27Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4063,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 370,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.9798,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "C",
+        "score": 61.11,
+        "dimensions": {
+          "description_adequacy": 93.94,
+          "when_to_use_signal": 27.27,
+          "parameter_descriptions": 0,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 45.45
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "get_llm_expensive_traces",
+            "b": "get_llm_slow_traces",
+            "similarity": 0.7097
+          },
+          {
+            "a": "list_llm_models",
+            "b": "list_llm_tools_tool",
+            "similarity": 0.6271
+          },
+          {
+            "a": "search_traces",
+            "b": "search_spans_tool",
+            "similarity": 0.6
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "observability",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:opentelemetry-mcp==0.2.2",
+        "command": "uvx",
+        "args": [
+          "opentelemetry-mcp==0.2.2",
+          "--backend",
+          "jaeger",
+          "--url",
+          "http://localhost:16686"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:22.112892669Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "corpus_notes": [
+        "note: unified server across Jaeger, Tempo, and Traceloop's own backend; non-Jaeger tools inflate the apparent tool count and should be called out on the published row",
+        "note: not scanned in this pass; this machine has no docker/podman so the required local Jaeger all-in-one container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md)."
+      ],
+      "measured_at": "2026-08-18T15:11:22.112878562Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    },
+    {
+      "id": "postgres",
+      "name": "Postgres MCP server, via crystaldba/postgres-mcp (\"Postgres MCP Pro\")",
+      "maintainer": "community",
+      "status": "unreachable",
+      "tool_count": 0,
+      "protocol_revision": "",
+      "provenance": {
+        "server_version": "",
+        "wire_sha256": "",
+        "canonical_sha256": ""
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 0,
+          "per_tool": {},
+          "encoding": "o200k_base",
+          "available": false
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": false,
+          "total_schema_tokens": 0,
+          "native_tools_param_tokens": 0
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": false,
+          "total_schema_tokens": 0
+        }
+      },
+      "modes": null,
+      "retrievability": null,
+      "hygiene": null,
+      "category": "data",
+      "error": "write to server stdin: write |1: broken pipe | server stderr: Traceback (most recent call last): |   File \"/home/oni/.cache/uv/archive-v0/4SBrlw7RHfU251TZZTVAZ/bin/postgres-mcp\", line 6, in \u003cmodule\u003e |     from postgres_mcp import main |   File \"/home/oni/.cache/uv/archive-v0/4SBrlw7RHfU251TZZTVAZ/lib/python3.13/site-packages/postgres_mcp/__init__.py\", line 4, in \u003cmodule\u003e |     from . import server",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "pypi:postgres-mcp==0.3.0",
+        "command": "uvx",
+        "args": [
+          "postgres-mcp==0.3.0",
+          "--access-mode=unrestricted"
+        ],
+        "env_passed": [
+          "DATABASE_URI"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:11:27.251479725Z"
+      },
+      "corpus_notes": [
+        "note: launch in Unrestricted Mode for measurement; Restricted Mode truncates the tool surface by operator-set flag, not by credential",
+        "note: not scanned in this pass; this machine has no docker/podman so the required local postgres container could not be started. servers.yaml spec resolved and verified live, but no scan attempted. Stays on the PC-sweep list (docs/pc-sweep-runbook.md)."
+      ],
+      "measured_at": "2026-08-18T15:11:27.251457056Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1469,20 +1820,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:49:04Z"
+          "measured_at": "2026-08-18T15:11:33Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 1691,
           "native_tools_param_tokens": 1890,
-          "measured_at": "2026-08-18T14:49:05Z"
+          "measured_at": "2026-08-18T15:11:34Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 1119,
-          "measured_at": "2026-08-18T14:49:07Z"
+          "measured_at": "2026-08-18T15:11:36Z"
         }
       },
       "modes": {
@@ -1534,7 +1885,7 @@
           "@upstash/context7-mcp@4.0.2"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T14:49:01.230616566Z"
+        "acquired_at": "2026-08-18T15:11:29.403896056Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -1542,7 +1893,7 @@
       "corpus_notes": [
         "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
       ],
-      "measured_at": "2026-08-18T14:49:01.230609431Z",
+      "measured_at": "2026-08-18T15:11:29.403885465Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     },
@@ -1590,20 +1941,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T14:49:10Z"
+          "measured_at": "2026-08-18T15:11:39Z"
         },
         "claude": {
           "model": "claude-opus-5",
           "available": true,
           "total_schema_tokens": 6554,
           "native_tools_param_tokens": 6179,
-          "measured_at": "2026-08-18T14:49:12Z"
+          "measured_at": "2026-08-18T15:11:41Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 4246,
-          "measured_at": "2026-08-18T14:49:12Z"
+          "measured_at": "2026-08-18T15:11:43Z"
         }
       },
       "modes": {
@@ -1655,12 +2006,12 @@
           "@playwright/mcp@0.0.79"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T14:49:07.327695867Z"
+        "acquired_at": "2026-08-18T15:11:36.618462797Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
       },
-      "measured_at": "2026-08-18T14:49:07.327686598Z",
+      "measured_at": "2026-08-18T15:11:36.61845211Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

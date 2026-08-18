@@ -1,0 +1,511 @@
+{
+  "server": "jaeger",
+  "procedure": "queries derived mechanically from each tool's own description: stopwords and the tool's own name fragments stripped, three forms per tool (leading content-word phrase, highest-IDF adjacent content-word bigram, deduplicated content-word set)",
+  "queries_per_tool": 3,
+  "top_k": 3,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "tools": [
+    {
+      "tool": "search_traces",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "open telemetry filters",
+          "terms": [
+            "open",
+            "telemetry",
+            "filters"
+          ],
+          "rank": 3
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "supports simple",
+          "terms": [
+            "supports",
+            "simple"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "open telemetry filters supports simple parameters advanced generic filter system args service",
+          "terms": [
+            "open",
+            "telemetry",
+            "filters",
+            "supports",
+            "simple",
+            "parameters",
+            "advanced",
+            "generic",
+            "filter",
+            "system",
+            "args",
+            "service"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_trace",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "complete details id",
+          "terms": [
+            "complete",
+            "details",
+            "id"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "complete details",
+          "terms": [
+            "complete",
+            "details"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "complete details id returns spans attributes including parsed opentelemetry data llm operations",
+          "terms": [
+            "complete",
+            "details",
+            "id",
+            "returns",
+            "spans",
+            "attributes",
+            "including",
+            "parsed",
+            "opentelemetry",
+            "data",
+            "llm",
+            "operations"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_llm_usage",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "aggregated metrics token",
+          "terms": [
+            "aggregated",
+            "metrics",
+            "token"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "aggregated metrics",
+          "terms": [
+            "aggregated",
+            "metrics"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "aggregated metrics token counts time period provides breakdowns model service args start",
+          "terms": [
+            "aggregated",
+            "metrics",
+            "token",
+            "counts",
+            "time",
+            "period",
+            "provides",
+            "breakdowns",
+            "model",
+            "service",
+            "args",
+            "start"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_services",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "available open telemetry",
+          "terms": [
+            "available",
+            "open",
+            "telemetry"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "available open",
+          "terms": [
+            "available",
+            "open"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "available open telemetry backend returns json string",
+          "terms": [
+            "available",
+            "open",
+            "telemetry",
+            "backend",
+            "returns",
+            "json",
+            "string"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "find_errors",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "traces including detailed",
+          "terms": [
+            "traces",
+            "including",
+            "detailed"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "messages stack",
+          "terms": [
+            "messages",
+            "stack"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "traces including detailed error messages stack llm specific information args start time",
+          "terms": [
+            "traces",
+            "including",
+            "detailed",
+            "error",
+            "messages",
+            "stack",
+            "llm",
+            "specific",
+            "information",
+            "args",
+            "start",
+            "time"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_llm_models",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "usage statistics discovers",
+          "terms": [
+            "usage",
+            "statistics",
+            "discovers"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "deployed tracks",
+          "terms": [
+            "deployed",
+            "tracks"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "usage statistics discovers deployed tracks patterns args start time iso 8601 format",
+          "terms": [
+            "usage",
+            "statistics",
+            "discovers",
+            "deployed",
+            "tracks",
+            "patterns",
+            "args",
+            "start",
+            "time",
+            "iso",
+            "8601",
+            "format"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_llm_model_stats",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "detailed performance statistics",
+          "terms": [
+            "detailed",
+            "performance",
+            "statistics"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "percentiles p50",
+          "terms": [
+            "percentiles",
+            "p50"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "detailed performance statistics specific analyzes request count latency percentiles p50 p95 p99",
+          "terms": [
+            "detailed",
+            "performance",
+            "statistics",
+            "specific",
+            "analyzes",
+            "request",
+            "count",
+            "latency",
+            "percentiles",
+            "p50",
+            "p95",
+            "p99"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_llm_expensive_traces",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "find highest token",
+          "terms": [
+            "find",
+            "highest",
+            "token"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "inefficient prompts",
+          "terms": [
+            "inefficient",
+            "prompts"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "find highest token usage useful cost optimization identifying inefficient prompts args limit",
+          "terms": [
+            "find",
+            "highest",
+            "token",
+            "usage",
+            "useful",
+            "cost",
+            "optimization",
+            "identifying",
+            "inefficient",
+            "prompts",
+            "args",
+            "limit"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "get_llm_slow_traces",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "find slowest duration",
+          "terms": [
+            "find",
+            "slowest",
+            "duration"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "latency bottlenecks",
+          "terms": [
+            "latency",
+            "bottlenecks"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "find slowest duration useful performance optimization identifying latency bottlenecks args limit maximum",
+          "terms": [
+            "find",
+            "slowest",
+            "duration",
+            "useful",
+            "performance",
+            "optimization",
+            "identifying",
+            "latency",
+            "bottlenecks",
+            "args",
+            "limit",
+            "maximum"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "search_spans_tool",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "individual open telemetry",
+          "terms": [
+            "individual",
+            "open",
+            "telemetry"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "individual rather",
+          "terms": [
+            "individual",
+            "rather"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "individual open telemetry optional filters unlike traces returns rather grouped useful analyzing",
+          "terms": [
+            "individual",
+            "open",
+            "telemetry",
+            "optional",
+            "filters",
+            "unlike",
+            "traces",
+            "returns",
+            "rather",
+            "grouped",
+            "useful",
+            "analyzing"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    },
+    {
+      "tool": "list_llm_tools_tool",
+      "source": "description",
+      "queries": [
+        {
+          "form": "leading_phrase",
+          "text": "identifying traceloop span",
+          "terms": [
+            "identifying",
+            "traceloop",
+            "span"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "distinctive_bigram",
+          "text": "functions applications",
+          "terms": [
+            "functions",
+            "applications"
+          ],
+          "rank": 1
+        },
+        {
+          "form": "content_words",
+          "text": "identifying traceloop span kind discovers functions applications calling grouped name usage statistics",
+          "terms": [
+            "identifying",
+            "traceloop",
+            "span",
+            "kind",
+            "discovers",
+            "functions",
+            "applications",
+            "calling",
+            "grouped",
+            "name",
+            "usage",
+            "statistics"
+          ],
+          "rank": 1
+        }
+      ],
+      "top1": true,
+      "top3": true
+    }
+  ]
+}

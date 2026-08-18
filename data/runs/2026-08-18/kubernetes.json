@@ -1,0 +1,175 @@
+{
+  "schema_version": "0.2",
+  "sample": false,
+  "run": {
+    "date": "2026-08-18",
+    "methodology_version": "0.2.0",
+    "harness_version": "0.1.0"
+  },
+  "servers": [
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes MCP server (containers/kubernetes-mcp-server)",
+      "maintainer": "community",
+      "status": "ok",
+      "tool_count": 20,
+      "protocol_revision": "2025-06-18",
+      "provenance": {
+        "server_version": "v0.0.66",
+        "wire_sha256": "3d1decf36c2df6f7dfc1295e0f9831869c108bd2679165acded94a4bed368b1c",
+        "canonical_sha256": "a9c7140b51eef38cf3f196c623be4f3b0ad9b6d5a9ca009065934e784e2f7634",
+        "canonical_sorted_sha256": "8aca20da43cb7f69993a5005b4ee6ca4021ac433fbe73bf07cfdd4b0e4d098d6"
+      },
+      "counts": {
+        "openai_o200k": {
+          "total_schema_tokens": 4430,
+          "per_tool": {
+            "configuration_view": 138,
+            "events_list": 245,
+            "namespaces_list": 169,
+            "nodes_log": 234,
+            "nodes_stats_summary": 184,
+            "nodes_top": 180,
+            "pods_delete": 109,
+            "pods_exec": 216,
+            "pods_get": 107,
+            "pods_list": 308,
+            "pods_list_in_namespace": 335,
+            "pods_log": 194,
+            "pods_run": 166,
+            "pods_top": 286,
+            "projects_list": 71,
+            "resources_create_or_update": 212,
+            "resources_delete": 310,
+            "resources_get": 255,
+            "resources_list": 460,
+            "resources_scale": 268
+          },
+          "encoding": "o200k_base",
+          "available": true,
+          "measured_at": "2026-08-18T15:10:47Z"
+        },
+        "claude": {
+          "model": "claude-opus-5",
+          "available": true,
+          "total_schema_tokens": 7552,
+          "native_tools_param_tokens": 6734,
+          "measured_at": "2026-08-18T15:10:48Z"
+        },
+        "gemini": {
+          "model": "gemini-3.1-pro-preview",
+          "available": true,
+          "total_schema_tokens": 4590,
+          "measured_at": "2026-08-18T15:10:49Z"
+        }
+      },
+      "modes": {
+        "naive": {
+          "tokens": 4430,
+          "kind": "measured"
+        },
+        "tool_search": {
+          "stub_tokens": 500,
+          "per_tool_avg": 222,
+          "k_range": [
+            3,
+            5
+          ],
+          "kind": "modeled"
+        },
+        "code_mode": {
+          "tokens_estimate": 1000,
+          "kind": "modeled"
+        }
+      },
+      "retrievability": {
+        "top3_fraction": 1,
+        "mrr": 0.8325,
+        "queries_per_tool": 3,
+        "kind": "measured"
+      },
+      "hygiene": {
+        "grade": "C",
+        "score": 74.17,
+        "dimensions": {
+          "description_adequacy": 100,
+          "when_to_use_signal": 0,
+          "parameter_descriptions": 100,
+          "enum_documentation": 100,
+          "naming_clarity": 100,
+          "disambiguation": 45
+        },
+        "similarity_threshold": 0.6,
+        "similar_pairs": [
+          {
+            "a": "resources_delete",
+            "b": "resources_get",
+            "similarity": 0.9286
+          },
+          {
+            "a": "namespaces_list",
+            "b": "pods_list",
+            "similarity": 0.8333
+          },
+          {
+            "a": "pods_get",
+            "b": "pods_log",
+            "similarity": 0.8
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_get",
+            "similarity": 0.7778
+          },
+          {
+            "a": "resources_delete",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "resources_get",
+            "b": "resources_list",
+            "similarity": 0.7742
+          },
+          {
+            "a": "pods_delete",
+            "b": "pods_log",
+            "similarity": 0.6364
+          },
+          {
+            "a": "pods_list",
+            "b": "pods_list_in_namespace",
+            "similarity": 0.625
+          },
+          {
+            "a": "nodes_top",
+            "b": "pods_top",
+            "similarity": 0.6111
+          }
+        ],
+        "kind": "measured"
+      },
+      "category": "dev-tools",
+      "acquisition": {
+        "transport": "stdio",
+        "source": "npm:kubernetes-mcp-server@0.0.66",
+        "command": "npx",
+        "args": [
+          "-y",
+          "kubernetes-mcp-server@0.0.66"
+        ],
+        "env_passed": [
+          "KUBECONFIG"
+        ],
+        "pinned": true,
+        "acquired_at": "2026-08-18T15:10:44.446177894Z"
+      },
+      "negotiation": {
+        "branch": "legacy_initialize"
+      },
+      "measured_at": "2026-08-18T15:10:44.446168485Z",
+      "methodology_version": "0.2.0",
+      "harness_version": "0.1.0"
+    }
+  ]
+}
