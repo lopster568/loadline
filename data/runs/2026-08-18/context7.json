@@ -29,20 +29,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T10:19:50Z"
+          "measured_at": "2026-08-18T14:49:04Z"
         },
         "claude": {
           "model": "claude-opus-5",
-          "available": false,
-          "total_schema_tokens": 0,
-          "native_tools_param_tokens": 0,
-          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3ZJABiVh2Zfr1kd5kZ\"}"
+          "available": true,
+          "total_schema_tokens": 1691,
+          "native_tools_param_tokens": 1890,
+          "measured_at": "2026-08-18T14:49:05Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 1119,
-          "measured_at": "2026-08-18T10:19:50Z"
+          "measured_at": "2026-08-18T14:49:07Z"
         }
       },
       "modes": {
@@ -94,7 +94,7 @@
           "@upstash/context7-mcp@4.0.2"
         ],
         "pinned": true,
-        "acquired_at": "2026-08-18T10:19:47.375878045Z"
+        "acquired_at": "2026-08-18T14:49:01.230616566Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -102,7 +102,7 @@
       "corpus_notes": [
         "note: promoted from reserve bench 2026-08-17; classified under data (documentation/knowledge retrieval) as a judgment call, not a strong categorical fit (docs/server-selection.md B.2 item 14). Auth/transport/package resolved 2026-08-17, keyless, npm @upstash/context7-mcp@4.0.2, stdio confirmed live (2 tools, no auth)."
       ],
-      "measured_at": "2026-08-18T10:19:47.375867959Z",
+      "measured_at": "2026-08-18T14:49:01.230609431Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

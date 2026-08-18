@@ -74,20 +74,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T10:19:25Z"
+          "measured_at": "2026-08-18T14:47:45Z"
         },
         "claude": {
           "model": "claude-opus-5",
-          "available": false,
-          "total_schema_tokens": 0,
-          "native_tools_param_tokens": 0,
-          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3XVdCQZZmcE8Cb37BT\"}"
+          "available": true,
+          "total_schema_tokens": 86843,
+          "native_tools_param_tokens": 19566,
+          "measured_at": "2026-08-18T14:47:47Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 61790,
-          "measured_at": "2026-08-18T10:19:26Z"
+          "measured_at": "2026-08-18T14:47:50Z"
         }
       },
       "modes": {
@@ -190,7 +190,7 @@
           "GITHUB_PERSONAL_ACCESS_TOKEN"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T10:19:19.501398279Z"
+        "acquired_at": "2026-08-18T14:47:14.146766613Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -199,7 +199,7 @@
         "auth-verification: classic-PAT-scope-filtering",
         "resolvable: likely, via OAuth flow instead of a classic PAT; needs live verification"
       ],
-      "measured_at": "2026-08-18T10:19:19.501380648Z",
+      "measured_at": "2026-08-18T14:47:14.146753311Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }

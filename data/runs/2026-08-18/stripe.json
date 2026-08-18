@@ -16,7 +16,7 @@
       "protocol_revision": "2025-03-26",
       "provenance": {
         "server_version": "1.0.0",
-        "wire_sha256": "43f4064a9f16fc02b4f00ac23fd42787d061bb0d19a0ff78bc6d5330605bce9f",
+        "wire_sha256": "6bcef55057f2ed910065caa88fc4f960703d7d141c6fcecfec045252a02e488e",
         "canonical_sha256": "1e6d78edee192497894c5328be2d69287b06c338185e1f04732f44700967308c",
         "canonical_sorted_sha256": "788e90cd57d59e84fe75eafd3ad87d76cd09792c5efd9d0e2023de7eb74b4129"
       },
@@ -37,20 +37,20 @@
           },
           "encoding": "o200k_base",
           "available": true,
-          "measured_at": "2026-08-18T10:19:41Z"
+          "measured_at": "2026-08-18T14:48:50Z"
         },
         "claude": {
           "model": "claude-opus-5",
-          "available": false,
-          "total_schema_tokens": 0,
-          "native_tools_param_tokens": 0,
-          "error": "count_tokens http 400: {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans \u0026 Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CeA3Yfu6yVjaF4n2Y2vtV\"}"
+          "available": true,
+          "total_schema_tokens": 6963,
+          "native_tools_param_tokens": 6154,
+          "measured_at": "2026-08-18T14:48:51Z"
         },
         "gemini": {
           "model": "gemini-3.1-pro-preview",
           "available": true,
           "total_schema_tokens": 4527,
-          "measured_at": "2026-08-18T10:19:42Z"
+          "measured_at": "2026-08-18T14:48:53Z"
         }
       },
       "modes": {
@@ -108,7 +108,7 @@
           "STRIPE_API_KEY"
         ],
         "pinned": false,
-        "acquired_at": "2026-08-18T10:19:40.078992791Z"
+        "acquired_at": "2026-08-18T14:48:46.865196652Z"
       },
       "negotiation": {
         "branch": "legacy_initialize"
@@ -116,7 +116,7 @@
       "corpus_notes": [
         "note: keyless probe 2026-08-18: HTTP 401 {\"error\":\"Unauthorized. See https://docs.stripe.com/mcp for usage instructions.\"}. Confirms auth is genuinely required."
       ],
-      "measured_at": "2026-08-18T10:19:40.078983143Z",
+      "measured_at": "2026-08-18T14:48:46.865188453Z",
       "methodology_version": "0.2.0",
       "harness_version": "0.1.0"
     }
