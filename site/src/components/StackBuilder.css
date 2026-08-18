@@ -121,6 +121,19 @@
      icon away from the first line it is meant to sit beside. */
   align-items: flex-start;
   gap: 6px;
+  /* This row's own box already sizes correctly to the grid column (the
+     body column carries min-width: 0 above). The overflow is in the text
+     content, not the box: several server names contain long hyphen/slash
+     compounds with no space ("(containers/kubernetes-mcp-server)",
+     "traceloop/opentelemetry-mcp-server") that the default line-breaking
+     algorithm treats as a single unbreakable run. With overflow visible by
+     default, that run draws straight past the column edge and under the
+     grade square instead of wrapping. overflow-wrap lets the browser break
+     inside such a run once nothing else fits; min-width: 0 keeps this flex
+     item from refusing to shrink below that run's width in the first place.
+     A short, ordinary name never has a run long enough to trigger either. */
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.3;
