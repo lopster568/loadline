@@ -75,7 +75,7 @@ A third constraint, from PRD.md 5.2 and `methodology-v0.md` section 10.6, bounds
 
 ## 1. Server selection
 
-Tier 2 selection is a separate, smaller, capability-driven decision from Tier 1's selection rule (`server-selection.md` A.1). All three proposed servers are drawn from the ratified Tier 1 pool for continuity: the same server versions, provenance, and auth notes already researched in `server-selection.md` apply, and a Tier 2 finding for one of these servers is directly usable to remove the "modeled" label from that server's Tier 1 code-mode cell (`methodology-v0.md` 3.3).
+Tier 2 selection is a separate, smaller, capability-driven decision from Tier 1's selection rule (`server-selection.md` A.1). All three proposed servers are drawn from the ratified Tier 1 pool for continuity: the same server versions, provenance, and auth notes already researched in `server-selection.md` apply. A Tier 2 finding does not by itself move any MODELED label on that server's Tier 1 row: the label comes off only when a run measures the mode's own context footprint directly (`methodology-v0.md` 3.2 and 3.3, as of 0.3.1), and this suite measures wire traffic, not context (section 4.3).
 
 | Server | Category | Auth | Runs on |
 | --- | --- | --- | --- |
