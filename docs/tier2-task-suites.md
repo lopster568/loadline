@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Task-suite version | 1.0.3 (PATCH: section 4.1 states that a passed success check outranks `client_error`; see the changelog below) |
+| Task-suite version | 1.0.4 (PATCH: the runner now records `server_image_digest` for a container-launched server; see the changelog below) |
 | Date | 2026-08-20 |
 | Status | Draft, for Phase 2 sign-off (PRD.md 10, Open Decision 5). All three suites shaken down on both clients on 2026-08-18, one trial per cell, and the Gemini side re-shaken down on 2026-08-19 against Gemini CLI 0.55.1 after the client upgrade. **The first full run is done**: 2026-08-18, suite 1.0.1, 90 trials, 87 successes, Claude Code 45 of 45 and Gemini CLI 42 of 45, no version drift and no `harness_suspect` trial. No cell is blocked. |
 | Scope | Tier 2 dynamic runs only. Tier 1 static sweep is specified in `methodology-v0.md`. |
@@ -11,6 +11,16 @@
 This document is the separate Tier 2 specification that `methodology-v0.md`'s scope line points to. It defines, concretely enough for a build agent to implement without a new design decision, the servers, the 15 tasks, the run protocol, the extracted metrics, and the versioning discipline for Tier 2.
 
 ### Changelog
+
+**1.0.4, 2026-08-20. PATCH: the runner now records `server_image_digest` for a container-launched server.** No prompt, fixture or success criterion moves, so every 1.0.3 result stays comparable across the bump.
+
+The 2026-08-18 github rows record the server pin as `ghcr.io/github/github-mcp-server (container, no digest recorded by the runner)` (`data/tier2-published.json`), a mutable tag rather than a build. `run-suite.sh` now resolves the digest the run actually used once per run, before the first trial (`docker pull` then `docker image inspect --format '{{index .RepoDigests 0}}'`), and records it as `server_image_digest` in the run header and every trial row, alongside the existing `server_pkg` field. `summarize.sh` carries it into `runs[]` and `cells[]` in `summary.json`. A server that is not launched via docker (filesystem, playwright, or github overridden to the non-container Go binary by `LOADLINE_TIER2_GITHUB_CMD`) records `null`. A docker fault (missing binary, failed pull, no repo digest reported) is recorded as a `"digest unavailable: ..."` string rather than stopping the run; failure is data, the same rule the rest of this harness applies.
+
+The run footer re-resolves the digest after the last trial and compares it against the value recorded at the start, the same mechanism section 5 already uses for client versions: if the two differ, `version_drift` is stamped `true` and the run is not comparable, because a mutable tag that moved mid-run is exactly the condition this field exists to catch. `server_image_digest_at_start` and `server_image_digest_at_end` are recorded on the run footer, and both ride along in `summary.json`'s `drifted_runs` entries next to the existing client-version snapshot.
+
+No published Tier 2 row moves and no summary changes: the field did not exist before this bump, so nothing under `data/tier2/` or `data/tier2-published.json` is touched. Sections 5 and 7.4 are updated below to describe the field.
+
+*Decided by the session under the operator's standing instruction; veto window open.*
 
 **1.0.3, 2026-08-20. PATCH: section 4.1 now states that a passed success check outranks `client_error`.** No prompt, fixture or success criterion moves, so every 1.0.2 result stays comparable across the bump.
 
@@ -333,6 +343,7 @@ Per `methodology-v0.md` section 9, results are comparable only within an identic
 | `interposer_version` | Per `interposer/README.md`, from the JSONL header line of every trial | Interposer's own semver; any change to framing, logged fields, or `result_summary` computation is a version bump per its README |
 | Task-suite version (this document) | This document's header field, recorded per trial | See below |
 | Client version | Captured at trial start via the client's own `--version` (or equivalent) output | Not versioned by this project; recorded as observed |
+| Container image digest | For a server launched via docker, resolved once per run before the first trial and re-resolved after the last; recorded per trial as `server_image_digest` alongside the existing `server_pkg` field | Not versioned by this project; recorded as observed, per the 1.0.4 changelog entry |
 
 **Task-suite version scheme**, mirroring the MAJOR/MINOR/PATCH discipline `methodology-v0.md` 9 applies to the methodology itself:
 
@@ -344,7 +355,9 @@ Per `methodology-v0.md` section 9, results are comparable only within an identic
 
 **Client versions are recorded and drift is detected, not pinned.** This is the OPEN 8 decision. Both clients auto-update on their own schedule and neither offers a supported way to hold a released version in place for the duration of a run, so a pin this project announced would be a pin it could not enforce. What the runner does instead is mechanical: it records `claude --version` and `gemini --version` into the run manifest's header before the first trial, re-reads both after the last one, and if either changed it stamps `version_drift: true` on the run footer. A run carrying that stamp is not comparable, neither internally across its own trials nor against any other run, and it is republished only by being run again. Both clients are recorded on every run regardless of which one the suite invoked, because a mid-run update to the other client is the thing that makes the next suite's numbers quietly incomparable with this one's.
 
-Every published Tier 2 result carries all three stamps from the table above. A result missing any stamp is withheld, the same rule `methodology-v0.md` 1.7 applies to Tier 1 cells. Results are never compared across interposer versions or across task-suite MAJOR versions; a season-over-season Tier 2 trend line is only drawn within one (interposer MAJOR, suite MAJOR) pair.
+**A container server's pin is now the digest, not the tag.** Added 2026-08-20 (task-suite 1.0.4). A tag like `v1.9.0` or the implicit `latest` a docker image reference resolves to when no tag is given is mutable: the same tag can point at a different build tomorrow, so recording the tag alone does not pin the run to a build the way the npm package version pin does for the filesystem and playwright servers. `run-suite.sh` now resolves the digest the run actually used (`docker pull` then `docker image inspect`) once before the first trial and records it as `server_image_digest`, and re-resolves it after the last trial the same way section 5 already re-reads the client version: if the two differ, `version_drift: true` is stamped on the run footer and the run is not comparable, for the same reason a client update mid-run is not comparable. **The 2026-08-18 rows (`data/tier2-published.json`, `suite_version` 1.0.1) carry a tag only**, recorded before this field existed: `ghcr.io/github/github-mcp-server (container, no digest recorded by the runner)`. That is a real gap in what those rows pin, not a comparability break under this PATCH; nothing about them is republished or corrected, and a reader comparing them against a later digest-bearing run should read the earlier ones as pinned only to "whatever `latest` was on 2026-08-18," not to a specific build.
+
+Every published Tier 2 result carries the first three stamps from the table above; a result missing any of those is withheld, the same rule `methodology-v0.md` 1.7 applies to Tier 1 cells. The fourth, container image digest, applies only to a server launched via docker (github, by default), and is `null` rather than withheld for filesystem and playwright. Results are never compared across interposer versions or across task-suite MAJOR versions; a season-over-season Tier 2 trend line is only drawn within one (interposer MAJOR, suite MAJOR) pair.
 
 ---
 
@@ -611,6 +624,8 @@ docker run -i --rm --env-file "$GH_TOKEN_FILE" \
 ```
 
 **Packaging: the default ghcr container.** Docker is available on this machine and the container is the vendor's own distribution, so it is what the runner uses by default. `LOADLINE_TIER2_GITHUB_CMD` overrides the whole command for a machine that has the Go binary instead, and whatever is used is recorded in the run header as `server_pkg`.
+
+**The digest, not the tag, is the pin from the next run on.** Added 2026-08-20 (task-suite 1.0.4, section 5). Neither the command above nor `server_pkg` names a tag, so this image reference resolves to whatever `latest` currently is, and even a stated tag like `v1.9.0` is mutable. `run-suite.sh` now resolves the digest the run actually used, once before the first trial (`docker pull ghcr.io/github/github-mcp-server` then `docker image inspect --format '{{index .RepoDigests 0}}' ghcr.io/github/github-mcp-server`), and records it as `server_image_digest` on the run header and every trial row, re-resolving it again after the last trial to catch a tag that moved mid-run (section 5). A docker fault at either point (missing binary, failed pull, no repo digest reported) is recorded as a `"digest unavailable: ..."` string rather than stopping the run. `LOADLINE_TIER2_GITHUB_CMD` overriding this server to a non-container command leaves `server_image_digest` `null`, since there is no image to pin.
 
 **The credential reaches the server and nothing else.** The token is written to a `0600` file in a `700` directory created for the suite and removed by an exit trap, and the container reads it with `--env-file`. It is never in the client's environment, never in an argv that a `ps` listing can read, never in the MCP config file the client parses, and never in the manifest. `-e GITHUB_PERSONAL_ACCESS_TOKEN`, which the earlier draft of this section used, forwards the variable from the docker CLI's own environment, and the docker CLI is a grandchild of the client process, so that spelling requires the token to be in the client's environment. That is the thing the rule forbids.
 

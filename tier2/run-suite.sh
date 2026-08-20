@@ -47,8 +47,18 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- constants --
 
-SUITE_VERSION="1.0.3"      # docs/tier2-task-suites.md header field
+SUITE_VERSION="1.0.4"      # docs/tier2-task-suites.md header field
 MANIFEST_SCHEMA="tier2-manifest/0.1"
+
+# The github server's default image, no tag: the same reference server_argv's
+# docker branch below launches. One constant so the launch command and the
+# digest resolution can never name two different images.
+GITHUB_IMAGE="ghcr.io/github/github-mcp-server"
+
+# The docker CLI used to resolve a container server's image digest.
+# Overridable so --self-test can point it at a binary that does not exist and
+# exercise the failure-as-data path without a docker daemon.
+DOCKER_BIN="${LOADLINE_TIER2_DOCKER_BIN:-docker}"
 
 # Refusal markers for the OPEN 7 classification rule. This list is the
 # documented heuristic, reproduced verbatim in section 4.1 of the spec.
@@ -175,6 +185,23 @@ self_test() {
   assert_classify "failed_no_tool_use, unchanged" \
     false false 0 "$failed_transcript" "failed_no_tool_use"
 
+  # server_image_digest capture, failure-as-data case: docker absent must
+  # record a "digest unavailable: " string on the trial, not abort the run.
+  # DOCKER_BIN is overridden to a path that cannot exist for the duration of
+  # this one call, which is the same seam LOADLINE_TIER2_DOCKER_BIN gives an
+  # operator on a machine without docker; the global is restored immediately
+  # after so the rest of --self-test (and any real run) sees the real default.
+  local digest_result saved_docker_bin="$DOCKER_BIN"
+  DOCKER_BIN="/nonexistent/loadline-self-test-docker-$$"
+  digest_result="$(resolve_image_digest "$GITHUB_IMAGE")"
+  DOCKER_BIN="$saved_docker_bin"
+  if [[ "$digest_result" == "digest unavailable: "* ]]; then
+    echo "ok   server_image_digest records failure string when docker is absent -> $digest_result"
+  else
+    echo "FAIL server_image_digest docker-absent case -> got '$digest_result', want a 'digest unavailable: ' prefixed string"
+    failures=$((failures + 1))
+  fi
+
   rm -f "$no_transcript" "$declined_transcript" "$failed_transcript"
 
   if [[ "$failures" -eq 0 ]]; then
@@ -183,6 +210,50 @@ self_test() {
   else
     echo "self_test: $failures case(s) failed"
     return 1
+  fi
+}
+
+# resolve_image_digest IMAGE_REF -> prints the digest reference the image
+# resolves to right now (e.g. ghcr.io/github/github-mcp-server@sha256:...),
+# per docker's own RepoDigests, or a "digest unavailable: " string on any
+# failure (docker missing, pull failed, no repo digest reported). Failure is
+# data, not a reason to stop the run: the caller records whatever this prints.
+#
+# Pulls first, then inspects. Inspecting a locally cached tag without pulling
+# can report a digest for an older image than the one that actually runs, if
+# the tag moved upstream since the last pull; that is the exact reproducibility
+# gap this field exists to close, so skipping the pull would defeat the point.
+resolve_image_digest() {
+  local image_ref="$1" pull_out digest
+  if ! command -v "$DOCKER_BIN" >/dev/null 2>&1; then
+    echo "digest unavailable: docker CLI '${DOCKER_BIN}' is not available"
+    return
+  fi
+  if ! pull_out="$("$DOCKER_BIN" pull "$image_ref" 2>&1)"; then
+    echo "digest unavailable: docker pull ${image_ref} failed: $(printf '%s' "$pull_out" | tail -n1)"
+    return
+  fi
+  digest="$("$DOCKER_BIN" image inspect --format '{{index .RepoDigests 0}}' "$image_ref" 2>/dev/null || true)"
+  if [[ "$digest" != *"@sha256:"* ]]; then
+    echo "digest unavailable: docker image inspect reported no repo digest for ${image_ref}"
+    return
+  fi
+  printf '%s' "$digest"
+}
+
+# resolve_current_server_image_digest -> the digest resolve_image_digest
+# reports for the image the running SERVER launches via docker right now, or
+# the empty string when SERVER is not launched via docker today: filesystem
+# and playwright never are, and github isn't when LOADLINE_TIER2_GITHUB_CMD
+# overrides it to the non-container Go binary (section 7.4). The empty string
+# is what lets the manifest record JSON null for "not applicable" instead of a
+# string, so that stays distinguishable from "applicable but the resolve
+# failed".
+resolve_current_server_image_digest() {
+  if [[ "$SERVER" == "github" && -z "${LOADLINE_TIER2_GITHUB_CMD:-}" ]]; then
+    resolve_image_digest "$GITHUB_IMAGE"
+  else
+    printf ''
   fi
 }
 
@@ -286,6 +357,12 @@ MODEL=""
 FULL_RESULTS=1
 DRY_RUN=0
 FORCE=0
+
+# The digest of the container image the run actually used, resolved once by
+# prepare_suite_fixture before the first trial. Empty (-> JSON null in the
+# manifest) for a server that is not launched via docker; see
+# resolve_current_server_image_digest.
+SERVER_IMAGE_DIGEST=""
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo="$(cd "${here}/.." && pwd)"
@@ -617,6 +694,12 @@ prepare_suite_fixture() {
       die "github fixture is not at baseline and reset.sh could not fix it"
     ;;
   esac
+  # Resolved once here, before the first trial, and reused as the constant
+  # server_image_digest value for the run header and every trial row. A
+  # container server's tag is mutable (docs/tier2-task-suites.md 7.4), so this
+  # is the run's only record of which build actually ran. write_footer
+  # re-resolves it after the last trial to catch a tag that moved mid-run.
+  SERVER_IMAGE_DIGEST="$(resolve_current_server_image_digest)"
 }
 
 # prepare_trial_fixture TASK SCRATCH runs before every trial.
@@ -1260,6 +1343,7 @@ run_trial() {
     --arg analyzer_version "$analyzer_version" \
     --argjson versions "$VERSIONS_START" \
     --arg server_pkg "$SERVER_PKG" \
+    --arg server_image_digest "$SERVER_IMAGE_DIGEST" \
     --arg prompt "$prompt" \
     --arg log "$rel_log" --arg client_json "$rel_client" --arg analyze_json "$rel_analyze" \
     --arg work "$rel_work" --arg scratch "$rel_scratch" \
@@ -1279,6 +1363,7 @@ run_trial() {
       cache: $cache, client_reported: $client_reported, analyze: $analyze,
       interposer_version: $interposer_version, analyzer_version: $analyzer_version,
       client_versions: $versions, server_pkg: $server_pkg,
+      server_image_digest: (if $server_image_digest == "" then null else $server_image_digest end),
       rendered_prompt: $prompt,
       artifacts: {log: $log, client_json: $client_json, analyze: $analyze_json,
                   work: $work, scratch: $scratch}}' >>"$MANIFEST"
@@ -1387,11 +1472,14 @@ jq -n -c \
   --arg claude_setting_sources "$CLAUDE_SETTING_SOURCES" \
   --arg pw_browser "$PW_BROWSER" \
   --arg api_keys_stripped "${STRIPPED_KEYS[*]:-none}" \
+  --arg server_image_digest "$SERVER_IMAGE_DIGEST" \
   '{type: "run_header", schema: $schema, run_id: $run_id, date: $date, server: $server,
     client: $client, model: $model, started_at: $started_at, trials_per_task: $trials,
     tasks: ($tasks | split(" ")), client_versions_at_start: $versions,
     interposer_version: $interposer, loadline_version: $loadline, suite_version: $suite,
-    server_pkg: $server_pkg, full_results: $full_results, max_turns: $max_turns,
+    server_pkg: $server_pkg,
+    server_image_digest: (if $server_image_digest == "" then null else $server_image_digest end),
+    full_results: $full_results, max_turns: $max_turns,
     trial_timeout_s: $timeout_s,
     isolation: {claude_disallowed_tools: ($claude_disallowed | split(",")),
                 claude_setting_sources: $claude_setting_sources,
@@ -1410,19 +1498,30 @@ write_footer() {
   local versions_end drift=false
   versions_end="$(versions_json)"
   if [[ "$versions_end" != "$VERSIONS_START" ]]; then drift=true; fi
+  # Re-resolved rather than reused: the whole reason server_image_digest
+  # exists is that a container server's tag is mutable (docs/tier2-task-
+  # suites.md 7.4), so re-checking here is what would actually catch the tag
+  # moving mid-run, the same way re-reading the client version here is what
+  # catches a mid-run auto-update.
+  local image_digest_end
+  image_digest_end="$(resolve_current_server_image_digest)"
+  if [[ "$image_digest_end" != "$SERVER_IMAGE_DIGEST" ]]; then drift=true; fi
   jq -n -c \
     --arg schema "$MANIFEST_SCHEMA" --arg run_id "$RUN_ID" \
     --arg ended_at "$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" \
     --argjson start "$VERSIONS_START" --argjson end "$versions_end" \
     --argjson drift "$drift" \
+    --arg image_digest_start "$SERVER_IMAGE_DIGEST" --arg image_digest_end "$image_digest_end" \
     --argjson executed "$EXECUTED" --argjson skipped "$SKIPPED" \
     --arg server "$SERVER" --arg client "$CLIENT" --argjson interrupted "${INTERRUPTED:-false}" \
     '{type: "run_footer", schema: $schema, run_id: $run_id, server: $server, client: $client,
       ended_at: $ended_at, client_versions_at_start: $start, client_versions_at_end: $end,
+      server_image_digest_at_start: (if $image_digest_start == "" then null else $image_digest_start end),
+      server_image_digest_at_end: (if $image_digest_end == "" then null else $image_digest_end end),
       version_drift: $drift, trials_executed: $executed, trials_skipped: $skipped,
       interrupted: $interrupted}' >>"$MANIFEST"
   if [[ "$drift" == true ]]; then
-    log "VERSION DRIFT: a client version changed mid-run; this run is not comparable"
+    log "VERSION DRIFT: a client version or the container image digest changed mid-run; this run is not comparable"
   fi
 }
 

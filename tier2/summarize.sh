@@ -177,7 +177,9 @@ def classify:
   version_drift: ([$footers[].version_drift] | any),
   drifted_runs: [$footers[] | select(.version_drift == true)
                  | {run_id, server, client,
-                    client_versions_at_start, client_versions_at_end}],
+                    client_versions_at_start, client_versions_at_end,
+                    server_image_digest_at_start: (.server_image_digest_at_start // null),
+                    server_image_digest_at_end: (.server_image_digest_at_end // null)}],
 
   superseded_trial_rows: $superseded,
 
@@ -186,6 +188,8 @@ def classify:
     | {run_id: $h.run_id, server: $h.server, client: $h.client,
        model: $h.model, suite_version: $h.suite_version,
        server_pkg: $h.server_pkg,
+       server_image_digest: ($h.server_image_digest // null),
+       server_image_digest_at_end: ($f.server_image_digest_at_end // null),
        interposer_version: $h.interposer_version,
        loadline_version: $h.loadline_version,
        started_at: $h.started_at, ended_at: ($f.ended_at // null),
@@ -212,6 +216,7 @@ def classify:
       model: $c[0].model,
       resolved_model: $c[0].resolved_model,
       check_kind: $c[0].check_kind,
+      server_image_digest: ($c[0].server_image_digest // null),
 
       trials: ($c | length),
       successes: ([$c[] | select(.success == true)] | length),
