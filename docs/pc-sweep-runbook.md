@@ -23,7 +23,7 @@ integration was enabled on the dev machine, closing the docker/podman gap
 noted above without needing the PC. `docker ps` confirmed working (server
 28.3.2). This pass completed the three container-backed servers:
 - **postgres**: throwaway `postgres:alpine` container, scanned, publishes
-  `status: unreachable` -- genuine server rot (unbounded `mcp[cli]>=1.5.0`
+  `status: unreachable`: genuine server rot (unbounded `mcp[cli]>=1.5.0`
   dependency pulls incompatible `mcp` 2.0.0), not an infra failure. See
   section 2 and section 4 item 13.
 - **jaeger**: throwaway `jaegertracing/all-in-one` container, scanned,
@@ -127,7 +127,7 @@ kubeconfig resolution is either the `--kubeconfig` CLI flag or, when not
 provided, automatic resolution ("in-cluster, default location, etc."). That
 automatic path is client-go's standard clientcmd loading rules, which honor
 the `KUBECONFIG` environment variable ahead of the default `~/.kube/config`
-path -- the same convention every kubectl-family tool uses, not something
+path, the same convention every kubectl-family tool uses, not something
 specific to this server. `internal/sweep/acquire.go`'s `credential()` helper
 only passes one env var through to the launched subprocess, so `KUBECONFIG`
 is the convention that fits it cleanly; no `--kubeconfig` flag needed.
@@ -330,7 +330,7 @@ run): `docker run -d --name loadline-pg -e POSTGRES_PASSWORD=<random> -p
 127.0.0.1:5433:5432 postgres:alpine`, confirmed ready via `pg_isready`, then
 `DATABASE_URI=postgresql://postgres:<pw>@127.0.0.1:5433/postgres uvx
 postgres-mcp==0.3.0 --access-mode=unrestricted`. Result: **`status:
-unreachable`**, not a container/credential problem -- the container was
+unreachable`**, not a container/credential problem: the container was
 healthy and reachable throughout. `postgres-mcp` 0.3.0 declares `mcp[cli]
 >=1.5.0` with no upper bound
 (https://pypi.org/pypi/postgres-mcp/0.3.0/json); a clean `uvx` resolve pulls
@@ -470,7 +470,7 @@ tasks; listed again here so this is a complete checklist on its own.
     (https://pypi.org/pypi/postgres-mcp/json); install/run via `uvx
     postgres-mcp --access-mode=unrestricted`. Recorded in `servers.yaml`.
     Scanned live against a throwaway `postgres:alpine` container: publishes
-    `status: unreachable`. Not a container or credential problem -- the
+    `status: unreachable`. Not a container or credential problem: the
     server itself fails to import because its unbounded `mcp[cli]>=1.5.0`
     dependency resolves to an incompatible `mcp` 2.0.0. Same server-rot
     pattern as fetch (section 3); no pin applied, by the same Option-A
@@ -548,8 +548,14 @@ exchanges for five servers, will run longer: budget 20 to 40 minutes for a
 first cold run. A rerun with warm caches and running containers should be
 well under 10 minutes.
 
+Each npm or pypi server now costs one extra process start for the dependency
+listing of methodology 1.1. It runs before the launch and performs the resolve
+the launch then reuses, so on a cold cache it moves the download cost earlier
+rather than paying it twice; budget a few extra seconds per stdio server, not a
+second download.
+
 **What a healthy `data/latest.json` looks like:**
-- `schema_version: "0.1"`, `sample: false` (real data, not the site's
+- `schema_version: "0.3"`, `sample: false` (real data, not the site's
   placeholder sample).
 - `run.date` matching the run date.
 - 15 entries under `servers`, one per id in `servers.yaml`'s `servers:` list
@@ -564,6 +570,16 @@ well under 10 minutes.
   needed); `counts.claude.available` and `counts.gemini.available` are
   `true` only if the corresponding key was exported and the call succeeded,
   `false` with a reason otherwise.
+- Each row carries `acquisition.resolved_deps` (methodology 1.1). On an npm
+  or pypi row expect `method` `npx_node_modules_walk` or
+  `uvx_importlib_metadata`, an `env` path, a `packages` list, and an `sdk`
+  entry naming the MCP SDK version that resolve produced. On a docker,
+  remote, or binary row expect a `method` of `container_image` or
+  `not_applicable` and a `note` saying why there is nothing to list. A
+  `resolved_deps.error` is a listing that failed, not a failed row: the
+  measurement beside it stands. This block is what explains an
+  `unreachable` row that starts fine on a later resolve, so check it before
+  rerunning anything that failed.
 
 **The rule: failures are kept, never hand-fixed to make the run look
 clean.** If a server comes back `unreachable`, `auth`, or `partial_surface`,

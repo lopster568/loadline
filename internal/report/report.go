@@ -14,10 +14,10 @@ import (
 )
 
 // SchemaVersion is the version of the published JSON shape.
-const SchemaVersion = "0.2"
+const SchemaVersion = "0.3"
 
 // MethodologyVersion tracks docs/methodology-v0.md.
-const MethodologyVersion = "0.2.0"
+const MethodologyVersion = "0.3.1"
 
 // HarnessVersion is stamped on every cell. Results are never compared across
 // harness versions (methodology 9).
@@ -133,6 +133,45 @@ type Acquisition struct {
 	EnvPassed  []string  `json:"env_passed,omitempty"`
 	Pinned     bool      `json:"pinned"`
 	AcquiredAt time.Time `json:"acquired_at"`
+	// ResolvedDeps is what the resolver produced for this acquisition, which
+	// Pinned does not answer: Pinned says whether the server package itself
+	// carried a version, and says nothing about the dependency versions the
+	// resolver chose underneath it. A server declaring an unbounded dependency
+	// on the MCP SDK can start on one resolve and die at import on the next
+	// with an identical Pinned value, so a row without this field cannot
+	// explain its own failure (methodology 1.1).
+	ResolvedDeps *ResolvedDeps `json:"resolved_deps"`
+}
+
+// ResolvedDeps is the dependency set one acquisition resolved to. Method and
+// Command say how it was read, so a reader can rerun the same listing; Env is
+// the environment it was read from, which for a package runner is the same
+// directory the server process runs out of and therefore checkable against a
+// path in a traceback.
+type ResolvedDeps struct {
+	Method  string   `json:"method"`
+	Command []string `json:"command,omitempty"`
+	Env     string   `json:"env,omitempty"`
+	// SDK is the MCP SDK entry lifted out of Packages, because that is the one
+	// version a reader of an unreachable row looks for first. It is null when
+	// the resolved set carries no SDK package, which includes every acquisition
+	// kind that resolves nothing locally.
+	SDK      *DepPackage  `json:"sdk"`
+	Packages []DepPackage `json:"packages,omitempty"`
+	// Note carries the reason when there is no listing to record. A bare null
+	// would say a listing is missing without saying why it was never possible.
+	Note string `json:"note,omitempty"`
+	// Error records a listing that was attempted and failed. A failed listing
+	// is data on the row, never a failed acquisition: the server is measured
+	// either way.
+	Error string `json:"error,omitempty"`
+}
+
+// DepPackage is one resolved distribution: the name as its registry spells it
+// and the version the resolver returned.
+type DepPackage struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
 }
 
 // Negotiation records which revision branch the probe took.

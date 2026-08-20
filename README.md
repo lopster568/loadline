@@ -142,10 +142,11 @@ fixtures are in `tier2/`.
 
 Open items, stated rather than deferred:
 
-- The harness records whether a server's own package was pinned, but not the
-  resolved versions of its dependencies. That is the instrument gap behind the
-  `fetch` row, and recording it is committed for the next monthly run per
-  corrections log entry 2.
+- The harness now records the resolved dependency versions per acquisition, in
+  `acquisition.resolved_deps` (methodology 1.1, added in 0.3.0), which closes
+  the instrument gap behind the `fetch` row per corrections log entry 2. The
+  published 2026-08-18 rows predate it and carry no resolve; the next monthly
+  run is the first to carry the field.
 - Tool search and code mode totals are modeled from published client behaviour,
   not measured against those clients. They are labelled MODELED everywhere they
   appear.

@@ -24,10 +24,19 @@ import (
 // exercised end to end against a real subprocess.
 const fakeServerFlag = "-loadline-fake-server"
 
+// fakeSleepFlag turns the test binary into a process that outlives any budget
+// a caller gives it, so a listing that will not finish can be exercised
+// without a package runner, a network or a real resolve.
+const fakeSleepFlag = "-loadline-fake-sleep"
+
 func TestMain(m *testing.M) {
 	for _, a := range os.Args[1:] {
 		if a == fakeServerFlag {
 			runFakeServer()
+			os.Exit(0)
+		}
+		if a == fakeSleepFlag {
+			time.Sleep(time.Minute)
 			os.Exit(0)
 		}
 	}
@@ -530,7 +539,7 @@ func TestAcquisitionRecordKeepsTheScratchToken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolve: %v", err)
 	}
-	acq := acquisitionOf(l, nil)
+	acq := acquisitionOf(l, nil, nil)
 	if fmt.Sprint(acq.Args) != fmt.Sprint([]string{"-y", "@modelcontextprotocol/server-filesystem", scratchToken}) {
 		t.Errorf("recorded args = %v, want the reproducible form", acq.Args)
 	}

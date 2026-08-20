@@ -135,9 +135,6 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 		}
 	}()
 
-	serverCtx, cancel := context.WithTimeout(ctx, r.cfg.ServerTimeout)
-	defer cancel()
-
 	l, err := resolveLaunch(s, r.cfg.ScratchDir)
 	if err != nil {
 		row.Status = report.StatusUnreachable
@@ -148,7 +145,10 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 	if err != nil {
 		row.Status = report.StatusAuth
 		row.Error = err.Error()
-		row.Acquisition = acquisitionOf(l, nil)
+		row.Acquisition = acquisitionOf(l, nil, &report.ResolvedDeps{
+			Method: methodNotApplicable,
+			Note:   "no resolve was attempted: the row failed on a missing credential before acquisition",
+		})
 		return row
 	}
 
@@ -156,7 +156,26 @@ func (r *Runner) runOne(ctx context.Context, s corpus.Server) (row report.Server
 	if envName != "" && envValue != "" {
 		envPassed = []string{envName}
 	}
-	row.Acquisition = acquisitionOf(l, envPassed)
+
+	// The dependency listing runs before the launch, not after. It resolves the
+	// launch's own requirement set into the package runner's cache, and the
+	// launch that follows reuses that same cache entry, so the versions on the
+	// row are the versions the server process imports rather than a second
+	// resolve's answer minutes later. Methodology 1.1: the pin alone cannot
+	// explain a row that failed on a dependency the resolver chose.
+	//
+	// It is handed the sweep context and takes its own step budget out of it,
+	// and the server budget below is started only once it has returned. The
+	// listing is instrumentation on the acquisition, so it may not spend the
+	// measurement's window: a listing that runs to its own timeout is recorded
+	// in resolved_deps.error and the dial that follows still opens on a full
+	// ServerTimeout, which is the same window the row would have had if no
+	// listing existed.
+	deps := resolveDeps(ctx, l.deps, r.cfg.StepTimeout)
+	row.Acquisition = acquisitionOf(l, envPassed, deps)
+
+	serverCtx, cancel := context.WithTimeout(ctx, r.cfg.ServerTimeout)
+	defer cancel()
 
 	tr, err := r.dial(serverCtx, l, envName, envValue)
 	if err != nil {
@@ -422,16 +441,17 @@ func anthropicTools(counted []canon.Tool) []tokens.AnthropicTool {
 	return out
 }
 
-func acquisitionOf(l launch, envPassed []string) *report.Acquisition {
+func acquisitionOf(l launch, envPassed []string, deps *report.ResolvedDeps) *report.Acquisition {
 	return &report.Acquisition{
-		Transport:  l.transport,
-		Source:     l.source,
-		Command:    l.command,
-		Args:       l.recorded,
-		Endpoint:   l.endpoint,
-		EnvPassed:  envPassed,
-		Pinned:     l.pinned,
-		AcquiredAt: time.Now().UTC(),
+		Transport:    l.transport,
+		Source:       l.source,
+		Command:      l.command,
+		Args:         l.recorded,
+		Endpoint:     l.endpoint,
+		EnvPassed:    envPassed,
+		Pinned:       l.pinned,
+		AcquiredAt:   time.Now().UTC(),
+		ResolvedDeps: deps,
 	}
 }
 

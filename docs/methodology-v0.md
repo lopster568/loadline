@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Methodology version | 0.2.0 (current; applies to runs from 2026-08-17; no public release yet) |
-| Date | 2026-08-17 |
+| Methodology version | 0.3.1 (current; applies to runs from 2026-08-20). PATCH: sections 3.2 and 3.3 state what would move a mode label; no figure moves. 0.3.0 was the MINOR before it: every acquisition records the dependency set the resolver produced (section 1.1). Rows published before 0.3.0 carry the stamp they were produced under and do not carry the new field. |
+| Date | 2026-08-20 |
 | Status | Draft for review |
 | Scope | Tier 1 static sweep. Tier 2 dynamic runs are specified separately. |
 
@@ -17,7 +17,24 @@ Two labels appear on every published cell. **MEASURED**: the number came out of 
 
 ### 1.1 Server acquisition
 
-Each server is pinned before the run: a released package version (npm, PyPI, container digest) for stdio servers, or the endpoint URL plus the self-reported `serverInfo.version` for remote servers. Pin, acquisition source, and timestamp go in the run record. Servers are installed from their published distribution channel, never from a working tree. `serverInfo` is self-reported and unverified by the protocol ([MCP 2026-07-28, Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)), so remote servers with no package pin are marked unverified.
+Each server is pinned before the run: a released package version (npm, PyPI, container digest) for stdio servers, or the endpoint URL plus the self-reported `serverInfo.version` for remote servers. Pin, acquisition source, resolved dependency set, and timestamp go in the run record. Servers are installed from their published distribution channel, never from a working tree. `serverInfo` is self-reported and unverified by the protocol ([MCP 2026-07-28, Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover)), so remote servers with no package pin are marked unverified.
+
+**Resolved dependency versions.** The pin covers the server package and nothing beneath it. A server declaring an unbounded dependency, `mcp>=1.1.3` for instance, gets whichever version the resolver returns at acquisition time, so two acquisitions an hour apart can import different code while `acquisition.pinned` reads the same on both. Every acquisition therefore records what the resolver actually produced, in `acquisition.resolved_deps`, by kind:
+
+| Kind | `method` | How the set is read |
+| --- | --- | --- |
+| PyPI, uvx | `uvx_importlib_metadata` | `uvx --from <spec> [--with <constraint> ...] python -c <importlib.metadata listing>` |
+| npm, npx | `npx_node_modules_walk` | `npx -y -p <spec> node -e <node_modules walk>` |
+| Container image | `container_image` | Nothing is read: the image ships its resolved dependencies in its own layers |
+| Remote, binary | `not_applicable` | Nothing is resolved locally at acquisition time |
+
+The exact argument vector is recorded in `resolved_deps.command`, so the listing is rerunnable rather than described.
+
+**The listing reads the environment the server runs from, not a second resolve.** For both package runners the requirement set given to the listing is the launch's own set: the same package spec, the same `--with` constraints. uv keys its cached environment on that set and npx keys its cache directory on the package spec, so the listing resolves into the same place the launch is then started from. The listing runs first for that reason: it performs the resolve, and the launch reuses it. `resolved_deps.env` records the environment path, `sys.prefix` for uvx and the npx cache directory for npx, which is the same path a traceback out of the failing server cites, so a reader can confirm the list and the failure came from one environment.
+
+**What is published per row.** The full resolved set as name and version pairs, plus a convenience `sdk` entry lifted out of it: `mcp` on PyPI, `@modelcontextprotocol/sdk` on npm. The SDK gets its own field because it is the version a reader of an `unreachable` row looks for first, and scanning a 130-entry list for it is not a reading experience an audit should require.
+
+**A failed listing is data, never a failed acquisition.** The listing is instrumentation on the acquisition and observes it; it cannot fail it. A listing that will not run, or output that will not parse, publishes the error in `resolved_deps.error` and the server is measured exactly as it otherwise would be. Where there is nothing to list, the field records the reason in `resolved_deps.note` rather than a bare null, because a null says a listing is absent without saying why it was never possible.
 
 **OPEN:** whether container digests are required for all stdio servers in v1, or only for servers without a reproducible package version.
 
@@ -120,11 +137,15 @@ C_progressive = C_stub + sum(C_tool_i for i in retrieved_k)
 
 **Retrieval simulation.** Which tools land in the k is simulated with BM25 over each tool's `name`, `title`, and `description` concatenated, indexed over the server's own surface, with BM25 parameters pinned and recorded. The composite total is MODELED because `k` is an assumption; the per-tool costs inside it are MEASURED.
 
+**What would move this label, and why Tier 2 does not.** The total converts to MEASURED only when two things are read off a client that is actually running progressive disclosure: a per-session figure that isolates this mode's tool-definition footprint, and the `k` that client retrieved. Neither is available. The Tier 2 interposer measures traffic on the MCP wire and cannot see what a client injected into the model's context as tool definitions (`tier2-task-suites.md` 4.3), and neither client the harness drives exposes a usable substitute: Claude Code reports `usage.cache_creation_input_tokens` and `usage.cache_read_input_tokens` for the whole session, and Gemini CLI reports `stats.models.<id>.tokens.prompt` and `.cached`, and all four contain the system prompt and the conversation as well as the tool definitions. `C_stub` is likewise still the published flat figure and not a measurement: the stub format is not published, which is the branch of the rule above that reads MODELED. The 90-trial run of 2026-08-18 therefore leaves this label exactly where it was.
+
 **OPEN:** the BM25 retrieval simulation described above is still not wired into this mode. The BM25 index itself now exists in the harness and is published for retrievability (section 5), but `PerToolAvg` here remains a mean over all measured tool costs rather than over a simulated retrieval set. Wiring the two together requires deciding which query set drives the simulation, and the derived queries of section 5 are same-source by construction, so they would bias the retrieval set toward the tools that describe themselves best rather than toward the tools a session actually needs.
 
 ### 3.3 Code mode (MODELED)
 
-The client expresses the whole API as a compact programmatic interface rather than as tool schemas, at roughly 1k tokens for a full surface. **Every code-mode figure carries a "modeled, not measured" label until Tier 2 validates it against real call traffic**, removed per server and only once a Tier 2 run for that server exists.
+The client expresses the whole API as a compact programmatic interface rather than as tool schemas, at roughly 1k tokens for a full surface. **Every code-mode figure carries a "modeled, not measured" label, and the label comes off a server only when a run measures that server's code-mode context footprint directly.**
+
+**The label rule, corrected in 0.3.1.** Until 0.3.1 this paragraph made the condition the existence of a Tier 2 run for the server. That is the wrong condition and it became live on 2026-08-18, when Tier 2 ran all three of its servers for the first full 90-trial suite. That run measures no code-mode figure at all, for two independent reasons: neither client it drives offers a code mode, so no trial was ever in one, and the interposer sees MCP wire traffic rather than model context (`tier2-task-suites.md` 4.3), so it could not have read the footprint even from a client that did. Read literally, the old rule would have licensed relabelling `filesystem`, `playwright` and `github` as MEASURED on the strength of data that says nothing about code mode. No published figure ever moved under it, because the rule was corrected before a run could trigger it.
 
 **Clamp.** The flat published-behaviour estimate (~1k tokens) is capped at the server's own naive count from 3.1: a surface whose full schema set already serializes to fewer tokens than the flat estimate is reported at its own naive count instead. This is the one harness addition to the published behaviour, and it only binds on surfaces already smaller than the flat estimate. Its purpose is narrow: code mode must never be reported as costing more than the schemas it replaces. The label stays "modeled" whether or not the clamp binds.
 
@@ -308,7 +329,7 @@ Every release classifies each delta into one of the three; a release with unclas
 
 1. **Per-credential tool surfaces.** The specification permits the tool set to vary by the authorization presented, so a server exposing more tools on a paid tier publishes a different number under our credential than under yours. Auth scope and tier are published per row, but this is the largest source of legitimate disagreement with our figures.
 2. **Tokenizer drift.** Counts shift between model releases by amounts large enough to swamp real server changes. Stamping and delta separation contain that without removing it: two cells with different model stamps answer different questions.
-3. **Modeled modes are not measured.** Code mode is entirely modeled in v0; progressive disclosure has measured inputs and a modeled total because `k` is an assumption. Neither should be cited as a measurement.
+3. **Modeled modes are not measured.** Code mode is entirely modeled in v0; progressive disclosure has measured inputs and a modeled total because `k` is an assumption. Neither should be cited as a measurement. The 90-trial Tier 2 run of 2026-08-18 does not change this. It measures MCP wire traffic, per-trial session cost and task outcomes, none of which is a per-mode context footprint; see 3.2 and 3.3 for what would.
 4. **Client serialization is unaudited** (see 3.1). The naive column approximates client behaviour rather than reproducing any specific client.
 5. **Task-mix dependence.** Tier 2 measures what one chosen set of scripted tasks costs; a different mix produces different per-call flows for the same server. Suites are published, but none is neutral.
 6. **Small Tier 2 n.** Tier 2 covers 3 servers: enough to keep Tier 1 honest on a capability axis, not enough to generalize. Findings are absolute counts against named servers, never rates.
@@ -316,10 +337,33 @@ Every release classifies each delta into one of the three; a release with unclas
 8. **Hygiene dimensions are unranked.** The six dimensions are averaged unweighted because no outcome measure exists to weight them against (see section 6). A server can score well on all six and still be hard for a model to use, and the mean asserts only that six measurable things were measured.
 9. **Static enumeration is not usage.** Tier 1 measures what a server puts in front of a model before any work happens, not whether the tools work.
 10. **Selection.** The corpus is about 15 curated servers chosen under a published selection rule. Coverage is not a claim this project makes.
+11. **The dependency listing is a second process, not a readout from the server.** Section 1.1's listing resolves the launch's requirement set into the same package-runner cache the launch reuses, and records the environment path so the two can be checked against each other, but it does not read the metadata out of the running server process. A resolver answering differently between the listing and the launch, on a cache eviction or an index change inside that window, would put the two out of step; the recorded environment path is what would show it.
 
 ---
 
 ## Changelog
+
+### 0.3.1, 2026-08-20
+
+**PATCH. Sections 3.2 and 3.3 state what would move a mode label. No figure moves and no cell is republished.** The published rows keep the stamp they were produced under, which is correct: a PATCH leaves them comparable by definition (section 9). This entry was drafted against 0.2.0 and lands as a PATCH on 0.3.0, because 0.3.0 shipped while it was in flight; nothing in it depends on which of the two it sits on.
+
+The first full Tier 2 run landed on 2026-08-18: 90 trials, suite 1.0.1, three servers by two clients by fifteen tasks by three trials, 87 successes, no version drift and no `harness_suspect` trial. It was read against sections 3.2 and 3.3 to see what it converts from MODELED to MEASURED. The answer is nothing, and finding that out exposed a defect in how 3.3 stated its own rule.
+
+1. **3.3's label rule was keyed on the wrong thing.** It removed the code-mode label "per server and only once a Tier 2 run for that server exists". A Tier 2 run for all three servers now exists and measures nothing about code mode, so the rule as written would have licensed three MEASURED relabels on the strength of unrelated data. The condition is now the measurement, not the run. Nothing moved under the old rule; it is corrected before anything could.
+2. **3.2 now names the two observables the conversion needs** and records that neither client exposes either one. Claude Code's and Gemini CLI's usage blocks both report session-wide input and cache totals that contain the system prompt and the conversation, so neither isolates a tool-definition footprint, and the interposer cannot supply it because it watches the MCP wire rather than model context (`tier2-task-suites.md` 4.3).
+3. **Known limitation 3 records the same finding**, so a reader who only reads the limitations does not come away thinking Tier 2 settled it.
+
+**What Tier 2 does publish, and where.** The one Tier 2 quantity that is unambiguously measured and attributable to a named server is call traffic: the arguments of every `tools/call` request plus the results the server returned, counted with `o200k_base` so it shares this document's token basis. It is published in `data/tier2-published.json` and shown on the site as its own block, never summed into a stack total, because wire traffic and tool-surface footprint are different costs. That figure is specified by `tier2-task-suites.md` section 4, not by this document, so it is not a new metric under section 9 here and does not carry this version past a PATCH.
+
+### 0.3.0, 2026-08-20
+
+**MINOR. Every acquisition now records the dependency set the resolver produced, in `acquisition.resolved_deps` (section 1.1). No figure moves and no cell is republished.** Section 9 makes a new column a MINOR bump because prior cells stay valid, which is the case here: no count, hash, mode figure, retrievability score or hygiene grade is computed differently, and the only difference at row level is a field older rows do not have at all. PATCH was rejected: PATCH is for corrections with no effect on any number, and this corrects no prior figure, it adds an observation the harness was not making. The published run schema goes to `0.3` alongside. Rows published before this version lack the field, which reads as "this release did not record it", the same rule section 9 already states for `retrievability` and `hygiene`.
+
+1. **The gap this closes.** The 2026-08-18 `fetch` row published `unreachable` after the server died at import at 15:38 UTC. Re-checked at approximately 16:45 UTC the same day on the same machine, a clean resolve started fine, because `mcp-server-fetch` declares `mcp>=1.1.3` and the two resolves returned different SDK versions. `acquisition.pinned` read `false` on both and could not tell them apart: it reports whether the server package carried a version, never what the resolver chose underneath it. The run artifact therefore could not explain its own row. Corrections log entry 2 records the row and commits the instrument.
+2. **What is recorded, per acquisition kind**, is in the table in section 1.1: an `importlib.metadata` listing from inside the uvx environment, a `node_modules` walk of the tree npx installed, the image itself for a container, and a stated reason for the kinds that resolve nothing locally. The listing's argument vector travels on the row, so a reader reruns it rather than reconstructing it.
+3. **The listing runs before the launch**, so the resolve it performs is the resolve the launch reuses, rather than a second answer minutes later. The environment path is recorded on both the PyPI and npm paths and is the path the server's own traceback cites, which is what ties a recorded version to an observed failure.
+4. **Failure as data extends to the instrument.** A listing that will not run records its error on the row and changes nothing else about the measurement. An acquisition that resolves nothing records why in a note, not a null.
+5. **Verified on 2026-08-20** against the two servers whose resolvers the harness uses: `fetch` reports `mcp` 1.29.0 in the uv environment the server process runs from, which is the version the corrections-log re-check found, and `filesystem` reports `@modelcontextprotocol/sdk` 1.30.0 out of the npx tree. The `filesystem` acquisition on that machine failed to launch for an unrelated environment reason and still carried its full resolved set, which is the property the field exists for: a row that cannot start can now say what it was starting.
 
 ### 0.2.0, 2026-08-17
 

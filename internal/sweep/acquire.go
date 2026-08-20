@@ -19,6 +19,10 @@ type launch struct {
 	recorded []string
 	endpoint string
 	pinned   bool
+	// deps is how this acquisition's resolved dependency set is to be read.
+	// It is built here, beside the launch it must match, because a listing
+	// resolved from a different requirement set is not this launch's listing.
+	deps depsPlan
 }
 
 // scratchToken is substituted with the per-run scratch directory in launch
@@ -46,6 +50,10 @@ func resolveLaunch(s corpus.Server, scratch string) (launch, error) {
 				transport: "remote",
 				source:    "endpoint:" + *s.Endpoint,
 				endpoint:  *s.Endpoint,
+				deps: depsPlan{
+					method: methodNotApplicable,
+					note:   "remote transport: nothing is resolved locally, and the protocol exposes no dependency set for the server behind the endpoint",
+				},
 			}, nil
 		}
 	}
@@ -74,6 +82,7 @@ func stdioLaunch(s corpus.Server) (launch, bool) {
 		l.command = "npx"
 		l.args = append([]string{"-y", spec}, pkg.Args...)
 		l.pinned = pkg.Version != ""
+		l.deps = npmDepsPlan(spec)
 	case "pypi", "uv", "uvx":
 		if pkg.Name == "" {
 			return launch{}, false
@@ -91,6 +100,7 @@ func stdioLaunch(s corpus.Server) (launch, bool) {
 		l.args = append(l.args, spec)
 		l.args = append(l.args, pkg.Args...)
 		l.pinned = pkg.Version != ""
+		l.deps = pypiDepsPlan(spec, pkg.With)
 	case "docker":
 		if pkg.Image == "" {
 			return launch{}, false
@@ -99,6 +109,10 @@ func stdioLaunch(s corpus.Server) (launch, bool) {
 		l.command = "docker"
 		l.args = append([]string{"run", "--rm", "-i", pkg.Image}, pkg.Args...)
 		l.pinned = strings.Contains(pkg.Image, "@sha256:")
+		l.deps = depsPlan{
+			method: methodImage,
+			note:   "the image is the dependency pin: its layers ship the resolved dependencies, so nothing is resolved at acquisition time. acquisition.pinned reports whether the image reference is a digest rather than a mutable tag",
+		}
 	case "binary":
 		if pkg.Command == "" {
 			return launch{}, false
@@ -107,6 +121,10 @@ func stdioLaunch(s corpus.Server) (launch, bool) {
 		l.command = pkg.Command
 		l.args = append([]string(nil), pkg.Args...)
 		l.pinned = pkg.Version != ""
+		l.deps = depsPlan{
+			method: methodNotApplicable,
+			note:   "binary launch: the command is already on the machine and no resolver runs at acquisition time",
+		}
 	default:
 		return launch{}, false
 	}
