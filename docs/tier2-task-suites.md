@@ -2,15 +2,37 @@
 
 | Field | Value |
 | --- | --- |
-| Task-suite version | 1.0.1 (PATCH: section 4.1 states how `client_error` is detected; see the changelog below) |
-| Date | 2026-08-19 |
-| Status | Draft, for Phase 2 sign-off (PRD.md 10, Open Decision 5). All three suites shaken down on both clients on 2026-08-18, one trial per cell, and the Gemini side re-shaken down on 2026-08-19 against Gemini CLI 0.55.1 after the client upgrade; no full 90-trial run yet. No cell is blocked: the playwright x Gemini cell that OPEN 11 held open is measurable again and the full run is 90 trials. |
+| Task-suite version | 1.0.3 (PATCH: section 4.1 states that a passed success check outranks `client_error`; see the changelog below) |
+| Date | 2026-08-20 |
+| Status | Draft, for Phase 2 sign-off (PRD.md 10, Open Decision 5). All three suites shaken down on both clients on 2026-08-18, one trial per cell, and the Gemini side re-shaken down on 2026-08-19 against Gemini CLI 0.55.1 after the client upgrade. **The first full run is done**: 2026-08-18, suite 1.0.1, 90 trials, 87 successes, Claude Code 45 of 45 and Gemini CLI 42 of 45, no version drift and no `harness_suspect` trial. No cell is blocked. |
 | Scope | Tier 2 dynamic runs only. Tier 1 static sweep is specified in `methodology-v0.md`. |
 | Governs | Task selection, fixtures, protocol, and metrics for the 3-server dynamic tier (PRD.md 2.4) |
 
 This document is the separate Tier 2 specification that `methodology-v0.md`'s scope line points to. It defines, concretely enough for a build agent to implement without a new design decision, the servers, the 15 tasks, the run protocol, the extracted metrics, and the versioning discipline for Tier 2.
 
 ### Changelog
+
+**1.0.3, 2026-08-20. PATCH: section 4.1 now states that a passed success check outranks `client_error`.** No prompt, fixture or success criterion moves, so every 1.0.2 result stays comparable across the bump.
+
+The Tier 2 first full run (suite 1.0.1, 2026-08-18) recorded GH-03/gemini/t3 as `client_error`: a non-null Gemini `error` object, condition 2 of the 1.0.1 detection rule. The trial's own state check had already passed, `exactly one open issue titled tier2-probe-78a3e055 (visible on poll 1)`, and the interposer log shows one `tools/call` frame, `issue_write`. The client reported its own failure and the server still received and answered the call. The runner checked `client_error` before the success check and bucketed the trial as an infrastructure fault on a trial that plainly succeeded.
+
+Ruling: a passed success check outranks `client_error`. A trial that answers is not "errored out before answering" regardless of what the client's own status object says about itself. Section 4.1 now states the precedence: the success check runs first, and `client_error` applies only when it did not pass. The tool-call-frame split this document has always used is otherwise unchanged: a passed check with at least one `tools/call` frame is `tool_use_success`, with zero it is `answered_without_tools`. The non-null `error` object is not discarded, it is recorded on the trial as `client_reported_error`, so a trial can carry both a `client_reported_error` flag and a `tool_use_success` classification, and neither hides the other.
+
+The reclassification was mechanical: `tier2/run-suite.sh` reorders the existing precedence and `tier2/summarize.sh` recomputes `classification` from each trial row's own recorded fields (success, tool_calls, `client_json_valid`, the Gemini `error` object, the matched refusal markers) rather than trusting the value stored on the row, which is what let both already-recorded runs (2026-08-18 and 2026-08-19) reclassify without a single trial being re-run. Exactly one trial moved: GH-03/gemini/t3, `client_error` to `tool_use_success`. The suite 1.0.1 Gemini `tool_use_success` count for the full run moves from 41 of 45 to 42 of 45, and `client_error` from 1 of 45 to 0 of 45; every other cell, in both days' data, is unchanged. This does not touch the `successes` figure in the Status line above: that field counts the trial's own state check, which had already recorded GH-03/gemini/t3 as a success before this bump.
+
+This is the same class of defect as the 1.0.1 entry below, in the same direction: a narrower rule than section 4.1 intended, this time in the ordering rather than the detection.
+
+*Decided by the session under the operator's standing instruction; veto window open.*
+
+**1.0.2, 2026-08-20. PATCH: the section 4 metrics table no longer claims a schema-attributable figure the harness does not capture.** No prompt, fixture or success criterion moves, so every 1.0.0 and 1.0.1 result stays comparable across the bump. The standing rows carry 1.0.1 and stay where they are; the resume and cell keys of sections 6 and 7.5 are untouched by a metrics-table correction.
+
+Section 4's first row specified "tokens per completed task, schema-attributable", labeled it MEASURED, and gave its source as the client's usage at session start "or the corresponding Tier 1 naive/progressive-mode figure for that server and client mode if the client does not expose a usable session-start figure". Both halves were wrong in the same direction.
+
+Neither client exposes a session-start figure that isolates a tool-definition footprint. Claude Code's `--output-format json` carries `usage.input_tokens`, `usage.cache_creation_input_tokens` and `usage.cache_read_input_tokens` for the whole session; Gemini CLI carries `stats.models.<id>.tokens.prompt`, `.input` and `.cached`. Every one of those contains the system prompt and the conversation alongside the tool definitions, and no field separates them. So the fallback clause is the clause that always fires, and what it falls back to is a Tier 1 figure that is MODELED for two of the three client modes. A MODELED Tier 1 figure copied into a Tier 2 table labeled MEASURED is how a modeled number gets relabeled by transitivity, which is the one thing section 4.3 exists to prevent, and the row said it in the table above 4.3's own warning.
+
+The harness never recorded this metric, so no published figure moves and no summary changes. The row now reads `NOT CAPTURED` and names what would be needed. This is the same class of defect as the GH-05 entry in 1.0.0: the spec claiming something the runner never did.
+
+*Decided by the session under the operator's standing instruction; veto window open.*
 
 **1.0.1, 2026-08-19. PATCH: section 4.1 now states how a `client_error` is detected.** No prompt, fixture or success criterion moves, so every 1.0.0 result stays comparable across the bump.
 
@@ -228,11 +250,13 @@ This rule is stated here, not left implicit, because this project has already ta
 
 ## 4. Metrics extracted
 
-Every metric below is labeled **MEASURED**. Nothing in Tier 2 is MODELED; that distinction exists in Tier 1 (`methodology-v0.md` section 3) because Tier 1 projects client behavior from a published figure. Tier 2 runs the actual client against the actual server and records what happened, which is the entire reason Tier 2 exists: to validate Tier 1's modeled figures against real call traffic, not to model anything of its own (`methodology-v0.md` 3.3).
+Every metric Tier 2 records is labeled **MEASURED**. Nothing in Tier 2 is MODELED; that distinction exists in Tier 1 (`methodology-v0.md` section 3) because Tier 1 projects client behavior from a published figure. Tier 2 runs the actual client against the actual server and records what happened, which is the entire reason Tier 2 exists: to validate Tier 1's modeled figures against real call traffic, not to model anything of its own (`methodology-v0.md` 3.3).
+
+One row of the table is `NOT CAPTURED` rather than MEASURED. A metric this document specifies but the harness cannot record is listed with that label rather than dropped, so a reader can see the hole and so no downstream consumer can read the table as an inventory of available figures.
 
 | Metric | Definition | Source | Label |
 | --- | --- | --- | --- |
-| Tokens per completed task, schema-attributable | Tokens consumed by tool-definition schemas loaded into the client's context for this session, not by call traffic | Client-reported usage at session start, or the corresponding Tier 1 naive/progressive-mode figure for that server and client mode if the client does not expose a usable session-start figure | MEASURED |
+| Tokens per completed task, schema-attributable | Tokens consumed by tool-definition schemas loaded into the client's context for this session, not by call traffic | Would have to be a per-session figure from the client's own usage output that isolates the tool-definition footprint. Neither client exposes one, so the harness records nothing for this row; see 4.3 and the 1.0.2 changelog entry | NOT CAPTURED |
 | Tokens per completed task, call-response | Tokens consumed by the actual `tools/call` request and response traffic during the task | Computed from the interposer JSONL: `params_full` of each `tools/call` request plus `result_summary` (or `result_full` under `--full-results`) of each response, counted with the `o200k_base` tokenizer per `methodology-v0.md` 1.6, so the number is comparable to Tier 1's token basis | MEASURED |
 | Tool calls per task | Count of `tools/call` request frames in the trial's JSONL | Interposer JSONL, `method == "tools/call"` frames | MEASURED |
 | Argument sizes | Byte size of `params_full` per `tools/call` request; reported per call and as a per-task total | Interposer JSONL, `size_bytes` and `params_full` on request frames | MEASURED |
@@ -251,6 +275,8 @@ This is the OPEN 7 rule, stated mechanically because the metric it feeds is othe
 The second condition is the one that was missing until 2026-08-19. A client can return a well-formed document, a full set of successful tool calls, correct token accounting, and an empty answer because the API stream failed; on JSON validity alone that reads as a trial the model got wrong. The distinction matters most exactly where it is hardest to see, which is a trial that did reach the server and did everything right up to the last step.
 
 Condition 2 changes the classification only. The trial's token, cache and tool-call figures are still recorded in full, because they describe traffic that genuinely happened and are the evidence for calling it an infrastructure fault in the first place.
+
+**A passed success check outranks `client_error`** (added in 1.0.3). The success check runs first. A trial whose check passed demonstrably did answer, so it is not "errored out before answering" no matter what either detection condition above found. `client_error` applies only when the check did not pass; a trial with a passed check and a client-reported error is classified exactly as it would be with no reported error: `tool_use_success` with at least one `tools/call` frame, `answered_without_tools` with zero (below). The finding behind condition 1 or 2 is not discarded when it is outranked: it is recorded on the trial as `client_reported_error`, so a trial can carry `client_reported_error: true` alongside a passing classification, and a reader auditing the `client_error` count is not missing the cases where the client reported a failure anyway.
 
 **A trial with zero `tools/call` frames in the interposer log is classified by its success check.**
 

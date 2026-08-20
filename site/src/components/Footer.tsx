@@ -51,6 +51,20 @@ export default function Footer({ run, failuresByClass, serverCount }: FooterProp
             Methodology
             <IconExternal size={13} />
           </a>
+          {/*
+            Tier 1 and Tier 2 are specified in separate documents and the page
+            now shows figures from both, so both are linked. The anchor lands
+            on the mode-label rule, which is what a reader chasing a measured
+            or modeled chip is after.
+          */}
+          <a href="https://github.com/lopster568/loadline/blob/main/docs/methodology-v0.md#3-client-mode-modeling">
+            Mode labels
+            <IconExternal size={13} />
+          </a>
+          <a href="https://github.com/lopster568/loadline/blob/main/docs/tier2-task-suites.md">
+            Tier 2 suite
+            <IconExternal size={13} />
+          </a>
           <a href="https://github.com/lopster568/loadline/tree/main/governance">
             Governance
             <IconExternal size={13} />

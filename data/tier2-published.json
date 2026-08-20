@@ -1,0 +1,95 @@
+{
+  "schema": "loadline-tier2-published/0.1",
+  "tier": 2,
+  "kind": "measured",
+  "run_date": "2026-08-18",
+  "suite_version": "1.0.1",
+  "suite_doc": "docs/tier2-task-suites.md",
+  "interposer_version": "0.1.0",
+  "analyzer_version": "0.1.0",
+  "tokenizer": "o200k_base",
+  "trials": 90,
+  "successes": 87,
+  "version_drift": false,
+  "harness_suspect_trials": 0,
+  "source": "data/tier2/2026-08-18/summary.json, cells at suite version 1.0.1",
+  "what_this_measures": "Wire traffic on the MCP stdio pipe: the arguments of every tools/call request plus the results the server sent back, counted with o200k_base so the figure shares Tier 1's token basis.",
+  "what_this_does_not_measure": "The tool-definition schema footprint of any client mode. The interposer cannot see what a client injected into the model's context as tool definitions (tier2-task-suites.md 4.3), and neither client's usage output isolates it, so no figure here converts a MODELED label in methodology-v0.md 3.2 or 3.3.",
+  "task_mix_caveat": "Each figure is over the five scripted tasks for that server, three trials each, every trial counted including the ones that failed. A different task mix produces different call traffic for the same server (methodology-v0.md known limitation 5).",
+  "server_pin_caveat": "The Tier 2 server pin is recorded per server below and is not asserted to be the same build as the Tier 1 row's pin. The github rows differ outright: Tier 1 measured the remote endpoint, Tier 2 ran the container.",
+  "small_n_rule": "Absolute counts only, never rates. At three trials per task the per-trial values are the result and the median is the convenience on top (tier2-task-suites.md 3.3).",
+  "servers": {
+    "filesystem": {
+      "server_pin": "@modelcontextprotocol/server-filesystem@2026.7.10",
+      "tasks": 5,
+      "clients": [
+        {
+          "client": "Claude Code",
+          "client_version": "2.1.235",
+          "model": "claude-sonnet-5",
+          "trials": 15,
+          "successes": 15,
+          "call_tokens_per_trial": { "median": 525, "min": 111, "max": 11334 },
+          "tool_calls_per_trial": { "median": 3, "min": 1, "max": 10 }
+        },
+        {
+          "client": "Gemini CLI",
+          "client_version": "0.55.1",
+          "model": "gemini-2.5-flash",
+          "trials": 15,
+          "successes": 14,
+          "call_tokens_per_trial": { "median": 170, "min": 107, "max": 10939 },
+          "tool_calls_per_trial": { "median": 2, "min": 1, "max": 4 }
+        }
+      ]
+    },
+    "playwright": {
+      "server_pin": "@playwright/mcp@0.0.79",
+      "tasks": 5,
+      "clients": [
+        {
+          "client": "Claude Code",
+          "client_version": "2.1.235",
+          "model": "claude-sonnet-5",
+          "trials": 15,
+          "successes": 15,
+          "call_tokens_per_trial": { "median": 629, "min": 390, "max": 1087 },
+          "tool_calls_per_trial": { "median": 3, "min": 2, "max": 5 }
+        },
+        {
+          "client": "Gemini CLI",
+          "client_version": "0.55.1",
+          "model": "gemini-2.5-flash",
+          "trials": 15,
+          "successes": 14,
+          "call_tokens_per_trial": { "median": 522, "min": 373, "max": 1286 },
+          "tool_calls_per_trial": { "median": 3, "min": 2, "max": 9 }
+        }
+      ]
+    },
+    "github": {
+      "server_pin": "ghcr.io/github/github-mcp-server (container, no digest recorded by the runner)",
+      "tasks": 5,
+      "clients": [
+        {
+          "client": "Claude Code",
+          "client_version": "2.1.235",
+          "model": "claude-sonnet-5",
+          "trials": 15,
+          "successes": 15,
+          "call_tokens_per_trial": { "median": 1698, "min": 1590, "max": 5174 },
+          "tool_calls_per_trial": { "median": 1, "min": 1, "max": 3 }
+        },
+        {
+          "client": "Gemini CLI",
+          "client_version": "0.55.1",
+          "model": "gemini-2.5-flash",
+          "trials": 15,
+          "successes": 14,
+          "call_tokens_per_trial": { "median": 223, "min": 121, "max": 1983 },
+          "tool_calls_per_trial": { "median": 1, "min": 1, "max": 6 }
+        }
+      ]
+    }
+  }
+}

@@ -60,6 +60,18 @@ export function modeLabel(mode: ClientMode): string {
   return 'Code Mode'
 }
 
+/**
+ * Methodology 3.1 to 3.3. Naive full load is the canonical serialization
+ * counted, so it is measured. Tool search carries measured per-tool costs
+ * inside a modeled total, because k is an assumption. Code mode is a flat
+ * published figure, so it is modeled outright.
+ *
+ * The Tier 2 run of 2026-08-18 does not move either modeled label, and this
+ * function is where that would show up if it did. Tier 2 measures MCP wire
+ * traffic and per-trial session cost; neither client's usage output isolates a
+ * mode's tool-definition footprint, so there is nothing to relabel against
+ * (docs/tier2-task-suites.md 4.3, methodology 3.3).
+ */
 export function modeKind(mode: ClientMode): Kind {
   return mode === 'naive' ? 'measured' : 'modeled'
 }

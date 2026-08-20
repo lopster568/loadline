@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { ClientMode, LoadlineData, ModelId, PricingData, ServerStatus } from './types'
+import type { ClientMode, LoadlineData, ModelId, PricingData, ServerStatus, Tier2Data } from './types'
 import Banner from './components/Banner'
 import StackBuilder from './components/StackBuilder'
 import DraftGauge from './components/DraftGauge'
@@ -14,12 +14,17 @@ import './App.css'
 type LoadState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; data: LoadlineData; pricing: PricingData | null }
+  | { status: 'ready'; data: LoadlineData; pricing: PricingData | null; tier2: Tier2Data | null }
 
 // Both files are served from the Vite base, which is not necessarily the site
 // root, so the error copy quotes the URL actually fetched.
 const DATA_URL = `${import.meta.env.BASE_URL}data.json`
 const PRICING_URL = `${import.meta.env.BASE_URL}pricing.json`
+// Tier 2 is a separate tier with its own suite version and run date, so it
+// ships as its own file. Absent or unreadable means "no Tier 2 run to show",
+// which is not a zero and is not an error: the calculator is Tier 1 and stands
+// on its own without it.
+const TIER2_URL = `${import.meta.env.BASE_URL}tier2.json`
 
 export default function App() {
   const [load, setLoad] = useState<LoadState>({ status: 'loading' })
@@ -39,8 +44,11 @@ export default function App() {
       fetch(PRICING_URL)
         .then((r) => (r.ok ? (r.json() as Promise<PricingData>) : null))
         .catch(() => null),
+      fetch(TIER2_URL)
+        .then((r) => (r.ok ? (r.json() as Promise<Tier2Data>) : null))
+        .catch(() => null),
     ])
-      .then(([data, pricing]) => setLoad({ status: 'ready', data, pricing }))
+      .then(([data, pricing, tier2]) => setLoad({ status: 'ready', data, pricing, tier2 }))
       .catch((err: unknown) => setLoad({ status: 'error', message: err instanceof Error ? err.message : String(err) }))
   }, [])
 
@@ -169,7 +177,14 @@ export default function App() {
                   {copyStatus === 'copied' ? 'Copied' : 'Copy link'}
                 </button>
               </div>
-              <ResultsPanel result={stackResult} modeResults={allModeResults} selectedCount={selectedIds.size} />
+              <ResultsPanel
+                result={stackResult}
+                modeResults={allModeResults}
+                selectedCount={selectedIds.size}
+                servers={data.servers}
+                selectedIds={selectedIds}
+                tier2={load.tier2}
+              />
             </div>
           </div>
         </section>

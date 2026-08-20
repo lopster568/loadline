@@ -101,8 +101,42 @@ def stats:
 def cellkey: [.suite_version, .server, .client, .task] | join("|");
 def trialkey: [.suite_version, .server, .client, .task, (.trial | tostring)] | join("|");
 
+# client_reported_error: the client itself reported a failure, section 4.1
+# condition 1 or 2. Derived from fields every trial row already carries
+# (client_json_valid, and for Gemini client_reported.error), rather than
+# trusted from a client_reported_error field a row may predate, so a manifest
+# written before that field existed reclassifies exactly like one written
+# after.
+def client_reported_error:
+  (.client_json_valid != true)
+  or (.client == "gemini" and ((.client_reported.error // null) != null));
+
+# classify: the OPEN 7 rule, spec section 4.1, recomputed at aggregation time
+# rather than trusted from the recorded classification on the row. This is
+# what lets a taxonomy or detection fix reclassify already-recorded trials
+# without rerunning them: the raw evidence (success, tool_calls, the error the
+# client itself reported, the matched refusal markers) was captured once at
+# trial time and is enough on its own. The success check runs first: a trial
+# whose check passed demonstrably answered, so a passed check outranks
+# client_reported_error. Mirrors tier2/run-suite.sh classify_trial; keep the
+# two in sync.
+def classify:
+  . as $t
+  | ($t | client_reported_error) as $cf
+  | if $t.success == true then
+      (if $t.tool_calls > 0 then "tool_use_success" else "answered_without_tools" end)
+    elif $cf then "client_error"
+    elif $t.tool_calls > 0 then "tool_use_failed"
+    else (if (($t.refusal_markers // []) | length) > 0 then "declined" else "failed_no_tool_use" end)
+    end;
+
 [.[] | select(.type == "trial")] as $all_trials
-| ($all_trials | group_by(trialkey) | map(.[-1])) as $trials
+| ($all_trials | group_by(trialkey) | map(.[-1])
+   | map(. as $t | $t + {
+       recorded_classification: $t.classification,
+       classification: ($t | classify),
+       client_reported_error: ($t | client_reported_error)
+     })) as $trials
 | (($all_trials | length) - ($trials | length)) as $superseded
 | [.[] | select(.type == "run_header")] as $headers
 | [.[] | select(.type == "run_footer")] as $footers
@@ -190,6 +224,12 @@ def trialkey: [.suite_version, .server, .client, .task, (.trial | tostring)] | j
 
       timed_out_trials: ([$c[] | select(.timed_out == true)] | length),
       client_json_invalid_trials: ([$c[] | select(.client_json_valid != true)] | length),
+
+      # Section 4.1 condition 1 or 2: the client itself reported a failure.
+      # No longer the same thing as classification == client_error, because a
+      # passed success check now outranks it; a cell can carry a
+      # client_reported_error trial that is not in the client_error bucket.
+      client_reported_error_trials: ([$c[] | select(.client_reported_error == true)] | length),
       permission_denial_trials: ([$c[] | select((.permission_denials // 0) > 0)] | length),
       fixture_extra_path_trials: ([$c[] | select(((.fixture_extra_paths // []) | length) > 0)] | length),
       fixture_extra_paths: ([$c[].fixture_extra_paths // []] | add | unique),
@@ -253,6 +293,8 @@ def trialkey: [.suite_version, .server, .client, .task, (.trial | tostring)] | j
         started_at: .started_at,
         success: .success,
         classification: .classification,
+        recorded_classification: .recorded_classification,
+        client_reported_error: .client_reported_error,
         refusal_markers: .refusal_markers,
         check_evidence: .check_evidence,
         tool_calls: .tool_calls,

@@ -260,3 +260,40 @@
   color: var(--text);
   font-weight: 600;
 }
+
+/*
+  Tier 2 call traffic. Styled like the dollars table rather than the
+  attribution bars on purpose: bars invite a reader to compare it against the
+  totals above, and it is a different cost on a different axis, never summed
+  into them.
+*/
+.results-panel__tier2-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0 0;
+  max-width: 70ch;
+}
+
+.tier2-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.tier2-table th {
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 12px 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.tier2-table td {
+  padding: 8px 12px 0 0;
+  vertical-align: top;
+}

@@ -13,6 +13,9 @@
 #                      [--trials N] [--tasks FS-01,FS-03] [--date YYYY-MM-DD] \
 #                      [--out DIR] [--timeout SECONDS] [--max-turns N] \
 #                      [--model ID] [--no-full-results] [--dry-run] [--force]
+#   tier2/run-suite.sh --self-test
+#     Runs classify_trial's unit cases (section 4.1 precedence rule) and
+#     exits. No server, client or fixture is touched.
 #
 # Defaults: --trials 3, all five tasks for the server, --date today (UTC),
 # --out data/tier2, --timeout 300, --max-turns 20.
@@ -44,7 +47,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- constants --
 
-SUITE_VERSION="1.0.1"      # docs/tier2-task-suites.md header field
+SUITE_VERSION="1.0.3"      # docs/tier2-task-suites.md header field
 MANIFEST_SCHEMA="tier2-manifest/0.1"
 
 # Refusal markers for the OPEN 7 classification rule. This list is the
@@ -59,6 +62,129 @@ REFUSAL_MARKERS=(
   "isn't available" "is not available" "unavailable"
   "no tools" "no such tool" "tool is not"
 )
+
+# matched_refusal_markers TRANSCRIPT -> JSON array of the markers found.
+matched_refusal_markers() {
+  local transcript="$1" m out=()
+  [[ -f "$transcript" ]] || { echo '[]'; return; }
+  for m in "${REFUSAL_MARKERS[@]}"; do
+    if grep -Fqi -- "$m" "$transcript"; then out+=("$m"); fi
+  done
+  if [[ ${#out[@]} -eq 0 ]]; then
+    echo '[]'
+  else
+    printf '%s\n' "${out[@]}" | jq -R . | jq -s -c .
+  fi
+}
+
+# classify_trial CLIENT_FAILED SUCCESS TOOL_CALLS TRANSCRIPT -> two lines on
+# stdout: the classification, then the matched-refusal-marker JSON array
+# (always "[]" outside the branch that consults it). CLIENT_FAILED and SUCCESS
+# are "true" or "false".
+#
+# This is the OPEN 7 rule, spec section 4.1. The success check runs first:
+# client_error means the client errored out before answering, and a trial
+# whose success check passed demonstrably did answer, so a passed check
+# outranks client_error. client_failed is still passed through by the caller
+# into the manifest's client_reported_error field regardless of what this
+# function returns, so the evidence a client reported its own failure is never
+# lost even when it does not decide the bucket.
+#
+# Found on the Tier 2 first full run (suite 1.0.1, 2026-08-18):
+# GH-03/gemini/t3 recorded a non-null Gemini error object, success true, and
+# one tools/call frame. The old order checked client_failed first and bucketed
+# it client_error, an infrastructure-fault reading on a trial that plainly
+# succeeded.
+classify_trial() {
+  local client_failed="$1" success="$2" tool_calls="$3" transcript="$4"
+  local classification matched="[]"
+  if [[ "$success" == true ]]; then
+    if [[ "$tool_calls" -gt 0 ]]; then classification="tool_use_success"; else classification="answered_without_tools"; fi
+  elif [[ "$client_failed" == true ]]; then
+    classification="client_error"
+  elif [[ "$tool_calls" -gt 0 ]]; then
+    classification="tool_use_failed"
+  else
+    matched="$(matched_refusal_markers "$transcript")"
+    if [[ "$matched" != "[]" ]]; then classification="declined"; else classification="failed_no_tool_use"; fi
+  fi
+  echo "$classification"
+  echo "$matched"
+}
+
+# self_test -> 0 and "ok" per case on stdout if every classify_trial case
+# below holds, 1 and a diff otherwise. Exercises the precedence rule directly;
+# no client, network call or fixture is touched. Invoked by `run-suite.sh
+# --self-test`.
+self_test() {
+  local failures=0
+  local no_transcript declined_transcript failed_transcript
+  no_transcript="$(mktemp)"
+  declined_transcript="$(mktemp)"
+  failed_transcript="$(mktemp)"
+  echo "" >"$no_transcript"
+  echo "I don't have access to that repository." >"$declined_transcript"
+  echo "The count is 42." >"$failed_transcript"
+
+  assert_classify() {
+    local name="$1" client_failed="$2" success="$3" tool_calls="$4" transcript="$5" want="$6"
+    local got
+    got="$(classify_trial "$client_failed" "$success" "$tool_calls" "$transcript" | head -n1)"
+    if [[ "$got" == "$want" ]]; then
+      echo "ok   $name -> $got"
+    else
+      echo "FAIL $name -> got $got, want $want"
+      failures=$((failures + 1))
+    fi
+  }
+
+  # GH-03/gemini/t3: Gemini error object non-null (client_failed) + success
+  # true + >=1 tools/call frame -> tool_use_success. The passed check outranks
+  # the reported error.
+  assert_classify "client_failed + success + tool_calls: tool_use_success" \
+    true true 1 "$no_transcript" "tool_use_success"
+
+  # Inverse: error non-null + success false -> client_error. Nothing to
+  # outrank the reported error when the trial did not answer.
+  assert_classify "client_failed + no success: client_error" \
+    true false 1 "$no_transcript" "client_error"
+
+  # Success with zero tools/call frames is answered_without_tools, unchanged
+  # from 4.1.
+  assert_classify "success, zero tool calls: answered_without_tools" \
+    false true 0 "$no_transcript" "answered_without_tools"
+
+  # The same with a reported client error: the check still outranks it, so the
+  # trial is answered_without_tools and not client_error. This is the second
+  # bucket the amended precedence moves, and the one no run so far has hit, so
+  # it is asserted here rather than left to the next run to discover.
+  assert_classify "client_failed + success, zero tool calls: answered_without_tools" \
+    true true 0 "$no_transcript" "answered_without_tools"
+
+  # No client_failed, tool calls, check failed -> tool_use_failed, unchanged.
+  assert_classify "tool_use_failed, unchanged" \
+    false false 2 "$no_transcript" "tool_use_failed"
+
+  # Zero tool calls, check failed, refusal marker present -> declined,
+  # unchanged.
+  assert_classify "declined, unchanged" \
+    false false 0 "$declined_transcript" "declined"
+
+  # Zero tool calls, check failed, no refusal marker -> failed_no_tool_use,
+  # unchanged.
+  assert_classify "failed_no_tool_use, unchanged" \
+    false false 0 "$failed_transcript" "failed_no_tool_use"
+
+  rm -f "$no_transcript" "$declined_transcript" "$failed_transcript"
+
+  if [[ "$failures" -eq 0 ]]; then
+    echo "self_test: all cases passed"
+    return 0
+  else
+    echo "self_test: $failures case(s) failed"
+    return 1
+  fi
+}
 
 # The suite measures what an MCP server costs, so a client that answers a
 # fixture task with its own file or shell tools produces no measurement at all.
@@ -166,6 +292,13 @@ repo="$(cd "${here}/.." && pwd)"
 
 die() { echo "run-suite: $*" >&2; exit 1; }
 log() { echo "[$(date -u +%H:%M:%S)] $*" >&2; }
+
+# --self-test runs classify_trial's own unit cases and exits; no server,
+# client or --date is required, and nothing under data/tier2/ is touched.
+if [[ "${1:-}" == "--self-test" ]]; then
+  self_test
+  exit $?
+fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -979,21 +1112,15 @@ run_trial() {
     }' "$analyzejson")"
   fi
 
-  # OPEN 7 classification. The three zero-tool buckets presuppose a trial that
-  # produced a client response at all; a client that errored out before
-  # answering is a setup or infrastructure fault, not a capability result, and
-  # is bucketed separately so it cannot be read as a decline.
-  local classification matched="[]"
-  if [[ "$client_failed" == true ]]; then
-    classification="client_error"
-  elif [[ "$tool_calls" -gt 0 ]]; then
-    if [[ "$success" == true ]]; then classification="tool_use_success"; else classification="tool_use_failed"; fi
-  elif [[ "$success" == true ]]; then
-    classification="answered_without_tools"
-  else
-    matched="$(matched_refusal_markers "$transcript")"
-    if [[ "$matched" != "[]" ]]; then classification="declined"; else classification="failed_no_tool_use"; fi
-  fi
+  # OPEN 7 classification, per spec section 4.1. See classify_trial's own
+  # comment for the precedence rule and the finding that motivated it.
+  # client_failed is recorded on the trial as client_reported_error below
+  # regardless of which bucket this returns, so the evidence a client reported
+  # its own failure is never lost even when it does not decide the bucket.
+  local classify_out classification matched
+  classify_out="$(classify_trial "$client_failed" "$success" "$tool_calls" "$transcript")"
+  classification="$(head -n1 <<<"$classify_out")"
+  matched="$(tail -n1 <<<"$classify_out")"
 
   # OPEN 3 cache figures, from the client's own JSON.
   local cache_block='null' client_reported='null' resolved_model="$MODEL" denials=0
@@ -1119,6 +1246,7 @@ run_trial() {
     --arg check_kind "$(check_kind "$task")" \
     --arg evidence "$evidence" \
     --arg classification "$classification" \
+    --argjson client_reported_error "$client_failed" \
     --argjson refusal_markers "$matched" \
     --argjson tool_calls "$tool_calls" \
     --argjson tool_call_gap "$tool_call_gap" \
@@ -1143,7 +1271,8 @@ run_trial() {
       started_at: $started_at, ended_at: $ended_at, wall_ms: $wall_ms,
       exit_code: $exit_code, timed_out: $timed_out, client_json_valid: $client_json_valid,
       success: $success, check_kind: $check_kind, check_evidence: $evidence,
-      classification: $classification, refusal_markers: $refusal_markers,
+      classification: $classification, client_reported_error: $client_reported_error,
+      refusal_markers: $refusal_markers,
       tool_calls: $tool_calls, tool_call_gap: $tool_call_gap,
       harness_suspect: $harness_suspect, permission_denials: $permission_denials,
       fixture_extra_paths: $fixture_extra_paths,
@@ -1203,20 +1332,6 @@ gemini_tool_call_gap() {
                - ($wire[$t] // 0))]
            | map(select(. > 0)) | add // 0
       end' "$logfile" 2>/dev/null || echo null
-}
-
-# matched_refusal_markers TRANSCRIPT -> JSON array of the markers found.
-matched_refusal_markers() {
-  local transcript="$1" m out=()
-  [[ -f "$transcript" ]] || { echo '[]'; return; }
-  for m in "${REFUSAL_MARKERS[@]}"; do
-    if grep -Fqi -- "$m" "$transcript"; then out+=("$m"); fi
-  done
-  if [[ ${#out[@]} -eq 0 ]]; then
-    echo '[]'
-  else
-    printf '%s\n' "${out[@]}" | jq -R . | jq -s -c .
-  fi
 }
 
 # -------------------------------------------------------------------- main --

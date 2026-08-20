@@ -147,3 +147,49 @@ export interface PricingData {
   cache_write_multiplier: number
   models: Record<string, ModelPriceEntry>
 }
+
+// Tier 2 (docs/tier2-task-suites.md), published from
+// data/tier2-published.json. A separate file from data.json because it is a
+// separate tier with its own suite version, its own server pins and its own
+// run date, and because the raw Tier 2 tree is gitignored: only this derived
+// summary is publishable.
+//
+// Nothing in here is a mode footprint. The interposer measures MCP wire
+// traffic, not what a client loaded into the model's context (spec 4.3), so
+// these figures never feed a stack total and never move a mode's kind chip.
+
+export interface Tier2Distribution {
+  median: number
+  min: number
+  max: number
+}
+
+export interface Tier2ClientEntry {
+  client: string
+  client_version: string
+  model: string
+  trials: number
+  successes: number
+  call_tokens_per_trial: Tier2Distribution
+  tool_calls_per_trial: Tier2Distribution
+}
+
+export interface Tier2ServerEntry {
+  server_pin: string
+  tasks: number
+  clients: Tier2ClientEntry[]
+}
+
+export interface Tier2Data {
+  schema: string
+  kind: 'measured'
+  run_date: string
+  suite_version: string
+  interposer_version: string
+  tokenizer: string
+  trials: number
+  successes: number
+  // Keyed by the same server id data.json uses. A server absent from this map
+  // has no Tier 2 run, which is not a zero.
+  servers: Record<string, Tier2ServerEntry>
+}
