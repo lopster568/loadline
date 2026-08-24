@@ -14,7 +14,8 @@
 #                      [--out DIR] [--timeout SECONDS] [--max-turns N] \
 #                      [--model ID] [--no-full-results] [--dry-run] [--force]
 #   tier2/run-suite.sh --self-test
-#     Runs classify_trial's unit cases (section 4.1 precedence rule) and
+#     Runs the runner's own unit cases (section 4.1 precedence rule, the
+#     image-digest failure path, the tool-call gap's name resolution) and
 #     exits. No server, client or fixture is touched.
 #
 # Defaults: --trials 3, all five tasks for the server, --date today (UTC),
@@ -47,7 +48,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- constants --
 
-SUITE_VERSION="1.0.4"      # docs/tier2-task-suites.md header field
+SUITE_VERSION="1.0.5"      # docs/tier2-task-suites.md header field
 MANIFEST_SCHEMA="tier2-manifest/0.1"
 
 # The github server's default image, no tag: the same reference server_argv's
@@ -122,10 +123,81 @@ classify_trial() {
   echo "$matched"
 }
 
-# self_test -> 0 and "ok" per case on stdout if every classify_trial case
-# below holds, 1 and a diff otherwise. Exercises the precedence rule directly;
-# no client, network call or fixture is touched. Invoked by `run-suite.sh
-# --self-test`.
+# gemini_tool_call_gap LOG CLIENTJSON -> integer, or null when it cannot be
+# computed.
+#
+# Counted only over tool names the server actually advertised in its tools/list
+# response, which is the whole point of the measure. A naive totalCalls minus
+# wire-frames difference is not a fault signal: with the built-ins switched off
+# the model regularly tries one that no longer exists, and Gemini counts that
+# attempt in stats.tools while the server never hears about it. Both filesystem
+# trials of the 2026-08-18 rerun showed a positive naive gap that was entirely
+# run_shell_command, which is the isolation working exactly as designed. A gap
+# on a tool the server did advertise is the different thing: the client meant
+# to call the server, and the call never left the client.
+#
+# Requires --full-results, because the served tool list is only in the log when
+# response payloads are logged. Without it the function returns null rather
+# than guessing.
+#
+# The client keys stats.tools.byName by the name the model called, and that
+# spelling changed under the client upgrade. On 0.18.4 an MCP tool was keyed by
+# its bare server-side name (browser_navigate, read_text_file); on 0.55.1 it is
+# keyed by the fully qualified mcp_<server>_<tool> (mcp_playwright_browser_
+# navigate). The wire name in the log is the bare one either way, because that
+# is what travels in the tools/call frame. Matching the two sides on the bare
+# name alone therefore scored every served tool at zero client calls against a
+# positive wire count, every difference came out negative, and the
+# select(. > 0) filter swallowed the lot: the gap would have read a clean 0 on
+# every trial and the OPEN 11 detector would have been silently dead on the new
+# client while still appearing to run.
+#
+# The measure therefore resolves the spelling per served tool rather than
+# summing both. Summing was the 1.0.4 rule and it opens a smaller hole of its
+# own on exactly one server: with the built-in surface off, a call the model
+# forms to a bare name dies inside the client and still lands in
+# stats.tools.byName, and the advertised-name filter only drops that stray when
+# no server advertised the name. The filesystem server advertises read_file,
+# write_file and list_directory, which section 7.1 item 2 of the spec already
+# records as colliding with Gemini's built-ins, so on 0.55.1 the real call is
+# keyed mcp_filesystem_write_file, the stray is keyed write_file, and adding
+# them guarantees no cancellation against the wire count. The term would go
+# positive on a trial where nothing was lost on the pipe. Resolving instead
+# takes the qualified key when the trial's own client JSON has one and the bare
+# key otherwise: the two keys are different evidence and summing throws the
+# distinction away. 0.18.4 is untouched, since only the bare key exists there.
+#
+# Residual, stated rather than hidden: on 0.55.1 a served tool keyed bare with
+# no qualified key present still uses the bare count, so a stray in that one
+# shape would still read positive. It did not occur on any of the 45 Gemini
+# trials of the 1.0.1 run: 14 of them carry a bare stray, 4 of those are
+# filesystem trials, and none of the stray names was one its own server
+# advertised. Any future change to how a client names a server's tool has to
+# be checked against this function, not assumed; --self-test asserts all three
+# spelling shapes.
+gemini_tool_call_gap() {
+  local logfile="$1" clientjson="$2" server="$3"
+  [[ -s "$logfile" && -s "$clientjson" ]] || { echo null; return; }
+  jq -s -c --slurpfile cj "$clientjson" --arg srv "$server" '
+    ([.[] | select(.result_full.tools != null) | .result_full.tools[].name] | unique) as $served
+    | ([.[] | select(.method == "tools/call") | .params_full.name]
+       | group_by(.) | map({key: .[0], value: length}) | from_entries) as $wire
+    | (($cj[0].stats.tools.byName // {})) as $client
+    | if ($served | length) == 0 then null
+      else [$served[]
+            | . as $t
+            | ("mcp_" + $srv + "_" + $t) as $q
+            | (if ($client | has($q)) then ($client[$q].count // 0)
+               else ($client[$t].count // 0) end)
+              - ($wire[$t] // 0)]
+           | map(select(. > 0)) | add // 0
+      end' "$logfile" 2>/dev/null || echo null
+}
+
+# self_test -> 0 and "ok" per case on stdout if every case below holds, 1 and a
+# diff otherwise. Exercises classify_trial's precedence rule, the image-digest
+# failure path and gemini_tool_call_gap's name resolution directly; no client,
+# network call or fixture is touched. Invoked by `run-suite.sh --self-test`.
 self_test() {
   local failures=0
   local no_transcript declined_transcript failed_transcript
@@ -201,6 +273,55 @@ self_test() {
     echo "FAIL server_image_digest docker-absent case -> got '$digest_result', want a 'digest unavailable: ' prefixed string"
     failures=$((failures + 1))
   fi
+
+  # gemini_tool_call_gap name-resolution cases. The whole reason the 0.55.1
+  # rename went unnoticed for a release is that a dead detector and a healthy
+  # one print the same character, so both directions are asserted here: the
+  # false positive the summing rule allows, and the silent zero the name
+  # matching exists to catch. Each case builds a two-line log (a tools/list
+  # response advertising write_file, then N tools/call frames for it) and a
+  # client JSON with the byName block under test, so nothing outside this
+  # function is touched.
+  assert_gap() {
+    local name="$1" byname="$2" wire_calls="$3" want="$4"
+    local gap_log gap_cj got i
+    gap_log="$(mktemp)"
+    gap_cj="$(mktemp)"
+    printf '%s\n' '{"result_full":{"tools":[{"name":"write_file"}]}}' >"$gap_log"
+    for ((i = 0; i < wire_calls; i++)); do
+      printf '%s\n' '{"method":"tools/call","params_full":{"name":"write_file"}}' >>"$gap_log"
+    done
+    printf '{"stats":{"tools":{"byName":%s}}}\n' "$byname" >"$gap_cj"
+    got="$(gemini_tool_call_gap "$gap_log" "$gap_cj" filesystem)"
+    rm -f "$gap_log" "$gap_cj"
+    if [[ "$got" == "$want" ]]; then
+      echo "ok   $name -> $got"
+    else
+      echo "FAIL $name -> got $got, want $want"
+      failures=$((failures + 1))
+    fi
+  }
+
+  # FALSE POSITIVE, must be 0. Two real qualified calls, both on the wire, plus
+  # one bare stray that died inside the client because tools.core: ["mcp_*"]
+  # never registered the bare name. The stray survives the advertised-name
+  # filter because the filesystem server does advertise write_file (spec 7.1
+  # item 2), so summing the two keys reports a client-side interop fault on a
+  # trial where nothing was lost on the pipe.
+  assert_gap "both spellings present: qualified wins, bare stray ignored" \
+    '{"write_file": {"count": 1}, "mcp_filesystem_write_file": {"count": 2}}' 2 "0"
+
+  # SILENT ZERO, must stay caught at 2. The OPEN 11 case the name matching
+  # exists for: three qualified calls, one wire frame, two calls that never
+  # left the client. This is the guard that resolution does not re-break what
+  # summing was introduced to fix.
+  assert_gap "qualified only: calls that never reached the wire are still counted" \
+    '{"mcp_filesystem_write_file": {"count": 3}}' 1 "2"
+
+  # OLD CLIENT, must be 2. Gemini 0.18.4 keys byName by the bare server-side
+  # name, so the bare count is the real count and the arithmetic is unchanged.
+  assert_gap "bare only: 0.18.4 spelling unchanged" \
+    '{"write_file": {"count": 3}}' 1 "2"
 
   rm -f "$no_transcript" "$declined_transcript" "$failed_transcript"
 
@@ -1371,52 +1492,6 @@ run_trial() {
   local gapnote=""
   if [[ "$harness_suspect" == true ]]; then gapnote="  HARNESS-SUSPECT gap=$tool_call_gap"; fi
   log "$task t$n  success=$success  class=$classification  tool_calls=$tool_calls  wall=${wall}ms  exit=$exit_code${gapnote}"
-}
-
-# gemini_tool_call_gap LOG CLIENTJSON -> integer, or null when it cannot be
-# computed.
-#
-# Counted only over tool names the server actually advertised in its tools/list
-# response, which is the whole point of the measure. A naive totalCalls minus
-# wire-frames difference is not a fault signal: with the built-ins switched off
-# the model regularly tries one that no longer exists, and Gemini counts that
-# attempt in stats.tools while the server never hears about it. Both filesystem
-# trials of the 2026-08-18 rerun showed a positive naive gap that was entirely
-# run_shell_command, which is the isolation working exactly as designed. A gap
-# on a tool the server did advertise is the different thing: the client meant
-# to call the server, and the call never left the client.
-#
-# Requires --full-results, because the served tool list is only in the log when
-# response payloads are logged. Without it the function returns null rather
-# than guessing.
-#
-# The client keys stats.tools.byName by the name the model called, and that
-# spelling changed under the client upgrade. On 0.18.4 an MCP tool was keyed by
-# its bare server-side name (browser_navigate, read_text_file); on 0.55.1 it is
-# keyed by the fully qualified mcp_<server>_<tool> (mcp_playwright_browser_
-# navigate). The wire name in the log is the bare one either way, because that
-# is what travels in the tools/call frame. Matching the two sides on the bare
-# name alone therefore scored every served tool at zero client calls against a
-# positive wire count, every difference came out negative, and the
-# select(. > 0) filter swallowed the lot: the gap would have read a clean 0 on
-# every trial and the OPEN 11 detector would have been silently dead on the new
-# client while still appearing to run. Both spellings are summed per served
-# tool so the measure survives whichever one the client uses.
-gemini_tool_call_gap() {
-  local logfile="$1" clientjson="$2" server="$3"
-  [[ -s "$logfile" && -s "$clientjson" ]] || { echo null; return; }
-  jq -s -c --slurpfile cj "$clientjson" --arg srv "$server" '
-    ([.[] | select(.result_full.tools != null) | .result_full.tools[].name] | unique) as $served
-    | ([.[] | select(.method == "tools/call") | .params_full.name]
-       | group_by(.) | map({key: .[0], value: length}) | from_entries) as $wire
-    | (($cj[0].stats.tools.byName // {})) as $client
-    | if ($served | length) == 0 then null
-      else [$served[]
-            | . as $t
-            | ((($client[$t].count // 0) + ($client["mcp_" + $srv + "_" + $t].count // 0))
-               - ($wire[$t] // 0))]
-           | map(select(. > 0)) | add // 0
-      end' "$logfile" 2>/dev/null || echo null
 }
 
 # -------------------------------------------------------------------- main --
