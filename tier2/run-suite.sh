@@ -48,7 +48,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- constants --
 
-SUITE_VERSION="1.0.5"      # docs/tier2-task-suites.md header field
+SUITE_VERSION="1.0.6"      # docs/tier2-task-suites.md header field
 MANIFEST_SCHEMA="tier2-manifest/0.1"
 
 # The github server's default image, no tag: the same reference server_argv's
@@ -194,6 +194,45 @@ gemini_tool_call_gap() {
       end' "$logfile" 2>/dev/null || echo null
 }
 
+# gemini_tool_call_gap_bare_unwired LOG CLIENTJSON SERVER -> integer, or null
+# when it cannot be computed (same conditions as gemini_tool_call_gap).
+#
+# The evidence the 1.0.5 resolution rule discards, kept as its own labeled
+# field. When a trial holds both spellings for a served tool, the qualified
+# key wins the gap arithmetic and the bare count is dropped, but that count is
+# not noise: a call attributed to a name that never appeared in a tools/call
+# frame died inside the client, which is a different fact from a call the wire
+# lost, and one integer cannot carry both.
+#
+# Per served tool, the bare-key count, counted only when the qualified key for
+# that same tool is present in stats.tools.byName. With the qualified key
+# present, every wire frame for the tool is attributed to the qualified
+# spelling, which is what makes the bare count unwired by construction. When
+# no qualified key exists for the tool, the bare count is already
+# gemini_tool_call_gap's fallback evidence (the residual documented above) and
+# is not repeated here. The same anti-double-reporting logic gates the whole
+# field: on a trial with no mcp_<srv>_ key at all the client is 0.18.4-style,
+# the bare key IS the real spelling, and the field reads 0.
+#
+# A positive value here does NOT set harness_suspect. It is the model reaching
+# for a disabled built-in whose name the server happens to share, dying inside
+# the client by design; the interop fault signal stays with tool_call_gap.
+gemini_tool_call_gap_bare_unwired() {
+  local logfile="$1" clientjson="$2" server="$3"
+  [[ -s "$logfile" && -s "$clientjson" ]] || { echo null; return; }
+  jq -s -c --slurpfile cj "$clientjson" --arg srv "$server" '
+    ([.[] | select(.result_full.tools != null) | .result_full.tools[].name] | unique) as $served
+    | (($cj[0].stats.tools.byName // {})) as $client
+    | if ($served | length) == 0 then null
+      elif ([$client | keys[] | select(startswith("mcp_" + $srv + "_"))] | length) == 0 then 0
+      else [$served[]
+            | . as $t
+            | if ($client | has("mcp_" + $srv + "_" + $t))
+              then ($client[$t].count // 0) else 0 end]
+           | add // 0
+      end' "$logfile" 2>/dev/null || echo null
+}
+
 # self_test -> 0 and "ok" per case on stdout if every case below holds, 1 and a
 # diff otherwise. Exercises classify_trial's precedence rule, the image-digest
 # failure path and gemini_tool_call_gap's name resolution directly; no client,
@@ -283,8 +322,8 @@ self_test() {
   # client JSON with the byName block under test, so nothing outside this
   # function is touched.
   assert_gap() {
-    local name="$1" byname="$2" wire_calls="$3" want="$4"
-    local gap_log gap_cj got i
+    local name="$1" byname="$2" wire_calls="$3" want="$4" want_bare="$5"
+    local gap_log gap_cj got got_bare i
     gap_log="$(mktemp)"
     gap_cj="$(mktemp)"
     printf '%s\n' '{"result_full":{"tools":[{"name":"write_file"}]}}' >"$gap_log"
@@ -293,11 +332,12 @@ self_test() {
     done
     printf '{"stats":{"tools":{"byName":%s}}}\n' "$byname" >"$gap_cj"
     got="$(gemini_tool_call_gap "$gap_log" "$gap_cj" filesystem)"
+    got_bare="$(gemini_tool_call_gap_bare_unwired "$gap_log" "$gap_cj" filesystem)"
     rm -f "$gap_log" "$gap_cj"
-    if [[ "$got" == "$want" ]]; then
-      echo "ok   $name -> $got"
+    if [[ "$got" == "$want" && "$got_bare" == "$want_bare" ]]; then
+      echo "ok   $name -> gap=$got bare_unwired=$got_bare"
     else
-      echo "FAIL $name -> got $got, want $want"
+      echo "FAIL $name -> got gap=$got bare_unwired=$got_bare, want gap=$want bare_unwired=$want_bare"
       failures=$((failures + 1))
     fi
   }
@@ -308,20 +348,20 @@ self_test() {
   # filter because the filesystem server does advertise write_file (spec 7.1
   # item 2), so summing the two keys reports a client-side interop fault on a
   # trial where nothing was lost on the pipe.
-  assert_gap "both spellings present: qualified wins, bare stray ignored" \
-    '{"write_file": {"count": 1}, "mcp_filesystem_write_file": {"count": 2}}' 2 "0"
+  assert_gap "both spellings present: qualified wins, bare stray kept as its own evidence" \
+    '{"write_file": {"count": 1}, "mcp_filesystem_write_file": {"count": 2}}' 2 "0" "1"
 
   # SILENT ZERO, must stay caught at 2. The OPEN 11 case the name matching
   # exists for: three qualified calls, one wire frame, two calls that never
   # left the client. This is the guard that resolution does not re-break what
   # summing was introduced to fix.
   assert_gap "qualified only: calls that never reached the wire are still counted" \
-    '{"mcp_filesystem_write_file": {"count": 3}}' 1 "2"
+    '{"mcp_filesystem_write_file": {"count": 3}}' 1 "2" "0"
 
   # OLD CLIENT, must be 2. Gemini 0.18.4 keys byName by the bare server-side
   # name, so the bare count is the real count and the arithmetic is unchanged.
-  assert_gap "bare only: 0.18.4 spelling unchanged" \
-    '{"write_file": {"count": 3}}' 1 "2"
+  assert_gap "bare only: 0.18.4 spelling unchanged, bare_unwired gated off" \
+    '{"write_file": {"count": 3}}' 1 "2" "0"
 
   rm -f "$no_transcript" "$declined_transcript" "$failed_transcript"
 
@@ -1412,11 +1452,14 @@ run_trial() {
   # The gap is recorded, not acted on. Whether it earns a classification bucket
   # of its own is a spec decision (section 4.1), filed as OPEN 12, not
   # something the runner decides on its own.
-  local tool_call_gap='null' harness_suspect=false
+  local tool_call_gap='null' tool_call_gap_bare_unwired='null' harness_suspect=false
   if [[ "$client_ok" == true && "$CLIENT" == "gemini" ]]; then
     tool_call_gap="$(gemini_tool_call_gap "$logfile" "$clientjson" "$SERVER")"
     [[ -n "$tool_call_gap" ]] || tool_call_gap='null'
     if [[ "$tool_call_gap" != "null" && "$tool_call_gap" -gt 0 ]]; then harness_suspect=true; fi
+    # Deliberately no harness_suspect here: see the function's comment.
+    tool_call_gap_bare_unwired="$(gemini_tool_call_gap_bare_unwired "$logfile" "$clientjson" "$SERVER")"
+    [[ -n "$tool_call_gap_bare_unwired" ]] || tool_call_gap_bare_unwired='null'
   fi
 
   local rel_log rel_client rel_analyze rel_work rel_scratch
@@ -1454,6 +1497,7 @@ run_trial() {
     --argjson refusal_markers "$matched" \
     --argjson tool_calls "$tool_calls" \
     --argjson tool_call_gap "$tool_call_gap" \
+    --argjson tool_call_gap_bare_unwired "$tool_call_gap_bare_unwired" \
     --argjson harness_suspect "$harness_suspect" \
     --argjson permission_denials "$denials" \
     --argjson fixture_extra_paths "$extra_paths" \
@@ -1479,6 +1523,7 @@ run_trial() {
       classification: $classification, client_reported_error: $client_reported_error,
       refusal_markers: $refusal_markers,
       tool_calls: $tool_calls, tool_call_gap: $tool_call_gap,
+      tool_call_gap_bare_unwired: $tool_call_gap_bare_unwired,
       harness_suspect: $harness_suspect, permission_denials: $permission_denials,
       fixture_extra_paths: $fixture_extra_paths,
       cache: $cache, client_reported: $client_reported, analyze: $analyze,

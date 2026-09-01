@@ -245,6 +245,14 @@ def classify:
       harness_suspect_trials: ([$c[] | select(.harness_suspect == true)] | length),
       tool_call_gap: ([$c[].tool_call_gap] | stats),
 
+      # The evidence the 1.0.5 resolution rule would otherwise discard: bare-
+      # spelling calls to served tools on trials where the client keys real
+      # calls by the qualified name (suite 1.0.6). Positive is the model
+      # reaching for a disabled built-in whose name the server also
+      # advertises, dying inside the client by design; it does not mark
+      # harness_suspect.
+      tool_call_gap_bare_unwired: ([$c[].tool_call_gap_bare_unwired] | stats),
+
       tool_calls: ([$c[].tool_calls] | stats),
       wall_ms: ([$c[].wall_ms] | stats),
 
@@ -304,6 +312,7 @@ def classify:
         check_evidence: .check_evidence,
         tool_calls: .tool_calls,
         tool_call_gap: .tool_call_gap,
+        tool_call_gap_bare_unwired: .tool_call_gap_bare_unwired,
         harness_suspect: .harness_suspect,
         wall_ms: .wall_ms,
         timed_out: .timed_out,
