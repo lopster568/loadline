@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ClientMode, LoadlineData, ModelId, PricingData, ServerStatus, Tier2Data } from './types'
+import { siGithub } from 'simple-icons'
 import Banner from './components/Banner'
 import StackBuilder from './components/StackBuilder'
 import DraftGauge from './components/DraftGauge'
@@ -130,6 +131,12 @@ export default function App() {
             <PlimsollMark size={26} className="brand__mark" />
             <h1 className="brand__word">loadline</h1>
             <span className="stencil brand__tag">MCP stack context cost</span>
+            <a className="brand__repo" href="https://github.com/lopster568/loadline">
+              <svg viewBox="0 0 24 24" width={14} height={14} fill="currentColor" aria-hidden="true">
+                <path d={siGithub.path} />
+              </svg>
+              GitHub
+            </a>
           </div>
           <p className="masthead__lede">
             What an MCP server stack costs an agent's context window, by client mode, before any work happens.

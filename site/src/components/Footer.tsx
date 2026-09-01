@@ -47,6 +47,10 @@ export default function Footer({ run, failuresByClass, serverCount }: FooterProp
           repo goes public at launch.
         */}
         <nav className="site-footer__links">
+          <a href="https://github.com/lopster568/loadline">
+            GitHub
+            <IconExternal size={13} />
+          </a>
           <a href="https://github.com/lopster568/loadline/blob/main/docs/methodology-v0.md">
             Methodology
             <IconExternal size={13} />

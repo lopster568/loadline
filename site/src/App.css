@@ -41,6 +41,22 @@
   line-height: 1.2;
 }
 
+/* The one place the page says where it comes from. Right of the brand row,
+   styled like the footer links rather than the stencil tags: it is a link
+   out, not a label. */
+.brand__repo {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  text-decoration-thickness: 1px;
+}
+
+.brand__repo:hover {
+  color: var(--oxide-bright);
+}
+
 .masthead__lede {
   font-size: 14px;
   color: var(--muted);
