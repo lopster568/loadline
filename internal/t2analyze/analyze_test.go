@@ -387,3 +387,61 @@ func hasWarning(rep *Report, substr string) bool {
 	}
 	return false
 }
+
+func TestMetaStrippedResultTokens(t *testing.T) {
+	header := `{"interposer_version":"0.1.0","started_at":"2026-08-18T10:00:00Z","server_cmd":["srv"],"pid":1}`
+	req1 := `{"ts":"2026-08-18T10:00:00.100000000Z","dir":"c2s","size_bytes":90,"method":"tools/call","id":1,"params_full":{"name":"get_file_contents","arguments":{"path":"README.md"}}}`
+	req2 := `{"ts":"2026-08-18T10:00:00.400000000Z","dir":"c2s","size_bytes":90,"method":"tools/call","id":2,"params_full":{"name":"read_file","arguments":{"path":"notes.txt"}}}`
+	// resp1 carries the github-shaped envelope: _meta as a top-level sibling
+	// of content. resp2 carries none, the Gemini shape.
+	resp1Meta := `{"ts":"2026-08-18T10:00:00.300000000Z","dir":"s2c","size_bytes":400,"id":1,"is_response":true,"result_summary":{"bytes":300,"content_blocks":1,"text_len":20},"result_full":{"_meta":{"io.modelcontextprotocol/serverInfo":{"name":"github","title":"GitHub","version":"1.9.0","icons":[{"src":"data:image/png;base64,AAAABBBBCCCC"}]}},"content":[{"type":"text","text":"seed value: baseline"}],"resultType":"text"}}`
+	resp1Bare := `{"ts":"2026-08-18T10:00:00.300000000Z","dir":"s2c","size_bytes":400,"id":1,"is_response":true,"result_summary":{"bytes":300,"content_blocks":1,"text_len":20},"result_full":{"content":[{"type":"text","text":"seed value: baseline"}],"resultType":"text"}}`
+	resp2 := `{"ts":"2026-08-18T10:00:00.600000000Z","dir":"s2c","size_bytes":120,"id":2,"is_response":true,"result_summary":{"bytes":70,"content_blocks":1,"text_len":20},"result_full":{"content":[{"type":"text","text":"note body"}]}}`
+
+	withMeta, err := Analyze(strings.NewReader(strings.Join([]string{header, req1, resp1Meta, req2, resp2}, "\n")), Options{Source: "inline"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// The reference: the identical log with the _meta member deleted by hand.
+	// Stripping must measure exactly what the server would have sent without
+	// the envelope, so withMeta's stripped count equals reference's raw count.
+	reference, err := Analyze(strings.NewReader(strings.Join([]string{header, req1, resp1Bare, req2, resp2}, "\n")), Options{Source: "inline"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	raw := withMeta.Totals.ToolCallResultTokens
+	stripped := withMeta.Totals.ToolCallResultTokensMetaStripped
+	if raw == nil || stripped == nil {
+		t.Fatalf("raw = %v stripped = %v, want both measured when every response carries result_full", raw, stripped)
+	}
+	if *stripped >= *raw {
+		t.Errorf("stripped total = %d, want less than raw %d when a _meta block is present", *stripped, *raw)
+	}
+	if want := reference.Totals.ToolCallResultTokens; want == nil || *stripped != *want {
+		t.Errorf("stripped total = %d, want %v, the raw count of the same log with _meta deleted", *stripped, want)
+	}
+
+	// Per-call: call 1 strips, call 2 is untouched (stripped == raw).
+	c1 := withMeta.ToolCalls[0].Response
+	if c1.ResultTokensMetaStripped == nil || c1.ResultTokens == nil || *c1.ResultTokensMetaStripped >= *c1.ResultTokens {
+		t.Errorf("call 1 stripped = %v raw = %v, want stripped < raw", c1.ResultTokensMetaStripped, c1.ResultTokens)
+	}
+	c2 := withMeta.ToolCalls[1].Response
+	if c2.ResultTokensMetaStripped == nil || c2.ResultTokens == nil || *c2.ResultTokensMetaStripped != *c2.ResultTokens {
+		t.Errorf("call 2 stripped = %v raw = %v, want equal when no _meta member exists", c2.ResultTokensMetaStripped, c2.ResultTokens)
+	}
+	if *c1.ResultTokensMetaStripped+*c2.ResultTokensMetaStripped != *stripped {
+		t.Errorf("per-call stripped sum %d != total %d", *c1.ResultTokensMetaStripped+*c2.ResultTokensMetaStripped, *stripped)
+	}
+}
+
+func TestMetaStrippedWithheldWithoutFullResults(t *testing.T) {
+	// Same nullability rule as ToolCallResultTokens: an estimate never
+	// publishes as a measurement, so without result_full on every response
+	// the stripped total is withheld too.
+	rep := analyzeSample(t)
+	if rep.Totals.ToolCallResultTokensMetaStripped != nil {
+		t.Errorf("stripped tokens = %v, want nil without --full-results", *rep.Totals.ToolCallResultTokensMetaStripped)
+	}
+}

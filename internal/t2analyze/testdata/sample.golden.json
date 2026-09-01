@@ -1,5 +1,5 @@
 {
-  "analyzer_version": "0.1.0",
+  "analyzer_version": "0.2.0",
   "interposer_version": "0.1.0",
   "source": "testdata/sample.jsonl",
   "tokenizer": "o200k_base",
@@ -33,6 +33,7 @@
     "tool_call_arg_tokens": 123,
     "tool_call_result_bytes": 864,
     "tool_call_result_tokens": null,
+    "tool_call_result_tokens_meta_stripped": null,
     "jsonrpc_errors": 1,
     "tool_errors": 1,
     "retries": 1,
@@ -57,6 +58,7 @@
         "content_blocks": 1,
         "text_len": 268,
         "result_tokens": null,
+        "result_tokens_meta_stripped": null,
         "latency_ms": 140
       }
     },
@@ -73,6 +75,7 @@
         "content_blocks": 1,
         "text_len": 344,
         "result_tokens": null,
+        "result_tokens_meta_stripped": null,
         "latency_ms": 140
       }
     },
@@ -91,6 +94,7 @@
           "message": "Invalid arguments: path does not exist"
         },
         "result_tokens": null,
+        "result_tokens_meta_stripped": null,
         "latency_ms": 60
       }
     },
@@ -109,6 +113,7 @@
         "text_len": 120,
         "is_tool_error": true,
         "result_tokens": null,
+        "result_tokens_meta_stripped": null,
         "latency_ms": 80
       }
     },

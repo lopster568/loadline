@@ -24,7 +24,7 @@ import (
 // forbids comparing results across instrument versions, and the analyzer is
 // part of the instrument: any change to how a metric below is derived is a
 // bump here, the same discipline interposer/README.md applies to itself.
-const Version = "0.1.0"
+const Version = "0.2.0"
 
 // maxLineBytes bounds one JSONL record. A frame carries complete tool-call
 // arguments and, under the interposer's --full-results, complete tool output,
@@ -121,6 +121,14 @@ type Totals struct {
 	// text length for each result but not the text, so a token count would
 	// have to be estimated, and an estimate never publishes as a measurement.
 	ToolCallResultTokens *int `json:"tool_call_result_tokens"`
+	// ToolCallResultTokensMetaStripped is ToolCallResultTokens with each
+	// response's top-level _meta member removed before counting. Some servers
+	// ride an envelope there (github's serverInfo block, icons included) that
+	// one client requests and another does not, so the raw figure conflates
+	// what the server sent with what the protocol wrapped around it; this
+	// field isolates the payload. A response with no top-level _meta counts
+	// identically in both. Same nullability rule as ToolCallResultTokens.
+	ToolCallResultTokensMetaStripped *int `json:"tool_call_result_tokens_meta_stripped"`
 
 	// JSONRPCErrors counts responses carrying an error member. ToolErrors
 	// counts successful responses whose result sets isError, which is a
@@ -164,8 +172,12 @@ type CallResponse struct {
 	RPCError      *RPCError `json:"rpc_error,omitempty"`
 	// ResultTokens is nil unless the log carries result_full for this
 	// response. See Totals.ToolCallResultTokens.
-	ResultTokens *int   `json:"result_tokens"`
-	LatencyMS    *int64 `json:"latency_ms"`
+	ResultTokens *int `json:"result_tokens"`
+	// ResultTokensMetaStripped is ResultTokens with the top-level _meta
+	// member removed before counting; equal to ResultTokens when the result
+	// carries none. See Totals.ToolCallResultTokensMetaStripped.
+	ResultTokensMetaStripped *int   `json:"result_tokens_meta_stripped"`
+	LatencyMS                *int64 `json:"latency_ms"`
 }
 
 // RPCError is the JSON-RPC error member as the interposer logged it.
@@ -242,9 +254,10 @@ type state struct {
 	lastCallParams string
 	haveLastCall   bool
 
-	toolResponses    int
-	toolResultTokens int
-	fullResults      int
+	toolResponses            int
+	toolResultTokens         int
+	toolResultTokensStripped int
+	fullResults              int
 
 	warnOverflow int
 }
@@ -502,10 +515,77 @@ func (s *state) response(fr rawLine, m rawMsg, id string, lineNo int) error {
 		}
 		cr.ResultTokens = &n
 		s.toolResultTokens += n
+		ns := n
+		if strippedRaw, had := stripTopLevelMeta(m.ResultFull); had {
+			sn, err := s.counter.Count(string(strippedRaw))
+			if err != nil {
+				return fmt.Errorf("line %d: count meta-stripped result tokens for id %s: %w", lineNo, id, err)
+			}
+			ns = sn
+		}
+		cr.ResultTokensMetaStripped = &ns
+		s.toolResultTokensStripped += ns
 		s.fullResults++
 	}
 	s.rep.ToolCalls[req.toolIdx].Response = cr
 	return nil
+}
+
+// stripTopLevelMeta returns raw with the top-level _meta member of a JSON
+// object removed, and whether such a member existed. Only the top level is
+// touched, because that is where the MCP result envelope rides; a _meta
+// nested anywhere deeper is the server's own payload and stays. The rebuild
+// keeps every remaining member's value bytes verbatim and re-joins them
+// compactly, which on wire-compact frames is byte-identical to deleting the
+// member; when raw is not a JSON object or does not parse, it is returned
+// unchanged so the stripped count degrades to the raw count rather than to
+// an estimate.
+func stripTopLevelMeta(raw []byte) ([]byte, bool) {
+	d := json.NewDecoder(bytes.NewReader(raw))
+	tok, err := d.Token()
+	if err != nil {
+		return raw, false
+	}
+	if delim, ok := tok.(json.Delim); !ok || delim != '{' {
+		return raw, false
+	}
+	var buf bytes.Buffer
+	buf.WriteByte('{')
+	found, first := false, true
+	for d.More() {
+		keyTok, err := d.Token()
+		if err != nil {
+			return raw, false
+		}
+		key, ok := keyTok.(string)
+		if !ok {
+			return raw, false
+		}
+		var val json.RawMessage
+		if err := d.Decode(&val); err != nil {
+			return raw, false
+		}
+		if key == "_meta" {
+			found = true
+			continue
+		}
+		if !first {
+			buf.WriteByte(',')
+		}
+		first = false
+		kb, err := json.Marshal(key)
+		if err != nil {
+			return raw, false
+		}
+		buf.Write(kb)
+		buf.WriteByte(':')
+		buf.Write(val)
+	}
+	if !found {
+		return raw, false
+	}
+	buf.WriteByte('}')
+	return buf.Bytes(), true
 }
 
 func (s *state) finish() {
@@ -515,6 +595,8 @@ func (s *state) finish() {
 	if s.toolResponses > 0 && s.fullResults == s.toolResponses {
 		total := s.toolResultTokens
 		t.ToolCallResultTokens = &total
+		strippedTotal := s.toolResultTokensStripped
+		t.ToolCallResultTokensMetaStripped = &strippedTotal
 	} else if s.toolResponses > 0 {
 		s.warnf("result tokens unavailable: %d of %d tool-call responses carry result_full; rerun the interposer with --full-results to measure them",
 			s.fullResults, s.toolResponses)
