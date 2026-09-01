@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Methodology version | 0.3.1 (current; applies to runs from 2026-08-20). PATCH: sections 3.2 and 3.3 state what would move a mode label; no figure moves. 0.3.0 was the MINOR before it: every acquisition records the dependency set the resolver produced (section 1.1). Rows published before 0.3.0 carry the stamp they were produced under and do not carry the new field. |
+| Methodology version | 0.3.2 (current; applies from 2026-08-25). PATCH: the Tier 2 call-traffic block also publishes a `_meta`-stripped column beside the raw figure; the column is specified by `tier2-task-suites.md` section 4, and no figure this document specifies moves. 0.3.1 was the PATCH before it (sections 3.2 and 3.3 state what would move a mode label); 0.3.0 the MINOR before that (every acquisition records the dependency set the resolver produced, section 1.1). Rows published before 0.3.0 carry the stamp they were produced under and do not carry the newer fields. |
 | Date | 2026-08-20 |
 | Status | Draft for review |
 | Scope | Tier 1 static sweep. Tier 2 dynamic runs are specified separately. |
@@ -343,6 +343,10 @@ Every release classifies each delta into one of the three; a release with unclas
 
 ## Changelog
 
+### 0.3.2, 2026-08-25
+
+**PATCH. The Tier 2 call-traffic block publishes a `_meta`-stripped column beside the raw figure. No figure this document specifies moves and no cell is republished.** The column is specified by `tier2-task-suites.md` section 4 (suite doc 1.0.7, analyzer 0.2.0), which is why this is a PATCH under the same reasoning the publish paragraph in section 3.3 already gives: the call-traffic figure is not a metric of this document. The occasion: the raw github cells are envelope-dominated for one client. On the 2026-08-18 run, github sent Claude Code a serverInfo block of roughly 1,400 tokens in the `_meta` member of every `tools/call` response and sent Gemini CLI none, so the raw cells read a 7.6x spread between the clients (medians 1,698 against 223) that collapses to 303 against 223 with the envelope stripped. The spread was a protocol-envelope artifact, not a difference in what the server sent back as payload; every non-github cell is identical in both columns. Raw cells were re-derived from the run's frame logs under analyzer 0.2.0 before stripping and reproduce exactly, which is the check that the re-analysis reads the same trials the published figures did.
+
 ### 0.3.1, 2026-08-20
 
 **PATCH. Sections 3.2 and 3.3 state what would move a mode label. No figure moves and no cell is republished.** The published rows keep the stamp they were produced under, which is correct: a PATCH leaves them comparable by definition (section 9). This entry was drafted against 0.2.0 and lands as a PATCH on 0.3.0, because 0.3.0 shipped while it was in flight; nothing in it depends on which of the two it sits on.
@@ -353,7 +357,7 @@ The first full Tier 2 run landed on 2026-08-18: 90 trials, suite 1.0.1, three se
 2. **3.2 now names the two observables the conversion needs** and records that neither client exposes either one. Claude Code's and Gemini CLI's usage blocks both report session-wide input and cache totals that contain the system prompt and the conversation, so neither isolates a tool-definition footprint, and the interposer cannot supply it because it watches the MCP wire rather than model context (`tier2-task-suites.md` 4.3).
 3. **Known limitation 3 records the same finding**, so a reader who only reads the limitations does not come away thinking Tier 2 settled it.
 
-**What Tier 2 does publish, and where.** The one Tier 2 quantity that is unambiguously measured and attributable to a named server is call traffic: the arguments of every `tools/call` request plus the results the server returned, counted with `o200k_base` so it shares this document's token basis. It is published in `data/tier2-published.json` and shown on the site as its own block, never summed into a stack total, because wire traffic and tool-surface footprint are different costs. That figure is specified by `tier2-task-suites.md` section 4, not by this document, so it is not a new metric under section 9 here and does not carry this version past a PATCH.
+**What Tier 2 does publish, and where.** The one Tier 2 quantity that is unambiguously measured and attributable to a named server is call traffic: the arguments of every `tools/call` request plus the results the server returned, counted with `o200k_base` so it shares this document's token basis. Since 0.3.2 the block carries two columns: the raw figure, and the same responses counted with each one's top-level `_meta` member removed, because some servers ride a protocol envelope there that one client requests and another does not, and the raw figure alone conflates what the server sent with what the protocol wrapped around it. Both are published in `data/tier2-published.json` and shown on the site as their own block, never summed into a stack total, because wire traffic and tool-surface footprint are different costs. Both figures are specified by `tier2-task-suites.md` section 4, not by this document, so neither is a new metric under section 9 here and neither carries this version past a PATCH.
 
 ### 0.3.0, 2026-08-20
 

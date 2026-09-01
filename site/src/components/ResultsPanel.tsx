@@ -96,7 +96,10 @@ export default function ResultsPanel({
               Tool-call arguments plus the results the server sent back, on the MCP wire. This is not the tool-surface
               footprint the totals above count, and it is not added to them. Five scripted tasks per server, three
               trials each, every trial counted including the ones that failed. A different task mix gives a different
-              figure for the same server.
+              figure for the same server. The stripped column counts the same results with each one's top-level{' '}
+              <code>_meta</code> envelope removed: on this run github sent Claude Code a serverInfo block of roughly
+              1,400 tokens on every response and sent Gemini CLI none, so the raw github cells conflate server payload
+              with protocol envelope. Cells with no envelope are identical in both columns.
             </p>
             <table className="tier2-table">
               <thead>
@@ -104,6 +107,9 @@ export default function ResultsPanel({
                   <th>Server</th>
                   <th>Client</th>
                   <th>Call tokens per trial</th>
+                  <th>
+                    Call tokens, <code>_meta</code>-stripped
+                  </th>
                   <th>Tool calls</th>
                   <th>Trials</th>
                 </tr>
@@ -119,6 +125,17 @@ export default function ResultsPanel({
                       <td className="num">
                         {formatTokens(c.call_tokens_per_trial.median)} median (
                         {formatTokens(c.call_tokens_per_trial.min)} to {formatTokens(c.call_tokens_per_trial.max)})
+                      </td>
+                      <td className="num">
+                        {c.call_tokens_per_trial_meta_stripped ? (
+                          <>
+                            {formatTokens(c.call_tokens_per_trial_meta_stripped.median)} median (
+                            {formatTokens(c.call_tokens_per_trial_meta_stripped.min)} to{' '}
+                            {formatTokens(c.call_tokens_per_trial_meta_stripped.max)})
+                          </>
+                        ) : (
+                          'not measured'
+                        )}
                       </td>
                       <td className="num">
                         {c.tool_calls_per_trial.median} median ({c.tool_calls_per_trial.min} to{' '}

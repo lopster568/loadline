@@ -1,5 +1,5 @@
 {
-  "schema": "loadline-tier2-published/0.1",
+  "schema": "loadline-tier2-published/0.2",
   "tier": 2,
   "kind": "measured",
   "run_date": "2026-08-18",
@@ -29,8 +29,21 @@
           "model": "claude-sonnet-5",
           "trials": 15,
           "successes": 15,
-          "call_tokens_per_trial": { "median": 525, "min": 111, "max": 11334 },
-          "tool_calls_per_trial": { "median": 3, "min": 1, "max": 10 }
+          "call_tokens_per_trial": {
+            "median": 525,
+            "min": 111,
+            "max": 11334
+          },
+          "tool_calls_per_trial": {
+            "median": 3,
+            "min": 1,
+            "max": 10
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 525,
+            "min": 111,
+            "max": 11334
+          }
         },
         {
           "client": "Gemini CLI",
@@ -38,8 +51,21 @@
           "model": "gemini-2.5-flash",
           "trials": 15,
           "successes": 14,
-          "call_tokens_per_trial": { "median": 170, "min": 107, "max": 10939 },
-          "tool_calls_per_trial": { "median": 2, "min": 1, "max": 4 }
+          "call_tokens_per_trial": {
+            "median": 170,
+            "min": 107,
+            "max": 10939
+          },
+          "tool_calls_per_trial": {
+            "median": 2,
+            "min": 1,
+            "max": 4
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 170,
+            "min": 107,
+            "max": 10939
+          }
         }
       ]
     },
@@ -53,8 +79,21 @@
           "model": "claude-sonnet-5",
           "trials": 15,
           "successes": 15,
-          "call_tokens_per_trial": { "median": 629, "min": 390, "max": 1087 },
-          "tool_calls_per_trial": { "median": 3, "min": 2, "max": 5 }
+          "call_tokens_per_trial": {
+            "median": 629,
+            "min": 390,
+            "max": 1087
+          },
+          "tool_calls_per_trial": {
+            "median": 3,
+            "min": 2,
+            "max": 5
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 629,
+            "min": 390,
+            "max": 1087
+          }
         },
         {
           "client": "Gemini CLI",
@@ -62,8 +101,21 @@
           "model": "gemini-2.5-flash",
           "trials": 15,
           "successes": 14,
-          "call_tokens_per_trial": { "median": 522, "min": 373, "max": 1286 },
-          "tool_calls_per_trial": { "median": 3, "min": 2, "max": 9 }
+          "call_tokens_per_trial": {
+            "median": 522,
+            "min": 373,
+            "max": 1286
+          },
+          "tool_calls_per_trial": {
+            "median": 3,
+            "min": 2,
+            "max": 9
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 522,
+            "min": 373,
+            "max": 1286
+          }
         }
       ]
     },
@@ -77,8 +129,21 @@
           "model": "claude-sonnet-5",
           "trials": 15,
           "successes": 15,
-          "call_tokens_per_trial": { "median": 1698, "min": 1590, "max": 5174 },
-          "tool_calls_per_trial": { "median": 1, "min": 1, "max": 3 }
+          "call_tokens_per_trial": {
+            "median": 1698,
+            "min": 1590,
+            "max": 5174
+          },
+          "tool_calls_per_trial": {
+            "median": 1,
+            "min": 1,
+            "max": 3
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 303,
+            "min": 195,
+            "max": 989
+          }
         },
         {
           "client": "Gemini CLI",
@@ -86,10 +151,26 @@
           "model": "gemini-2.5-flash",
           "trials": 15,
           "successes": 14,
-          "call_tokens_per_trial": { "median": 223, "min": 121, "max": 1983 },
-          "tool_calls_per_trial": { "median": 1, "min": 1, "max": 6 }
+          "call_tokens_per_trial": {
+            "median": 223,
+            "min": 121,
+            "max": 1983
+          },
+          "tool_calls_per_trial": {
+            "median": 1,
+            "min": 1,
+            "max": 6
+          },
+          "call_tokens_per_trial_meta_stripped": {
+            "median": 223,
+            "min": 121,
+            "max": 1983
+          }
         }
       ]
     }
-  }
+  },
+  "meta_stripped_note": "call_tokens_per_trial_meta_stripped is the same wire traffic with each tools/call result's top-level _meta member removed before counting. Some servers ride a protocol envelope there that one client requests and another does not: on this run github sent Claude Code a serverInfo block of roughly 1,400 tokens on every response and sent Gemini CLI none, so the raw github cells conflate server payload with envelope. A result with no top-level _meta counts identically in both columns, which is why only the github Claude Code cell differs.",
+  "meta_stripped_source": "re-derived 2026-08-25 from this run's frame logs by analyzer 0.2.0 (tier2-task-suites.md section 4, suite doc 1.0.7); every raw cell above reproduces exactly under 0.2.0 before stripping, which is the check that the re-analysis reads the same trials the published figures did",
+  "meta_stripped_analyzer_version": "0.2.0"
 }

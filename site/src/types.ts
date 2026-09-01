@@ -171,6 +171,10 @@ export interface Tier2ClientEntry {
   trials: number
   successes: number
   call_tokens_per_trial: Tier2Distribution
+  // The same traffic with each result's top-level _meta member removed
+  // before counting: payload without the protocol envelope some servers ride
+  // there. Absent on rows published before suite 1.0.7, which is not a zero.
+  call_tokens_per_trial_meta_stripped?: Tier2Distribution
   tool_calls_per_trial: Tier2Distribution
 }
 
