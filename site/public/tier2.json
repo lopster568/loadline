@@ -171,6 +171,6 @@
     }
   },
   "meta_stripped_note": "call_tokens_per_trial_meta_stripped is the same wire traffic with each tools/call result's top-level _meta member removed before counting. Some servers ride a protocol envelope there that one client requests and another does not: on this run github sent Claude Code a serverInfo block of roughly 1,400 tokens on every response and sent Gemini CLI none, so the raw github cells conflate server payload with envelope. A result with no top-level _meta counts identically in both columns, which is why only the github Claude Code cell differs.",
-  "meta_stripped_source": "re-derived 2026-08-25 from this run's frame logs by analyzer 0.2.0 (tier2-task-suites.md section 4, suite doc 1.0.7); every raw cell above reproduces exactly under 0.2.0 before stripping, which is the check that the re-analysis reads the same trials the published figures did",
+  "meta_stripped_source": "re-derived 2026-09-01 from this run's frame logs by analyzer 0.2.0 (tier2-task-suites.md section 4, suite doc 1.0.7); every raw cell above reproduces exactly under 0.2.0 before stripping, which is the check that the re-analysis reads the same trials the published figures did",
   "meta_stripped_analyzer_version": "0.2.0"
 }

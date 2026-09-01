@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Methodology version | 0.3.2 (current; applies from 2026-08-25). PATCH: the Tier 2 call-traffic block also publishes a `_meta`-stripped column beside the raw figure; the column is specified by `tier2-task-suites.md` section 4, and no figure this document specifies moves. 0.3.1 was the PATCH before it (sections 3.2 and 3.3 state what would move a mode label); 0.3.0 the MINOR before that (every acquisition records the dependency set the resolver produced, section 1.1). Rows published before 0.3.0 carry the stamp they were produced under and do not carry the newer fields. |
+| Methodology version | 0.3.2 (current; applies from 2026-09-01). PATCH: the Tier 2 call-traffic block also publishes a `_meta`-stripped column beside the raw figure; the column is specified by `tier2-task-suites.md` section 4, and no figure this document specifies moves. 0.3.1 was the PATCH before it (sections 3.2 and 3.3 state what would move a mode label); 0.3.0 the MINOR before that (every acquisition records the dependency set the resolver produced, section 1.1). Rows published before 0.3.0 carry the stamp they were produced under and do not carry the newer fields. |
 | Date | 2026-08-20 |
 | Status | Draft for review |
 | Scope | Tier 1 static sweep. Tier 2 dynamic runs are specified separately. |
@@ -343,7 +343,7 @@ Every release classifies each delta into one of the three; a release with unclas
 
 ## Changelog
 
-### 0.3.2, 2026-08-25
+### 0.3.2, 2026-09-01
 
 **PATCH. The Tier 2 call-traffic block publishes a `_meta`-stripped column beside the raw figure. No figure this document specifies moves and no cell is republished.** The column is specified by `tier2-task-suites.md` section 4 (suite doc 1.0.7, analyzer 0.2.0), which is why this is a PATCH under the same reasoning the publish paragraph in section 3.3 already gives: the call-traffic figure is not a metric of this document. The occasion: the raw github cells are envelope-dominated for one client. On the 2026-08-18 run, github sent Claude Code a serverInfo block of roughly 1,400 tokens in the `_meta` member of every `tools/call` response and sent Gemini CLI none, so the raw cells read a 7.6x spread between the clients (medians 1,698 against 223) that collapses to 303 against 223 with the envelope stripped. The spread was a protocol-envelope artifact, not a difference in what the server sent back as payload; every non-github cell is identical in both columns. Raw cells were re-derived from the run's frame logs under analyzer 0.2.0 before stripping and reproduce exactly, which is the check that the re-analysis reads the same trials the published figures did.
 
