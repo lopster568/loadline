@@ -262,6 +262,11 @@ def classify:
       # missing measurement as a zero.
       tool_call_arg_tokens: ([$c[].analyze.tool_call_arg_tokens] | stats),
       tool_call_result_tokens: ([$c[].analyze.tool_call_result_tokens] | stats),
+      # The same responses counted with each top-level _meta member removed
+      # (analyzer 0.2.0): payload without the protocol envelope some servers
+      # ride there. Null on rows recorded before the field existed, which
+      # reads as not measured, never as zero.
+      tool_call_result_tokens_meta_stripped: ([$c[].analyze.tool_call_result_tokens_meta_stripped] | stats),
       tool_call_arg_bytes: ([$c[].analyze.tool_call_arg_bytes] | stats),
       tool_call_result_bytes: ([$c[].analyze.tool_call_result_bytes] | stats),
       wire_bytes: ([$c[].analyze.bytes] | stats),
@@ -319,6 +324,7 @@ def classify:
         exit_code: .exit_code,
         tool_call_arg_tokens: .analyze.tool_call_arg_tokens,
         tool_call_result_tokens: .analyze.tool_call_result_tokens,
+        tool_call_result_tokens_meta_stripped: .analyze.tool_call_result_tokens_meta_stripped,
         cache: .cache,
         interposer_version: .interposer_version,
         client_versions: .client_versions

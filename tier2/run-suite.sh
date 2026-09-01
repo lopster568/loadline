@@ -48,7 +48,7 @@ set -euo pipefail
 
 # ---------------------------------------------------------------- constants --
 
-SUITE_VERSION="1.0.6"      # docs/tier2-task-suites.md header field
+SUITE_VERSION="1.0.7"      # docs/tier2-task-suites.md header field
 MANIFEST_SCHEMA="tier2-manifest/0.1"
 
 # The github server's default image, no tag: the same reference server_argv's
@@ -1343,6 +1343,7 @@ run_trial() {
       tool_call_arg_tokens: .totals.tool_call_arg_tokens,
       tool_call_arg_bytes: .totals.tool_call_arg_bytes,
       tool_call_result_tokens: .totals.tool_call_result_tokens,
+      tool_call_result_tokens_meta_stripped: .totals.tool_call_result_tokens_meta_stripped,
       tool_call_result_bytes: .totals.tool_call_result_bytes,
       requests: .totals.requests,
       responses: .totals.responses,
