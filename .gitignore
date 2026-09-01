@@ -38,3 +38,6 @@ site/out/
 # and the fixture scratch copies sit beside it. Only the derived Tier 2 summary
 # is publishable, and it is written outside this tree.
 /data/tier2/
+
+# Local Netlify folder
+.netlify
